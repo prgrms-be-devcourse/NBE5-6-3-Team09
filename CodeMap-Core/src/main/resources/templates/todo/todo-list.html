@@ -10,465 +10,149 @@
   <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
   <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
 
+  <!-- ✅ 투두 리스트 전용 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/user/todo/todo-list.css}"/>
   <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: "Pretendard", sans-serif;
-      margin: 0;
-      padding: 0;
-    }
 
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background-color: white;
-    }
-
-    aside {
-      position: fixed;
-      top: 116px;
-      left: 0;
-      width: 250px;
-      height: calc(100vh - 116px);
-      z-index: 900;
-      background-color: white;
-    }
-
-    main {
-      margin-left: 280px;
-      margin-top: 100px;
-      padding: 30px;
-      min-height: calc(100vh - 100px);
-      background-color: #f8f9fa;
-    }
-
-    .todo-wrapper {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 1000px;
-      margin: 0 auto;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e5e7eb;
-    }
-
-    .selected-date-banner {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 16px 24px;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .todo-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-    }
-
-    .todo-header h2 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1f2937;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .add-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .add-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    }
-
-    .todo-table-container {
-      border-radius: 16px;
-      overflow: visible;
-      border: 1px solid #e5e7eb;
-      background: white;
-      position: relative;
-
-    }
-
-    .todo-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      border-radius: 16px;
-    }
-
-    .todo-table thead {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    }
-
-    .todo-table th {
-      padding: 20px 24px;
-      text-align: left;
-      font-weight: 700;
-      color: #374151;
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid #e5e7eb;
-    }
-
-    .todo-table th:first-child { width: 25%; }
-    .todo-table th:nth-child(2) { width: 35%; }
-    .todo-table th:nth-child(3) { width: 25%; }
-    .todo-table th:last-child { width: 15%; }
-
-    .todo-row {
-      transition: all 0.2s ease;
-      position: static;
-    }
-
-    .todo-row:not(.completed):hover {
-      background-color: #f8fafc;
-      transform: translateX(4px);
-    }
-
-    .todo-row.completed {
-      background-color: #f9fafb;
-      opacity: 0.6;
-    }
-
-    .todo-row.completed td {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
-    .todo-table td {
-      padding: 20px 24px;
-      border-bottom: 1px solid #f3f4f6;
-      vertical-align: top;
-    }
-
-    .menu-cell {
-      position: relative;
-      padding: 20px 24px;
-      border-bottom: 1px solid #f3f4f6;
-      vertical-align: top;
-    }
-
-    .todo-title {
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 4px;
-    }
-
-    .todo-description {
-      color: #6b7280;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    .todo-time {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .time-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .time-label {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 11px;
-      min-width: 32px;
-      text-align: center;
-    }
-
-    .time-value {
-      color: #374151;
-      font-weight: 500;
-    }
-
-    .menu-button {
-      background: #f3f4f6;
-      border: none;
-      border-radius: 8px;
-      width: 36px;
-      height: 36px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .menu-button:hover {
-      background: #e5e7eb;
-      transform: scale(1.05);
-    }
-
-    .menu-box {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-      padding: 8px;
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 120px;
-      white-space: nowrap;
-      margin-top: 4px;
-    }
-
-    .menu-item {
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .menu-item:hover {
-      background: #f3f4f6;
-    }
-
-    .menu-item.edit {
-      color: #059669;
-    }
-
-    .menu-item.delete {
-      color: #dc2626;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #6b7280;
-    }
-
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty-state-text {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .empty-state-subtext {
-      font-size: 14px;
-      color: #9ca3af;
-    }
-
-    #modalContainer {
-      display: none;
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 64px rgba(0, 0, 0, 0.15);
-      z-index: 2000;
-      border: 1px solid #e5e7eb;
-    }
-
-    /* 완료된 할일 스타일링 */
-    .completed-badge {
-      background: #dcfce7;
-      color: #166534;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-left: 8px;
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 768px) {
-      .todo-table th:nth-child(3),
-      .todo-table td:nth-child(3) {
-        display: none;
-      }
-
-      .todo-table th:first-child { width: 35%; }
-      .todo-table th:nth-child(2) { width: 50%; }
-      .todo-table th:last-child { width: 15%; }
-    }
   </style>
 </head>
 
 <body>
-<header th:replace="fragments/header/header :: header"></header>
-<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<!--알림 -->
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
-<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
 
+<!-- ✅ 헤더 fragment 사용 -->
+<header th:replace="fragments/header/header :: header"></header>
 
+<!-- ✅ 사이드바 fragment 사용 -->
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<!-- 모달 컨테이너 -->
 <div id="modalContainer"></div>
 
 <main>
-  <div class="todo-wrapper">
-    <div class="selected-date-banner">
-      📅 선택한 날짜: <span th:text="${selectedDate}"></span>
+  <div class="main-container">
+
+    <!-- ✅ 웰컴 섹션 -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">📝 투두 리스트</h1>
+      <p class="welcome-subtitle">📅 선택한 날짜: <span th:text="${selectedDate}"></span></p>
     </div>
 
-    <div class="todo-header">
-      <h2>
-        <span>📝</span>
-        오늘의 할 일을 확인해보세요
-      </h2>
-      <button class="add-btn" id="addTodoBtn" th:attr="data-date=${selectedDate}">
-        + 새 할일 추가
-      </button>
-    </div>
+    <!-- 📋 투두 리스트 섹션 -->
+    <div class="content-section">
+      <div class="section-header">
+        <h3 class="section-title">📋 오늘의 할 일 목록</h3>
+        <button class="add-btn" id="addTodoBtn" th:attr="data-date=${selectedDate}">
+          + 새 할일 추가
+        </button>
+      </div>
 
-    <div class="todo-table-container" th:if="${#lists.size(todos) > 0}">
-      <table class="todo-table">
-        <thead>
-        <tr>
-          <th>📋 제목</th>
-          <th>📝 내용</th>
-          <th>⏰ 시간</th>
-          <th>⚙️ 관리</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="todo : ${todos}"
-            class="todo-row"
-            th:classappend="${todo.completed} ? 'completed'">
-          <td>
-            <div class="todo-title">
-              <span th:text="${todo.title}">제목</span>
-              <span th:if="${todo.completed}" class="completed-badge">완료</span>
-            </div>
-          </td>
-          <td>
-            <div class="todo-description" th:text="${todo.description}">내용</div>
-          </td>
-          <td>
-            <div class="todo-time">
-              <div class="time-item">
-                <span class="time-label">시작</span>
-                <span class="time-value" th:text="${#temporals.format(todo.startTime, 'HH:mm')}">10:00</span>
-              </div>
-              <div class="time-item">
-                <span class="time-label">마감</span>
-                <span class="time-value" th:text="${#temporals.format(todo.completedAt, 'MM-dd')}">06-17</span>
-              </div>
-            </div>
-          </td>
-          <td class="menu-cell">
-            <button class="menu-button">⋯
-              <div class="menu-box">
-                <div class="menu-item edit" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-                  ✏️ 수정
+      <!-- 투두가 있는 경우 -->
+      <div th:if="${#lists.size(todos) > 0}" class="todo-table-wrapper">
+        <div class="todo-table-container">
+          <table class="todo-table">
+            <thead>
+            <tr>
+              <th>📋 제목</th>
+              <th>📝 내용</th>
+              <th>⏰ 시간</th>
+              <th>⚙️ 관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="todo : ${todos}"
+                class="todo-row"
+                th:classappend="${todo.completed} ? 'completed'">
+              <td>
+                <div class="todo-title">
+                  <span th:text="${todo.title}">제목</span>
+                  <span th:if="${todo.completed}" class="completed-badge">완료</span>
                 </div>
-                <div class="menu-item delete" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-                  🗑️ 삭제
+              </td>
+              <td>
+                <div class="todo-description" th:text="${todo.description}">내용</div>
+              </td>
+              <td>
+                <div class="todo-time">
+                  <div class="time-item">
+                    <span class="time-label">시작</span>
+                    <span class="time-value" th:text="${#temporals.format(todo.startTime, 'HH:mm')}">10:00</span>
+                  </div>
+                  <div class="time-item">
+                    <span class="time-label">마감</span>
+                    <span class="time-value" th:text="${#temporals.format(todo.completedAt, 'MM-dd')}">06-17</span>
+                  </div>
                 </div>
-              </div>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+              </td>
+              <td class="menu-cell">
+                <button class="menu-button">⋯
+                  <div class="menu-box">
+                    <div class="menu-item edit" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
+                      ✏️ 수정
+                    </div>
+                    <div class="menu-item delete" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
+                      🗑️ 삭제
+                    </div>
+                  </div>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 빈 상태 표시 -->
+      <div th:if="${#lists.size(todos) == 0}" class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <div class="empty-state-text">아직 등록된 할 일이 없습니다</div>
+        <div class="empty-state-subtext">새로운 할 일을 추가해보세요!</div>
+      </div>
     </div>
 
-    <!-- 빈 상태 표시 -->
-    <div th:if="${#lists.size(todos) == 0}" class="empty-state">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-text">아직 등록된 할 일이 없습니다</div>
-      <div class="empty-state-subtext">새로운 할 일을 추가해보세요!</div>
-    </div>
-  </div>
+  </div> <!-- main-container end -->
 </main>
 
+<!-- 📱 챗봇 -->
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  // ✅ 저장된 테마 불러오기 (페이지 로드 시 최우선 실행)
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.classList.add(savedTheme + '-theme');
+
+  // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    // 즉시 상단으로 스크롤
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 추가 보장을 위해 약간의 지연 후 다시 실행
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+
+    // 사이드바 투두리스트 메뉴 active 처리
     const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
     .find(el => el.textContent.includes('투두 리스트'));
     if (todoButton) todoButton.classList.add('active');
 
+    // 투두 추가 버튼 이벤트
     document.getElementById('addTodoBtn').addEventListener('click', function () {
       const date = this.getAttribute('data-date');
       openAddModal(date);
     });
-
-    window.openAddModal = function (date) {
-      fetch(`/todos/new?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-      });
-    };
-
-    window.openEditModal = function (id, date) {
-      fetch(`/todos/${id}/edit?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-      });
-    };
-
-    window.openDeleteModal = function (id, date) {
-      fetch(`/todos/${id}/confirm-delete?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-          fetch(`/todos/${id}?date=${date}`, { method: "DELETE" }).then(res => {
-            if (res.ok) window.location.href = `/todos?date=${date}`;
-            else alert("삭제 실패");
-          });
-        });
-      });
-    };
-
-    window.closeModal = function () {
-      const container = document.getElementById('modalContainer');
-      container.style.display = 'none';
-      container.innerHTML = '';
-    };
 
     // 메뉴 버튼 이벤트
     document.querySelectorAll('.menu-button').forEach(button => {
@@ -503,8 +187,60 @@
       });
     });
   });
+
+  // 모달 함수들
+  window.openAddModal = function (date) {
+    fetch(`/todos/new?date=${date}`)
+    .then(res => res.text())
+    .then(html => {
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = html;
+      container.style.display = 'block';
+    });
+  };
+
+  window.openEditModal = function (id, date) {
+    fetch(`/todos/${id}/edit?date=${date}`)
+    .then(res => res.text())
+    .then(html => {
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = html;
+      container.style.display = 'block';
+    });
+  };
+
+  window.openDeleteModal = function (id, date) {
+    fetch(`/todos/${id}/confirm-delete?date=${date}`)
+    .then(res => res.text())
+    .then(html => {
+      const container = document.getElementById('modalContainer');
+      container.innerHTML = html;
+      container.style.display = 'block';
+      document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+        fetch(`/todos/${id}?date=${date}`, { method: "DELETE" }).then(res => {
+          if (res.ok) window.location.href = `/todos?date=${date}`;
+          else alert("삭제 실패");
+        });
+      });
+    });
+  };
+
+  window.closeModal = function () {
+    const container = document.getElementById('modalContainer');
+    container.style.display = 'none';
+    container.innerHTML = '';
+  };
+
+  // ✅ 브라우저 뒤로가기/앞으로가기 시에도 상단 스크롤 보장
+  window.addEventListener('pageshow', function(event) {
+    window.scrollTo(0, 0);
+  });
+
+  // ✅ 모든 로드 이벤트에서 스크롤 리셋
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
 </script>
 
-<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>
