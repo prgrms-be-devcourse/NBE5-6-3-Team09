@@ -1,0 +1,735 @@
+/* ✅ 전체 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+/* ✅ 라이트 테마 (기본) */
+body.light-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+}
+
+/* ✅ 다크 테마 */
+body.dark-theme {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f7fafc;
+}
+
+/* 배경 애니메이션 - 캘린더와 동일 */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+  background: white;
+}
+
+body.dark-theme .floating-shape {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.floating-shape:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  top: 60%;
+  right: 10%;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  animation-delay: 2s;
+}
+
+.floating-shape:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  width: 60px;
+  height: 60px;
+  transform: rotate(45deg);
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* ✅ 메인 컨테이너 */
+main {
+  margin-left: 250px !important;
+  margin-top: 70px !important;
+  padding: 30px !important;
+  min-height: calc(100vh - 70px) !important;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  z-index: 1;
+  overflow: visible !important;
+}
+
+/* ✅ 타이머 래퍼 - 글래스모피즘 */
+.timer-wrapper {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 1200px !important;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+body.dark-theme .timer-wrapper {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.timer-wrapper:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme .timer-wrapper:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 타이머 정보 섹션 */
+.timer-info {
+  margin-bottom: 2.5rem;
+}
+
+.current-routine {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem;
+}
+
+body.dark-theme .current-routine {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.next-routine {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+body.dark-theme .next-routine {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.phase-indicator {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.phase-focus {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .phase-focus {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.phase-break {
+  color: rgba(72, 187, 120, 0.9);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .phase-break {
+  color: rgba(72, 187, 120, 0.8);
+}
+
+/* ✅ 타이머 정보 그리드 - 글래스모피즘 */
+.timer-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.timer-info-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+body.dark-theme .timer-info-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.timer-info-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-theme .timer-info-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.timer-info-label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+body.dark-theme .timer-info-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.timer-info-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .timer-info-value {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ✅ 타이머 디스플레이 */
+.timer-display {
+  font-size: 7.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 3rem 0;
+  font-family: 'Roboto Mono', monospace;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: -0.05em;
+}
+
+body.dark-theme .timer-display {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ✅ 타이머 컨트롤 버튼들 - 글래스모피즘 */
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+}
+
+.timer-button {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark-theme .timer-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.timer-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-theme .timer-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.timer-button:active {
+  transform: scale(0.95);
+}
+
+.timer-button.complete-button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+body.dark-theme .timer-button.complete-button {
+  background: linear-gradient(135deg, #4c63d2, #5a4fcf);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
+}
+
+.timer-button.complete-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+body.dark-theme .timer-button.complete-button:hover {
+  box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
+}
+
+.timer-button i {
+  font-size: 2.25rem;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+body.dark-theme .timer-button i {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.timer-button.complete-button i {
+  color: white;
+}
+
+/* ✅ 타이머 프로그레스 바 - 글래스모피즘 */
+.timer-progress {
+  display: none;
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme .timer-progress {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.timer-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 6px;
+  transition: width 1s linear;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+body.dark-theme .timer-progress-bar {
+  background: linear-gradient(90deg, #4c63d2, #5a4fcf);
+  box-shadow: 0 2px 8px rgba(76, 99, 210, 0.4);
+}
+
+.break-progress-container .timer-progress {
+  display: block;
+}
+
+.break-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #48bb78, #38a169);
+  border-radius: 6px;
+  width: 0%;
+  transition: width 1s linear;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4);
+}
+
+#breakTimeDisplay {
+  margin-top: 1.25rem;
+  color: rgba(72, 187, 120, 0.9);
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme #breakTimeDisplay {
+  color: rgba(72, 187, 120, 0.8);
+}
+
+/* ✅ 아이콘 스타일 */
+.icon-pause {
+  background-color: transparent;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-pause:before, .icon-pause:after {
+  content: '';
+  position: absolute;
+  background-color: white;
+  width: 6px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+body.dark-theme .icon-pause:before,
+body.dark-theme .icon-pause:after {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.icon-pause:before {
+  left: 4px;
+}
+
+.icon-pause:after {
+  right: 4px;
+}
+
+.icon-play {
+  background-color: transparent;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 0 12px 20px;
+  border-color: transparent transparent transparent white;
+  margin-left: 3px;
+}
+
+body.dark-theme .icon-play {
+  border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+}
+
+.icon-check {
+  color: white;
+  font-size: 2.25rem;
+}
+
+.icon-next {
+  background-color: transparent;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-next:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 15px;
+  border-color: transparent transparent transparent white;
+  left: 0;
+}
+
+body.dark-theme .icon-next:before {
+  border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+}
+
+.icon-next:after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background-color: white;
+  right: 0;
+  border-radius: 2px;
+}
+
+body.dark-theme .icon-next:after {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* ✅ 모달 스타일 - 글래스모피즘 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 2.5rem;
+  border-radius: 20px;
+  width: 450px;
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme .modal-content {
+  background: rgba(30, 30, 46, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+}
+
+.modal-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+body.dark-theme .modal-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.modal-text {
+  margin-bottom: 2rem;
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+body.dark-theme .modal-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.modal-button {
+  padding: 0.75rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.modal-button.cancel {
+  background: rgba(229, 231, 235, 0.8);
+  color: #4b5563;
+}
+
+body.dark-theme .modal-button.cancel {
+  background: rgba(75, 85, 99, 0.8);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-button.cancel:hover {
+  background: rgba(209, 213, 219, 0.9);
+  transform: translateY(-1px);
+}
+
+body.dark-theme .modal-button.cancel:hover {
+  background: rgba(55, 65, 81, 0.9);
+}
+
+.modal-button.confirm {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+body.dark-theme .modal-button.confirm {
+  background: linear-gradient(135deg, #4c63d2, #5a4fcf);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
+}
+
+.modal-button.confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+body.dark-theme .modal-button.confirm:hover {
+  box-shadow: 0 6px 20px rgba(76, 99, 210, 0.5);
+}
+
+/* ✅ 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 1024px) {
+  main {
+    margin-left: 0 !important;
+    padding: 20px !important;
+  }
+
+  .timer-wrapper {
+    max-width: 100% !important;
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-top: 70px;
+    margin-left: 0;
+    width: 100vw;
+    padding: 1rem !important;
+  }
+
+  .timer-wrapper {
+    padding: 1.5rem;
+  }
+
+  .timer-display {
+    font-size: 5rem;
+  }
+
+  .timer-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .timer-controls {
+    gap: 2rem;
+  }
+
+  .timer-button {
+    width: 70px;
+    height: 70px;
+  }
+
+  .timer-button i {
+    font-size: 1.75rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer-wrapper {
+    padding: 1rem;
+  }
+
+  .timer-display {
+    font-size: 4rem;
+    margin: 2rem 0;
+  }
+
+  .current-routine {
+    font-size: 1.5rem;
+  }
+
+  .timer-info-value {
+    font-size: 1.75rem;
+  }
+
+  .timer-controls {
+    gap: 1.5rem;
+  }
+
+  .timer-button {
+    width: 60px;
+    height: 60px;
+  }
+
+  .timer-button i {
+    font-size: 1.5rem;
+  }
+
+  .modal-content {
+    width: 98%;
+    padding: 1.5rem;
+  }
+}
