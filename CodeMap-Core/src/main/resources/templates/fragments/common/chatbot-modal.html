@@ -1,0 +1,248 @@
+<!-- Enhanced chatbot-modal.html -->
+<div th:fragment="chatbot">
+  <!-- 챗봇 버튼 -->
+  <div id="chatbot-button" class="chatbot-button" onclick="toggleChatbot()">
+    <span id="chatbot-icon">🤖</span>
+  </div>
+
+  <!-- 챗봇 모달 wrapper - 인라인 스타일 제거, CSS로 위치 제어 -->
+  <div id="chatbot-modal-wrapper">
+    <div id="chatbot-modal" class="chatbot-modal">
+      <!-- Header -->
+      <div class="chatbot-header">
+        <div class="chatbot-title">
+          <div class="chatbot-logo">🤖</div>
+          <span>CodeMap 챗봇</span>
+        </div>
+        <button class="chatbot-close" onclick="toggleChatbot()" title="챗봇 닫기">
+          ✕
+        </button>
+      </div>
+
+      <!-- 응답 영역 -->
+      <div id="chatbot-response" class="chatbot-response">
+        <div class="chatbot-message-welcome">
+          <span class="chatbot-welcome-icon">🚀</span>
+          <div class="chatbot-welcome-text">안녕하세요!</div>
+          <div class="chatbot-welcome-subtitle">궁금한 키워드를 입력해 주세요</div>
+        </div>
+      </div>
+
+      <!-- 입력 영역 -->
+      <div class="chatbot-input-area">
+        <div class="chatbot-input-wrapper">
+          <input
+              type="text"
+              id="chatbot-input"
+              class="chatbot-input"
+              placeholder="키워드를 입력하세요..."
+              maxlength="100"
+          />
+          <span class="chatbot-input-icon">💬</span>
+        </div>
+        <button id="chatbot-send-btn" class="chatbot-send-btn" onclick="sendKeywordFromInput()">
+          <span class="chatbot-btn-icon">🚀</span>
+          <span class="chatbot-btn-text">보내기</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isLoading = false;
+
+    function toggleChatbot() {
+      const modal = document.getElementById('chatbot-modal');
+      const button = document.getElementById('chatbot-button');
+      const icon = document.getElementById('chatbot-icon');
+
+      if (modal.classList.contains('show')) {
+        modal.classList.remove('show');
+        button.classList.remove('active');
+        icon.textContent = '🤖';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      } else {
+        modal.style.display = 'flex';
+        button.classList.add('active');
+        icon.textContent = '✕';
+        setTimeout(() => {
+          modal.classList.add('show');
+          document.getElementById('chatbot-input').focus();
+        }, 10);
+      }
+    }
+
+    // Enter 키 처리
+    document.getElementById('chatbot-input').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter' && !isLoading) {
+        event.preventDefault();
+        sendKeywordFromInput();
+      }
+    });
+
+    // ESC 키로 닫기
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        const modal = document.getElementById('chatbot-modal');
+        if (modal.classList.contains('show')) {
+          toggleChatbot();
+        }
+      }
+    });
+
+    // 외부 클릭 시 닫기
+    document.addEventListener('click', function (event) {
+      const modal = document.getElementById('chatbot-modal');
+      const wrapper = document.getElementById('chatbot-modal-wrapper');
+      const button = document.getElementById('chatbot-button');
+      if (modal.classList.contains('show') &&
+          !wrapper.contains(event.target) &&
+          !button.contains(event.target)) {
+        toggleChatbot();
+      }
+    });
+
+    // 입력창에서 키워드 전송
+    function sendKeywordFromInput() {
+      const input = document.getElementById('chatbot-input');
+      const keyword = input.value.trim();
+      if (keyword && !isLoading) {
+        sendKeyword(keyword);
+        input.value = '';
+      }
+    }
+
+    // 로딩 상태 설정
+    function setLoading(loading) {
+      isLoading = loading;
+      const sendBtn = document.getElementById('chatbot-send-btn');
+      const input = document.getElementById('chatbot-input');
+
+      if (loading) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="chatbot-btn-icon">⏳</span><span class="chatbot-btn-text">전송중...</span>';
+        input.disabled = true;
+      } else {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<span class="chatbot-btn-icon">🚀</span><span class="chatbot-btn-text">보내기</span>';
+        input.disabled = false;
+        input.focus();
+      }
+    }
+
+    // 로딩 메시지 표시
+    function showLoadingMessage() {
+      return `
+        <div class="chatbot-loading-message">
+          <div class="chatbot-loading-avatar">🤖</div>
+          <div>
+            <div style="margin-bottom: 8px; font-weight: 600; color: var(--chatbot-text-primary);">답변을 생성하고 있어요</div>
+            <div class="chatbot-loading-dots">
+              <div class="chatbot-loading-dot"></div>
+              <div class="chatbot-loading-dot"></div>
+              <div class="chatbot-loading-dot"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 에러 메시지 표시
+    function showErrorMessage(message) {
+      return `
+        <div class="chatbot-error-message">
+          <span class="chatbot-error-icon">⚠️</span>
+          <span>${message}</span>
+        </div>
+      `;
+    }
+
+    // 마크다운을 HTML로 변환하는 함수
+    function parseMarkdown(text) {
+      return text
+      .replace(/```(\w+)?\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
+      .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+      .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/\n/g, '<br>');
+    }
+
+    // li 태그들을 ul로 감싸기
+    function wrapListItems(html) {
+      return html.replace(/(<li>.*?<\/li>(?:\s*<br>\s*<li>.*?<\/li>)*)/g, '<ul>$1</ul>')
+      .replace(/<br>\s*(<li>)/g, '$1')
+      .replace(/(<\/li>)\s*<br>/g, '$1');
+    }
+
+    // 실제 키워드 전송 로직
+    function sendKeyword(keyword) {
+      const responseElement = document.getElementById('chatbot-response');
+      responseElement.innerHTML = showLoadingMessage();
+
+      setLoading(true);
+
+      // 스크롤을 맨 아래로 이동
+      responseElement.scrollTop = responseElement.scrollHeight;
+
+      fetch('/chatbot/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ keyword })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.response) {
+          let htmlContent = parseMarkdown(data.response);
+          htmlContent = wrapListItems(htmlContent);
+          responseElement.innerHTML = `<div class="chatbot-response-message">${htmlContent}</div>`;
+          responseElement.scrollTop = responseElement.scrollHeight;
+        } else {
+          responseElement.innerHTML = showErrorMessage('응답을 받지 못했어요. 다시 시도해 주세요.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        let errorMessage = '';
+        if (error.name === 'TypeError') {
+          errorMessage = '네트워크 연결을 확인해 주세요 🌐';
+        } else if (error.message.includes('500')) {
+          errorMessage = '서버에 일시적인 문제가 있어요. 잠시 후 다시 시도해 주세요 🔧';
+        } else {
+          errorMessage = '오류가 발생했어요. 다시 시도해 주세요 😥';
+        }
+        responseElement.innerHTML = showErrorMessage(errorMessage);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    }
+
+    // 마지막 키워드 복원 (페이지 로드 시)
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const last = localStorage.getItem('lastKeyword');
+        if (last) {
+          // 자동으로 마지막 키워드로 검색하지 않고, 입력창에만 설정
+          // sendKeyword(last);
+        }
+      } catch (e) {
+        console.log('localStorage not available');
+      }
+    });
+  </script>
+</div>

@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IntelliJ 프로젝트 레벨 설정 (각 하위 프로젝트의 .idea는 각자의 .gitignore에서 처리됨)
+.idea/
+
+# 민감한 정보 (전체 프로젝트 공통)
+*.log
+*.tmp

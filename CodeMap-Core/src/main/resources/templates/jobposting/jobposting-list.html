@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>채용공고 - 목표기업 관리</title>
+
+  <!-- ✅ CSRF 토큰 메타 추가 -->
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+
+  <link rel="stylesheet" th:href="@{/css/user/jobposting/jobposting-list.css}"/>
+</head>
+
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- D-Day 알림 바 -->
+<div id="ddayNotification" class="dday-notification">
+  <div class="dday-content">
+    <span id="ddayText"></span>
+  </div>
+</div>
+
+<main id="mainContent">
+  <div class="jobposting-container">
+    <h1 class="page-title">💼 채용공고 & 목표기업 관리</h1>
+    <p class="page-subtitle">채용 사이트를 확인하고 목표 기업의 마감일을 관리해보세요</p>
+
+    <!-- 채용사이트 링크 섹션 -->
+    <div class="job-sites-section">
+      <h2 class="section-title">🔗 주요 채용 사이트</h2>
+      <div class="job-sites-grid">
+        <a href="https://www.wanted.co.kr" target="_blank" class="job-site-card">
+          <div class="job-site-logo">🎯</div>
+          <div class="job-site-name">원티드</div>
+          <div class="job-site-desc">개발자 맞춤 채용정보</div>
+        </a>
+        <a href="https://www.saramin.co.kr" target="_blank" class="job-site-card">
+          <div class="job-site-logo">👥</div>
+          <div class="job-site-name">사람인</div>
+          <div class="job-site-desc">대한민국 대표 채용사이트</div>
+        </a>
+        <a href="https://www.jobkorea.co.kr" target="_blank" class="job-site-card">
+          <div class="job-site-logo">🏢</div>
+          <div class="job-site-name">잡코리아</div>
+          <div class="job-site-desc">다양한 기업 정보</div>
+        </a>
+        <a href="https://www.incruit.com" target="_blank" class="job-site-card">
+          <div class="job-site-logo">📋</div>
+          <div class="job-site-name">인크루트</div>
+          <div class="job-site-desc">신입/경력 채용정보</div>
+        </a>
+        <a href="https://www.jobplanet.co.kr/job" target="_blank" class="job-site-card">
+          <div class="job-site-logo">💻</div>
+          <div class="job-site-name">잡플래닛</div>
+          <div class="job-site-desc">직관적인 서비스</div>
+        </a>
+        <a href="https://www.rocketpunch.com" target="_blank" class="job-site-card">
+          <div class="job-site-logo">🚀</div>
+          <div class="job-site-name">로켓펀치</div>
+          <div class="job-site-desc">스타트업 채용정보</div>
+        </a>
+        <a href="https://www.jumpit.co.kr" target="_blank" class="job-site-card">
+          <div class="job-site-logo">⚡</div>
+          <div class="job-site-name">점핏</div>
+          <div class="job-site-desc">IT 개발자 전문 채용</div>
+        </a>
+        <a href="https://careerly.co.kr" target="_blank" class="job-site-card">
+          <div class="job-site-logo">💼</div>
+          <div class="job-site-name">커리어리</div>
+          <div class="job-site-desc">커리어 성장 플랫폼</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 목표기업 관리 섹션 -->
+    <div class="target-companies-section">
+      <h2 class="section-title">🎯 목표기업 관리</h2>
+
+      <!-- 목표기업 추가 버튼 -->
+      <button class="add-company-btn" onclick="openAddCompanyModal()">📌 목표기업 추가</button>
+
+      <!-- 목표기업 리스트 -->
+      <div id="companyList" class="company-list">
+        <!-- 여기에 목표기업들이 동적으로 추가됩니다 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 삭제 확인 모달 -->
+  <div id="deleteConfirmModal" class="delete-modal-overlay" style="display: none;">
+    <div class="delete-modal-box">
+      <div class="delete-modal-icon">🗑️</div>
+      <h3 class="delete-modal-title">목표기업 삭제</h3>
+      <p class="delete-modal-message">
+        <span class="delete-modal-company-name" id="deleteCompanyName"></span>을(를)<br>
+        정말 삭제하시겠습니까?
+      </p>
+      <div class="delete-modal-buttons">
+        <button type="button" class="delete-modal-cancel" onclick="closeDeleteModal()">취소</button>
+        <button type="button" class="delete-modal-confirm" onclick="confirmDelete()">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 목표기업 추가 모달 -->
+  <div id="addCompanyModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <h3 class="modal-title">🎯 목표기업 추가</h3>
+      <form id="addCompanyForm">
+        <div class="modal-form-group">
+          <label class="modal-form-label" for="companyName">기업명</label>
+          <input type="text" id="companyName" name="companyName" class="modal-form-input" placeholder="목표 기업명을 입력하세요" required>
+        </div>
+        <div class="modal-form-group">
+          <label class="modal-form-label" for="deadline">마감일</label>
+          <input type="date" id="deadline" name="deadline" class="modal-form-input" required>
+        </div>
+        <div class="modal-button-group">
+          <button type="button" class="modal-cancel-button" onclick="closeAddCompanyModal()">취소</button>
+          <button type="submit" class="modal-confirm-button">추가</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let targetCompanies = [];
+
+
+    loadTargetCompanies();
+    updateDDayNotification();
+
+    document.getElementById('addCompanyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const companyName = document.getElementById('companyName').value;
+      const deadline = document.getElementById('deadline').value;
+
+      if (!companyName || !deadline) {
+        alert('기업명과 마감일을 모두 입력해주세요.');
+        return;
+      }
+
+      addTargetCompany(companyName, deadline);
+    });
+
+    // 모달 외부 클릭시 닫기
+    document.getElementById('addCompanyModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeAddCompanyModal();
+      }
+    });
+
+    function openAddCompanyModal() {
+      document.getElementById('addCompanyModal').style.display = 'flex';
+    }
+
+    function closeAddCompanyModal() {
+      document.getElementById('addCompanyModal').style.display = 'none';
+      document.getElementById('addCompanyForm').reset();
+    }
+
+    function addTargetCompany(companyName, deadline) {
+      const requestData = {
+        companyName: companyName,
+        dueDate: deadline
+      };
+
+      // ✅ CSRF 토큰 처리
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch('/jobposting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => {
+        if (response.ok) {
+          closeAddCompanyModal(); // 모달 닫기
+          loadTargetCompanies();
+          // ✅ 헤더의 목표기업 목록도 업데이트
+          if (typeof window.refreshTargetCompaniesHeader === 'function') {
+            window.refreshTargetCompaniesHeader();
+          }
+
+        } else {
+          throw new Error('목표기업 추가 실패');
+        }
+      })
+      .catch(error => {
+        console.error('목표기업 추가 실패:', error);
+        alert('목표기업 추가에 실패했습니다.');
+      });
+    }
+
+    function loadTargetCompanies() {
+      fetch('/jobposting')
+      .then(res => res.json())
+      .then(data => {
+        targetCompanies = data;
+        renderCompanyList();
+        updateDDayNotification();
+      })
+      .catch(err => {
+        console.error('목표기업 목록 불러오기 실패:', err);
+        renderEmptyState();
+      });
+    }
+
+    function renderCompanyList() {
+      const container = document.getElementById('companyList');
+      if (targetCompanies.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      container.innerHTML = targetCompanies.map(company => {
+        const dday = calculateDDay(company.dueDate);
+        const ddayClass = getDDayClass(company.dueDate);
+        return `
+          <div class="company-item">
+            <div class="company-info">
+              <div class="company-icon">🏢</div>
+              <div class="company-details">
+                <div class="company-name">${company.title || company.companyName}</div>
+                <div class="company-deadline">마감일: ${company.dueDate}</div>
+              </div>
+            </div>
+            <div class="dday-badge ${ddayClass}">${dday}</div>
+            <button class="delete-btn" onclick="deleteTargetCompany(${company.id})">🗑️ 삭제</button>
+          </div>`;
+      }).join('');
+    }
+
+    function renderEmptyState() {
+      const container = document.getElementById('companyList');
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>등록된 목표기업이 없습니다.<br>목표기업을 추가해보세요!</p>
+        </div>
+      `;
+    }
+
+    function deleteTargetCompany(id) {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+      const company = targetCompanies.find(c => c.id === id);
+      if (!company) return;
+
+      deleteTargetId = id;
+      document.getElementById('deleteCompanyName').textContent = company.companyName || company.title || '기업명 없음';
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+
+    function calculateDDay(deadline) {
+      const today = new Date();
+      const dueDate = new Date(deadline);
+      const diff = dueDate - today;
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      return days < 0 ? `D+${-days}` : (days === 0 ? 'D-Day' : `D-${days}`);
+    }
+
+    function getDDayClass(deadline) {
+      const today = new Date();
+      const due = new Date(deadline);
+      const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      return diffDays <= 0 ? 'dday-urgent' : diffDays <= 7 ? 'dday-warning' : 'dday-normal';
+    }
+
+    let ddayTimeout; // 전역 타이머 변수
+
+    function updateDDayNotification() {
+      const notification = document.getElementById('ddayNotification');
+      const ddayText = document.getElementById('ddayText');
+      const mainContent = document.getElementById('mainContent');
+
+      // 비어 있으면 숨김 처리
+      if (targetCompanies.length === 0) {
+        notification.classList.remove('show');
+        mainContent.classList.remove('with-dday');
+        return;
+      }
+
+      // 마감일 가장 빠른 기업 찾기
+      const urgent = targetCompanies.reduce((a, b) => new Date(a.dueDate) < new Date(b.dueDate) ? a : b);
+      const dday = calculateDDay(urgent.dueDate);
+      const diffDays = Math.ceil((new Date(urgent.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+
+      // 마감 7일 이내인 경우
+      if (diffDays <= 7) {
+        const companyName = urgent.companyName || urgent.title || '기업명 없음';
+        ddayText.innerHTML = `<span class="dday-urgent">🚨 ${companyName} ${dday}</span> <span>마감일이 얼마 남지 않았습니다!</span>`;
+        notification.classList.add('show');
+        mainContent.classList.add('with-dday');
+
+        // 이전 타이머 제거하고 다시 설정
+        if (ddayTimeout) clearTimeout(ddayTimeout);
+        ddayTimeout = setTimeout(() => {
+          notification.classList.remove('show');
+          mainContent.classList.remove('with-dday');
+        }, 5000);
+      } else {
+        notification.classList.remove('show');
+        mainContent.classList.remove('with-dday');
+      }
+    }
+
+    let deleteTargetId = null;
+
+    // 새로운 함수들 추가
+    function closeDeleteModal() {
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+      deleteTargetId = null;
+    }
+
+    function confirmDelete() {
+      if (!deleteTargetId) return;
+
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch(`/jobposting/${deleteTargetId}`, {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          closeDeleteModal();
+          loadTargetCompanies();
+          // 헤더의 목표기업 목록도 업데이트
+          if (typeof window.refreshTargetCompaniesHeader === 'function') {
+            window.refreshTargetCompaniesHeader();
+          }
+        } else {
+          throw new Error('삭제 실패');
+        }
+      })
+      .catch(err => {
+        console.error('삭제 실패:', err);
+        alert('삭제에 실패했습니다.');
+        closeDeleteModal();
+      });
+    }
+
+// 모달 외부 클릭시 닫기 이벤트 추가 (기존 모달 이벤트 아래에)
+    document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDeleteModal();
+      }
+    });
+
+
+    // 전역 등록
+    window.closeDeleteModal = closeDeleteModal;
+    window.confirmDelete = confirmDelete;
+    window.openAddCompanyModal = openAddCompanyModal;
+    window.closeAddCompanyModal = closeAddCompanyModal;
+    window.deleteTargetCompany = deleteTargetCompany;
+  });
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeMap - 관리자 대시보드</title>
+
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+  <!-- ✅ 관리자 대시보드 전용 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/admin/admin-main.css}"/>
+</head>
+<body>
+
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="circuit-line line-1"></div>
+  <div class="circuit-line line-2"></div>
+  <div class="circuit-line line-3"></div>
+  <div class="data-node node-1"></div>
+  <div class="data-node node-2"></div>
+  <div class="data-node node-3"></div>
+</div>
+
+<!-- ✅ 헤더 fragment 사용 -->
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- ✅ 관리자 사이드바 fragment 사용 -->
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+
+<main>
+  <div class="admin-container">
+
+    <!-- ✅ 관리자 헤더 섹션 -->
+    <div class="admin-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="admin-title">
+            <span class="title-icon">⚡</span>
+            관리자 대시보드
+          </h1>
+          <p class="admin-subtitle">시스템 전체 현황을 모니터링하고 관리하세요</p>
+        </div>
+        <div class="header-right">
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text">시스템 정상</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📊 시스템 통계 카드 -->
+    <div class="metrics-grid">
+      <div class="metric-card primary">
+        <div class="metric-header">
+          <div class="metric-icon">👥</div>
+          <div class="metric-label">총 사용자</div>
+        </div>
+        <div class="metric-value" th:text="${totalUsers ?: 0}">0</div>
+        <div class="metric-trend">
+          <span class="trend-icon">📈</span>
+          <span class="trend-text">+12% 이번 달</span>
+        </div>
+      </div>
+
+      <div class="metric-card secondary">
+        <div class="metric-header">
+          <div class="metric-icon">🚀</div>
+          <div class="metric-label">활성 사용자</div>
+        </div>
+        <div class="metric-value" th:text="${activeUsers ?: 0}">0</div>
+        <div class="metric-trend">
+          <span class="trend-icon">📊</span>
+          <span class="trend-text">실시간 접속</span>
+        </div>
+      </div>
+
+      <div class="metric-card accent">
+        <div class="metric-header">
+          <div class="metric-icon">📝</div>
+          <div class="metric-label">총 질문</div>
+        </div>
+        <div class="metric-value" th:text="${totalQuestions ?: 0}">0</div>
+        <div class="metric-trend">
+          <span class="trend-icon">✨</span>
+          <span class="trend-text">DB 컨텐츠</span>
+        </div>
+      </div>
+
+      <div class="metric-card warning">
+        <div class="metric-header">
+          <div class="metric-icon">⚠️</div>
+          <div class="metric-label">시스템 알림</div>
+        </div>
+        <div class="metric-value" th:text="${systemAlerts ?: 0}">0</div>
+        <div class="metric-trend">
+          <span class="trend-icon">🔔</span>
+          <span class="trend-text">확인 필요</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📈 데이터 분석 섹션 -->
+    <div class="dashboard-content">
+      <!-- 왼쪽: 최근 활동 -->
+      <div class="content-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">
+            <span class="title-icon">📋</span>
+            최근 활동
+          </h3>
+          <div class="panel-actions">
+            <button class="action-btn">전체보기</button>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon user-join">👤</div>
+              <div class="activity-details">
+                <div class="activity-title">새로운 사용자 가입</div>
+                <div class="activity-meta">frontend@example.com • 2분 전</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon content-add">📝</div>
+              <div class="activity-details">
+                <div class="activity-title">면접 질문 추가</div>
+                <div class="activity-meta">알고리즘 카테고리 • 10분 전</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon system-alert">⚠️</div>
+              <div class="activity-details">
+                <div class="activity-title">시스템 경고</div>
+                <div class="activity-meta">메모리 사용량 85% • 1시간 전</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon routine-complete">✅</div>
+              <div class="activity-details">
+                <div class="activity-title">루틴 완료 급증</div>
+                <div class="activity-meta">+45% 완료율 상승 • 3시간 전</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 시스템 상태 -->
+      <div class="content-panel">
+        <div class="panel-header">
+          <h3 class="panel-title">
+            <span class="title-icon">🖥️</span>
+            시스템 상태
+          </h3>
+          <div class="panel-actions">
+            <button class="action-btn refresh-btn">새로고침</button>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="system-metrics">
+            <div class="system-item">
+              <div class="system-label">CPU 사용률</div>
+              <div class="system-bar">
+                <div class="bar-fill" style="width: 68%"></div>
+              </div>
+              <div class="system-value">68%</div>
+            </div>
+            <div class="system-item">
+              <div class="system-label">메모리 사용률</div>
+              <div class="system-bar">
+                <div class="bar-fill warning" style="width: 85%"></div>
+              </div>
+              <div class="system-value warning">85%</div>
+            </div>
+            <div class="system-item">
+              <div class="system-label">디스크 용량</div>
+              <div class="system-bar">
+                <div class="bar-fill good" style="width: 42%"></div>
+              </div>
+              <div class="system-value good">42%</div>
+            </div>
+            <div class="system-item">
+              <div class="system-label">네트워크 I/O</div>
+              <div class="system-bar">
+                <div class="bar-fill" style="width: 31%"></div>
+              </div>
+              <div class="system-value">31%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎯 빠른 액션 -->
+    <div class="quick-actions">
+      <div class="action-header">
+        <h3 class="action-title">
+          <span class="title-icon">⚡</span>
+          빠른 액션
+        </h3>
+      </div>
+      <div class="action-grid">
+        <a th:href="@{/admin/users}" class="quick-action-card">
+          <div class="action-icon">👥</div>
+          <div class="action-label">회원 관리</div>
+          <div class="action-desc">사용자 계정 관리</div>
+        </a>
+        <a th:href="@{/admin/contents}" class="quick-action-card">
+          <div class="action-icon">📝</div>
+          <div class="action-label">컨텐츠 관리</div>
+          <div class="action-desc">면접 질문 관리</div>
+        </a>
+        <a th:href="@{/admin/system}" class="quick-action-card">
+          <div class="action-icon">⚙️</div>
+          <div class="action-label">시스템 설정</div>
+          <div class="action-desc">서버 환경 설정</div>
+        </a>
+        <a th:href="@{/admin/statistics}" class="quick-action-card">
+          <div class="action-icon">📈</div>
+          <div class="action-label">상세 통계</div>
+          <div class="action-desc">데이터 분석 보고서</div>
+        </a>
+      </div>
+    </div>
+
+  </div> <!-- admin-container end -->
+</main>
+
+<!-- ✅ 스크롤 초기화 스크립트 (일반 사용자와 동일) -->
+<script>
+  // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🛠️ 관리자 대시보드 로드 완료');
+
+    // 즉시 상단으로 스크롤
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 추가 보장을 위해 약간의 지연 후 다시 실행
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+
+    // ✅ 초기화
+    initDashboard();
+
+    // ✅ 이벤트 리스너 등록
+    attachEventListeners();
+
+    // ✅ 실시간 업데이트 시작 (30초마다)
+    startRealtimeUpdates();
+  });
+
+  // ✅ 브라우저 뒤로가기/앞으로가기 시에도 상단 스크롤 보장
+  window.addEventListener('pageshow', function(event) {
+    window.scrollTo(0, 0);
+  });
+
+  // ✅ 모든 로드 이벤트에서 스크롤 리셋
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
+
+  /**
+   * 대시보드 초기화
+   */
+  function initDashboard() {
+    // 메트릭 카드 숫자 애니메이션
+    animateMetricValues();
+
+    // 시스템 바 애니메이션
+    animateSystemBars();
+
+    // 상태 표시기 애니메이션
+    animateStatusIndicator();
+  }
+
+  /**
+   * 이벤트 리스너 등록
+   */
+  function attachEventListeners() {
+    // 새로고침 버튼
+    const refreshBtn = document.querySelector('.refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', handleRefresh);
+    }
+
+    // 메트릭 카드 클릭 효과
+    const metricCards = document.querySelectorAll('.metric-card');
+    metricCards.forEach(card => {
+      card.addEventListener('click', handleMetricCardClick);
+      card.addEventListener('mouseenter', handleMetricCardHover);
+    });
+
+    // 빠른 액션 카드 클릭
+    const actionCards = document.querySelectorAll('.quick-action-card');
+    actionCards.forEach(card => {
+      card.addEventListener('click', handleActionCardClick);
+    });
+
+    // 활동 아이템 클릭
+    const activityItems = document.querySelectorAll('.activity-item');
+    activityItems.forEach(item => {
+      item.addEventListener('click', handleActivityClick);
+    });
+  }
+
+  /**
+   * 메트릭 값 애니메이션
+   */
+  function animateMetricValues() {
+    const metricValues = document.querySelectorAll('.metric-value');
+
+    metricValues.forEach(element => {
+      const finalValue = parseInt(element.textContent) || 0;
+      element.textContent = '0';
+
+      animateNumber(element, 0, finalValue, 1500);
+    });
+  }
+
+  /**
+   * 숫자 카운트업 애니메이션
+   */
+  function animateNumber(element, start, end, duration) {
+    const startTime = performance.now();
+
+    function updateNumber(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // easeOutCubic 이징 함수
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentValue = Math.floor(start + (end - start) * easeProgress);
+
+      element.textContent = currentValue.toLocaleString();
+
+      if (progress < 1) {
+        requestAnimationFrame(updateNumber);
+      } else {
+        element.textContent = end.toLocaleString();
+      }
+    }
+
+    requestAnimationFrame(updateNumber);
+  }
+
+  /**
+   * 시스템 바 애니메이션
+   */
+  function animateSystemBars() {
+    const bars = document.querySelectorAll('.bar-fill');
+
+    bars.forEach((bar, index) => {
+      const finalWidth = bar.style.width;
+      bar.style.width = '0%';
+
+      setTimeout(() => {
+        bar.style.transition = 'width 1s ease-out';
+        bar.style.width = finalWidth;
+      }, index * 200);
+    });
+  }
+
+  /**
+   * 상태 표시기 애니메이션
+   */
+  function animateStatusIndicator() {
+    const statusDot = document.querySelector('.status-dot');
+    if (statusDot) {
+      // 펄스 효과 강화
+      statusDot.style.animation = 'pulse 2s ease-in-out infinite';
+    }
+  }
+
+  /**
+   * 새로고침 버튼 핸들러
+   */
+  function handleRefresh(event) {
+    event.preventDefault();
+
+    const button = event.target;
+    const originalText = button.textContent;
+
+    // 로딩 상태
+    button.textContent = '새로고침 중...';
+    button.disabled = true;
+    button.style.opacity = '0.6';
+
+    // 시스템 메트릭 시뮬레이션 업데이트
+    updateSystemMetrics();
+
+    // 2초 후 원래 상태로 복원
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.disabled = false;
+      button.style.opacity = '1';
+
+      showNotification('시스템 상태가 업데이트되었습니다.', 'success');
+    }, 2000);
+  }
+
+  /**
+   * 메트릭 카드 클릭 핸들러
+   */
+  function handleMetricCardClick(event) {
+    const card = event.currentTarget;
+
+    // 클릭 애니메이션
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      card.style.transform = '';
+    }, 150);
+
+    // 카드 타입에 따른 액션
+    const cardClass = card.className;
+    if (cardClass.includes('primary')) {
+      console.log('총 사용자 카드 클릭');
+      // 나중에 사용자 상세 모달이나 페이지로 이동
+    } else if (cardClass.includes('secondary')) {
+      console.log('활성 사용자 카드 클릭');
+    } else if (cardClass.includes('accent')) {
+      console.log('총 질문 카드 클릭');
+    } else if (cardClass.includes('warning')) {
+      console.log('시스템 알림 카드 클릭');
+    }
+  }
+
+  /**
+   * 메트릭 카드 호버 핸들러
+   */
+  function handleMetricCardHover(event) {
+    const card = event.currentTarget;
+    const metricValue = card.querySelector('.metric-value');
+
+    // 호버 시 글로우 효과
+    metricValue.style.textShadow = '0 0 20px currentColor';
+
+    card.addEventListener('mouseleave', () => {
+      metricValue.style.textShadow = '';
+    }, { once: true });
+  }
+
+  /**
+   * 액션 카드 클릭 핸들러
+   */
+  function handleActionCardClick(event) {
+    const card = event.currentTarget;
+    const href = card.getAttribute('href');
+
+    // 클릭 효과
+    card.style.transform = 'scale(0.95)';
+
+    setTimeout(() => {
+      if (href && !event.ctrlKey && !event.metaKey) {
+        window.location.href = href;
+      }
+    }, 100);
+  }
+
+  /**
+   * 활동 아이템 클릭 핸들러
+   */
+  function handleActivityClick(event) {
+    const item = event.currentTarget;
+    const activityTitle = item.querySelector('.activity-title').textContent;
+
+    console.log(`활동 클릭: ${activityTitle}`);
+
+    // 클릭 피드백
+    item.style.background = 'rgba(66, 153, 225, 0.1)';
+    setTimeout(() => {
+      item.style.background = '';
+    }, 300);
+  }
+
+  /**
+   * 시스템 메트릭 업데이트 (시뮬레이션)
+   */
+  function updateSystemMetrics() {
+    const systemBars = document.querySelectorAll('.bar-fill');
+
+    systemBars.forEach(bar => {
+      // 랜덤한 값으로 업데이트 (실제로는 서버에서 데이터 가져옴)
+      const currentWidth = parseInt(bar.style.width);
+      const variation = (Math.random() - 0.5) * 10; // ±5% 변화
+      const newWidth = Math.max(0, Math.min(100, currentWidth + variation));
+
+      bar.style.width = newWidth + '%';
+
+      const valueElement = bar.parentElement.parentElement.querySelector('.system-value');
+      if (valueElement) {
+        valueElement.textContent = Math.round(newWidth) + '%';
+
+        // 색상 업데이트
+        valueElement.className = 'system-value';
+        bar.className = 'bar-fill';
+
+        if (newWidth >= 80) {
+          valueElement.classList.add('warning');
+          bar.classList.add('warning');
+        } else if (newWidth <= 50) {
+          valueElement.classList.add('good');
+          bar.classList.add('good');
+        }
+      }
+    });
+  }
+
+  /**
+   * 실시간 업데이트 시작
+   */
+  function startRealtimeUpdates() {
+    // 30초마다 데이터 업데이트
+    setInterval(() => {
+      console.log('🔄 실시간 데이터 업데이트');
+
+      // 실제 구현에서는 서버 API 호출
+      // updateDashboardData();
+
+      // 현재는 시뮬레이션
+      if (Math.random() > 0.7) { // 30% 확률로 업데이트
+        updateSystemMetrics();
+      }
+    }, 30000);
+  }
+
+  /**
+   * 알림 표시 함수
+   */
+  function showNotification(message, type = 'info') {
+    // 간단한 토스트 알림 (나중에 더 예쁘게 만들 수 있음)
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--admin-success)' : 'var(--admin-accent)'};
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // 애니메이션
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 100);
+
+    // 3초 후 제거
+    setTimeout(() => {
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
+
+  /**
+   * 키보드 단축키
+   */
+  document.addEventListener('keydown', function(event) {
+    // Ctrl + R 또는 F5 - 새로고침
+    if ((event.ctrlKey && event.key === 'r') || event.key === 'F5') {
+      event.preventDefault();
+      const refreshBtn = document.querySelector('.refresh-btn');
+      if (refreshBtn) {
+        refreshBtn.click();
+      }
+    }
+
+    // ESC - 알림 닫기 등
+    if (event.key === 'Escape') {
+      const notifications = document.querySelectorAll('[style*="position: fixed"]');
+      notifications.forEach(notification => {
+        if (notification.parentElement) {
+          notification.parentElement.removeChild(notification);
+        }
+      });
+    }
+  });
+
+  // 전역 함수로 내보내기 (필요한 경우)
+  window.AdminDashboard = {
+    refresh: handleRefresh,
+    showNotification: showNotification,
+    updateMetrics: updateSystemMetrics
+  };
+</script>
+</body>
+</html>

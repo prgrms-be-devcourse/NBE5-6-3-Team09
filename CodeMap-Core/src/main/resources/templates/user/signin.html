@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMap - 로그인</title>
+
+  <link rel="stylesheet" th:href="@{/css/landing/signin.css}"/>
+</head>
+<body>
+<!-- 다크모드 토글 버튼 -->
+<button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+  <span class="sun-icon">☀️</span>
+  <span class="moon-icon">🌙</span>
+</button>
+
+<!-- 애니메이션 배경 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<main>
+  <div class="login-container">
+    <!-- 왼쪽 패널 -->
+    <div class="left-panel">
+      <img src="/img/codemap_blue.png" alt="CodeMap Logo" class="logo" />
+      <h1 class="brand-title">CodeMap</h1>
+      <p class="brand-slogan">Stay on Track, Become a Dev.</p>
+      <p class="welcome-text">
+        개발자를 위한 스마트한 생산성 도구로<br>
+        당신의 개발 여정을 함께 시작하세요
+      </p>
+    </div>
+
+    <!-- 오른쪽 패널 -->
+    <div class="right-panel">
+      <div class="login-header">
+        <h2 class="login-title">로그인</h2>
+        <p class="login-subtitle">계정에 로그인하여 CodeMap을 시작하세요</p>
+      </div>
+
+      <div th:if="${loginError}" class="error-message">
+        <span th:text="${loginError}">이메일 또는 비밀번호가 일치하지 않습니다.</span>
+      </div>
+
+      <form method="post" action="/user/signin">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="form-group">
+          <label class="form-label">이메일</label>
+          <input type="email" name="email" class="form-input" placeholder="이메일을 입력하세요" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">비밀번호</label>
+          <div class="password-group">
+            <input type="password" name="password" class="form-input password-input" placeholder="비밀번호를 입력하세요" required id="passwordField" />
+            <button type="button" class="password-toggle" id="togglePassword">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-secondary" onclick="location.href='/user/signup'">
+            회원가입
+          </button>
+          <button type="submit" class="btn btn-primary">
+            로그인
+          </button>
+        </div>
+      </form>
+
+      <div class="forgot-password">
+        <a href="#" onclick="alert('비밀번호 재설정 기능은 준비 중입니다.')">비밀번호를 잊으셨나요?</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // 다크모드 토글 기능
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const logo = document.querySelector('.logo');
+
+  // 로고 이미지 변경 함수
+  function updateLogo(theme) {
+    if (theme === 'dark') {
+      logo.src = '/img/codemap_white.png';
+    } else {
+      logo.src = '/img/codemap_blue.png';
+    }
+  }
+
+  // 저장된 테마 불러오기
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  body.classList.add(savedTheme + '-theme');
+  updateLogo(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light-theme')) {
+      body.classList.remove('light-theme');
+      body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+      updateLogo('dark');
+    } else {
+      body.classList.remove('dark-theme');
+      body.classList.add('light-theme');
+      localStorage.setItem('theme', 'light');
+      updateLogo('light');
+    }
+  });
+
+  // 비밀번호 토글
+  const toggleButton = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("passwordField");
+
+  toggleButton.addEventListener("click", function () {
+    const isPassword = passwordField.type === "password";
+    passwordField.type = isPassword ? "text" : "password";
+    toggleButton.textContent = isPassword ? "🙈" : "👁️";
+  });
+
+  // 입력 필드 애니메이션
+  const inputs = document.querySelectorAll('.form-input');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+
+    input.addEventListener('blur', function() {
+      if (this.value === '') {
+        this.parentElement.classList.remove('focused');
+      }
+    });
+  });
+
+  // 폼 제출 시 로딩 애니메이션
+  const form = document.querySelector('form');
+  const submitButton = document.querySelector('.btn-primary');
+
+  form.addEventListener('submit', function() {
+    submitButton.innerHTML = '로그인 중...';
+    submitButton.disabled = true;
+  });
+</script>
+</body>
+</html>

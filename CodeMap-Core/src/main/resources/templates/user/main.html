@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeMap - 메인화면</title>
+
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+  <!-- ✅ 대시보드 전용 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/user/main.css}"/>
+</head>
+<body>
+
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- ✅ 헤더 fragment 사용 -->
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- ✅ 사이드바 fragment 사용 -->
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<main>
+  <div class="main-container">
+
+    <!-- ✅ 웰컴 섹션 -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">안녕하세요! 👋</h1>
+      <p class="welcome-subtitle">오늘도 개발자로의 여정을 계속해보세요</p>
+    </div>
+
+    <!-- 📊 통계 카드 -->
+    <div class="stats-grid">
+      <!-- 1. 오늘의 집중시간 (유지) -->
+      <div class="stat-card">
+        <div class="stat-header">📚 오늘의 집중시간</div>
+        <div class="stat-value" th:text="${totalActualFocusMinutes} + '분'">0분</div>
+        <div class="stat-subtext">완료된 루틴 기준</div>
+      </div>
+
+      <!-- 2. 완료된 루틴 (유지) -->
+      <div class="stat-card">
+        <div class="stat-header">✅ 완료된 루틴</div>
+        <div class="stat-value">
+          <span th:text="${completedRoutineCount}">0</span> /
+          <span th:text="${totalRoutines}">0</span>
+        </div>
+        <div class="stat-subtext">
+          완료율 <span th:text="${completionRate}">0</span>%
+        </div>
+      </div>
+
+      <!-- 3. 총 학습시간 (NEW - 실제 데이터) -->
+      <div class="stat-card">
+        <div class="stat-header">🏆 총 학습시간</div>
+        <div class="stat-value" th:text="${totalActualFocusTime != null ? (totalActualFocusTime / 60) + '시간' : '0시간'}">0시간</div>
+        <div class="stat-subtext">지금까지 누적된 시간</div>
+      </div>
+
+      <!-- 4. 주력 분야 (NEW - 실제 데이터) -->
+      <div class="stat-card">
+        <div class="stat-header">👑 주력 분야</div>
+        <div class="stat-value" th:text="${topCategory != null ? topCategory : '없음'}">없음</div>
+        <div class="stat-subtext">
+          <span th:text="${topCategoryTime != null ? (topCategoryTime / 60) + '시간 투자' : '시간 기록 없음'}">0시간 투자</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📝 오늘의 할일 섹션 -->
+    <div class="content-section">
+      <div class="section-header">
+        <h3 class="section-title">📝 오늘의 할일</h3>
+        <a th:href="@{/todos(date=${today})}" class="add-btn">+ 할일 추가</a>
+      </div>
+
+      <!-- 투두가 있는 경우 -->
+      <div th:if="${todayTodos != null and !todayTodos.isEmpty()}">
+        <div th:each="todo : ${todayTodos}" class="todo-item"
+             th:classappend="${todo.completed} ? 'todo-completed'">
+          <div class="todo-checkbox"
+               th:classappend="${todo.completed} ? 'checked'"
+               th:attr="data-todo-id=${todo.id}, data-todo-completed=${todo.completed}">
+            <span th:if="${todo.completed}">✓</span>
+          </div>
+          <div class="todo-info">
+            <div class="todo-title" th:text="${todo.title}">할 일 제목</div>
+            <div class="todo-time">
+              <span style="font-size:12px;"
+                    th:text="'시작: ' + ${#temporals.format(todo.startTime, 'HH:mm')} + ' | 마감: ' + ${#temporals.format(todo.completedAt, 'yyyy-MM-dd')}">
+                시작 / 마감
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 투두가 없는 경우 -->
+      <div th:if="${todayTodos == null or todayTodos.isEmpty()}" class="empty-state">
+        <p>📭 오늘 등록된 할일이 없습니다</p>
+        <a th:href="@{/todos(date=${today})}">할일을 추가해보세요!</a>
+      </div>
+    </div>
+
+    <!-- 🎯 데일리 루틴 섹션 -->
+    <div class="content-section">
+      <div class="section-header">
+        <h3 class="section-title">🎯 데일리 루틴</h3>
+        <a th:href="@{/routines}" class="add-btn">관리하기 →</a>
+      </div>
+
+      <!-- 루틴이 있는 경우 -->
+      <div
+          th:if="${(activeRoutines != null and !activeRoutines.isEmpty()) or (completedRoutines != null and !completedRoutines.isEmpty()) or (passedRoutines != null and !passedRoutines.isEmpty())}">
+        <table class="routine-table">
+          <thead>
+          <tr>
+            <th>루틴명</th>
+            <th>카테고리</th>
+            <th>집중시간</th>
+            <th>상태</th>
+            <th>액션</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- ⏳ 시작전 루틴 (ACTIVE) -->
+          <tr th:each="routine : ${activeRoutines}">
+            <td th:text="${routine.title}">루틴 제목</td>
+            <td th:text="${routine.category}">카테고리</td>
+            <td th:text="${routine.focusTime != null ? routine.focusTime + '분(시작 전)' : '0분'}">60분
+            </td>
+            <td>
+              <span class="status-badge status-active">시작전</span>
+            </td>
+            <td>
+              <a th:href="@{'/routines/' + ${routine.id} + '/timer'}" class="btn btn-primary">
+                🚀 시작하기
+              </a>
+            </td>
+          </tr>
+
+          <!-- ✅ 완료된 루틴 (COMPLETED) -->
+          <tr th:each="routine : ${completedRoutines}">
+            <td th:text="${routine.title}">루틴 제목</td>
+            <td th:text="${routine.category}">카테고리</td>
+            <td th:text="${routine.actualFocusTime} + '분'">60분</td>
+            <td>
+              <span class="status-badge status-completed">완료</span>
+            </td>
+            <td>
+              <span class="btn btn-disabled">✅ 완료됨</span>
+            </td>
+          </tr>
+
+          <!-- ⏸️ 패스된 루틴 (PASS) -->
+          <tr th:each="routine : ${passedRoutines}">
+            <td th:text="${routine.title}">루틴 제목</td>
+            <td th:text="${routine.category}">카테고리</td>
+            <td th:text="${routine.focusTime} + '분(PASS)'">60분</td>
+            <td>
+              <span class="status-badge status-pass">패스</span>
+            </td>
+            <td>
+              <span class="btn btn-disabled">⏸️ 패스됨</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 루틴이 없는 경우 -->
+      <div
+          th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty())}"
+          class="empty-state">
+        <p>🎯 오늘 등록된 데일리 루틴이 없습니다</p>
+        <a th:href="@{/routines}">루틴을 추가해보세요!</a>
+      </div>
+    </div>
+
+  </div> <!-- main-container end -->
+</main>
+
+<!-- 📱 챗봇 -->
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+
+<!-- ✅ 대시보드 전용 스크립트 -->
+<script>
+  // ✅ 저장된 테마 불러오기 (페이지 로드 시 최우선 실행)
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.classList.add(savedTheme + '-theme');
+
+  // ✅ 페이지 로드 즉시 상단으로 스크롤 강제 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    // 즉시 상단으로 스크롤
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 추가 보장을 위해 약간의 지연 후 다시 실행
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
+
+    // 사이드바 메인화면 active 처리
+    const mainNavItem = document.querySelector('a[href="/user/main"]');
+    if (mainNavItem) {
+      mainNavItem.classList.add('active');
+    }
+  });
+
+  // 투두 체크박스 이벤트 처리
+  const checkboxes = document.querySelectorAll('.todo-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('click', function () {
+      const todoId = this.getAttribute('data-todo-id');
+      const today = new Date().toISOString().split('T')[0];
+
+      fetch(`/todos/${todoId}/complete?date=${today}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          this.classList.toggle('checked');
+          const todoItem = this.closest('.todo-item');
+          todoItem.classList.toggle('todo-completed');
+          this.innerHTML = this.classList.contains('checked') ? '<span>✓</span>' : '';
+        } else {
+          alert('서버에서 완료 상태 업데이트 실패');
+        }
+      })
+      .catch(error => {
+        console.error('에러 발생:', error);
+      });
+    });
+  });
+
+  // ✅ 브라우저 뒤로가기/앞으로가기 시에도 상단 스크롤 보장
+  window.addEventListener('pageshow', function(event) {
+    window.scrollTo(0, 0);
+  });
+
+  // ✅ 모든 로드 이벤트에서 스크롤 리셋
+  window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+  });
+</script>
+
+</body>
+</html>

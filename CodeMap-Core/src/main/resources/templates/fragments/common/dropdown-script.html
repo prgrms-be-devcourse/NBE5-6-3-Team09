@@ -1,0 +1,141 @@
+<!-- templates/fragments/common/dropdown-script.html -->
+<div th:fragment="dropdown-script">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname;
+
+            const pathMapping = {
+                '/user/main': 'main',
+                '/todos/calender': 'todos',
+                '/todos': 'todos',
+                '/routines': 'routines',
+                '/jobposting/page': 'jobposting',
+                '/interview/select': 'interview',
+                '/interview/random': 'interview',
+                '/interview/question': 'interview',
+                '/interview/answer': 'interview',
+                '/interview/history': 'interview',
+                '/interview/result': 'interview',
+                '/interview': 'interview',  // ✅ 가장 포괄적인 fallback
+                '/mypage/stats': 'stats',
+                '/settings': 'settings'
+            };
+
+            // 가장 긴 경로 우선 매칭
+            const sortedPaths = Object.keys(pathMapping).sort((a, b) => b.length - a.length);
+            let activeNav = null;
+            for (const path of sortedPaths) {
+                if (currentPath.startsWith(path)) {
+                    activeNav = pathMapping[path];
+                    break;
+                }
+            }
+
+            if (activeNav) {
+                // 단일 메뉴 처리
+                const activeItem = document.querySelector(`.sidebar .nav-item[data-nav="${activeNav}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+
+                // 드롭다운 그룹 처리
+                const activeGroup = document.querySelector(`.sidebar .nav-item-group[data-nav="${activeNav}"]`);
+                if (activeGroup) {
+                    activeGroup.classList.add('open');
+                    const toggle = activeGroup.querySelector('.dropdown-toggle');
+                    if (toggle) toggle.classList.add('active');
+                }
+            }
+
+            // ✅ 드롭다운 자식 항목 색칠
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach(item => {
+                const matchPath = item.dataset.path || item.getAttribute('href');
+                if (!matchPath) return;
+
+                // 정확히 일치하거나, 하위 경로인 경우
+                const isExact = currentPath === matchPath;
+                const isChild = currentPath.startsWith(matchPath + "/");
+
+                // 특별 처리: "/interview" 항목은 "/interview/history"일 때 제외
+                const isInterviewParent = matchPath === "/interview";
+                const isHistoryPage = currentPath.startsWith("/interview/history");
+
+                // 조건: 일반 매칭이거나, 인터뷰 부모면서 히스토리 아닌 경우
+                if ((isExact || isChild) && (!isInterviewParent || !isHistoryPage)) {
+                    item.classList.add('active');
+
+                    const parentGroup = item.closest('.nav-item-group');
+                    if (parentGroup) {
+                        parentGroup.classList.add('open');
+                        const parentToggle = parentGroup.querySelector('.dropdown-toggle');
+                        if (parentToggle) {
+                            parentToggle.classList.add('active');
+                        }
+                    }
+                }
+            });
+
+
+
+
+            // ✅ 클릭 애니메이션
+            const navItems = document.querySelectorAll('.sidebar .nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    const icon = this.querySelector('.nav-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            icon.style.transform = '';
+                        }, 150);
+                    }
+                });
+
+                item.addEventListener('mouseenter', function () {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateX(4px)';
+                    }
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = '';
+                    }
+                });
+            });
+
+            // ✅ 드롭다운 메뉴 토글
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const parent = this.closest('.nav-item-group');
+                    parent.classList.toggle('open');
+
+                    // 다른 드롭다운 닫기
+                    document.querySelectorAll('.nav-item-group').forEach(group => {
+                        if (group !== parent) group.classList.remove('open');
+                    });
+                });
+            });
+
+            // ✅ 외부 클릭 시 닫기
+            document.addEventListener('click', function (e) {
+                document.querySelectorAll('.nav-item-group').forEach(group => {
+                    if (!group.contains(e.target)) {
+                        group.classList.remove('open');
+                    }
+                });
+            });
+
+            // 콘솔 디버깅 (필요 시 제거)
+            console.log('📌 currentPath:', currentPath);
+            console.log('📌 activeNav:', activeNav);
+        });
+
+
+    </script>
+</div>

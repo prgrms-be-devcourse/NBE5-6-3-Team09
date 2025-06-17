@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap 관리자 - 문항 카테고리 선택</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+        }
+
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-container h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            border: 2px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .category-option:hover {
+            background-color: #dce9ff;
+        }
+
+        /* 라디오버튼을 체크박스처럼 보이게 */
+        .category-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 4px;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .category-option input[type="radio"]:checked {
+            background-color: #e6ff00;
+            border-color: #e6ff00;
+        }
+
+        /* 체크 표시 스타일 (선택 사항) */
+        .category-option input[type="radio"]::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 4px;
+            height: 9px;
+            border: solid #000;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+
+        .category-option input[type="radio"]:checked::after {
+            opacity: 1;
+        }
+
+        .submit-button {
+            background-color: #4e6df2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            width: fit-content;
+        }
+
+        .submit-button:hover {
+            background-color: #3b6fe0;
+        }
+    </style>
+
+</head>
+<body>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
+
+<main>
+    <div class="category-container">
+        <h2>문항 카테고리 선택</h2>
+
+        <form th:action="@{/admin/contents/question-list}" method="get">
+            <label class="category-option">
+                <input type="radio" name="category" value="알고리즘">
+                <span>알고리즘</span>
+            </label>
+            <label class="category-option">
+                <input type="radio" name="category" value="자료구조">
+                <span>자료구조</span>
+            </label>
+            <label class="category-option">
+                <input type="radio" name="category" value="데이터베이스">
+                <span>데이터베이스</span>
+            </label>
+            <label class="category-option">
+                <input type="radio" name="category" value="운영체제">
+                <span>운영체제</span>
+            </label>
+            <label class="category-option">
+                <input type="radio" name="category" value="네트워크">
+                <span>네트워크</span>
+            </label>
+            <label class="category-option">
+                <input type="radio" name="category" value="컴퓨터구조">
+                <span>컴퓨터구조</span>
+            </label>
+
+            <button type="submit" class="submit-button">문항 조회</button>
+        </form>
+
+    </div>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.category-input');
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    checkboxes.forEach(other => {
+                        if (other !== cb) {
+                            other.checked = false;
+                            other.closest('.category-option').classList.remove('checked');
+                        }
+                    });
+
+                    if (cb.checked) {
+                        cb.closest('.category-option').classList.add('checked');
+                    } else {
+                        cb.closest('.category-option').classList.remove('checked');
+                    }
+                });
+            });
+        });
+    </script>
+</main>
+</body>
+</html>

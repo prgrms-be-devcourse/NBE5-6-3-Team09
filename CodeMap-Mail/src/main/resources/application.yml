@@ -1,0 +1,48 @@
+app:
+  domain: http://localhost:8080
+
+server:
+  port: 8081
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        SQL: info
+        type:
+          descriptor:
+            sql: info
+      springframework:
+        cloud:
+          openfeign: info
+        client:
+          RestTemplate: info
+        security: info
+      data:
+        redis: debug
+
+spring:
+  config:
+    import: optional:classpath:secret.yml
+  mail:
+    host: smtp.gmail.com
+    properties:
+      mail:
+        stmp:
+          auth: true
+        smtp:
+          starttls:
+            enable: true
+  data:
+    redis:
+      ssl:
+        enabled: true
+      timeout: 10s
+  application:
+    name: CodeMap-Mail

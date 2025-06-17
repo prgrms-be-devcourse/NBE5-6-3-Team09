@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>마이페이지 통계</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}" />
+  <!-- 통계 전용 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/user/stats.css}" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- 헤더 & 사이드바 -->
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<main>
+  <div class="content-wrapper">
+    <!-- 상단: 오늘의 학습 요약 (전체 폭) -->
+    <div class="card summary-card">
+      <h3>✨ 오늘의 학습 요약</h3>
+      <div class="summary-box">
+        <!-- ✅ 수정: 오늘의 루틴 데이터 사용 -->
+        <p>✅ 완료된 루틴: <strong th:text="${todayCompletion.completedCount}">0</strong>개 /
+          남은 루틴: <strong th:text="${todayCompletion.totalCount - todayCompletion.completedCount}">0</strong>개</p>
+        <!-- ✅ 수정: 오늘의 학습 시간 사용 -->
+        <p>⏱️ 오늘의 학습 시간: <strong th:text="${todayActualFocusTime}">0</strong>분</p>
+        <!-- ✅ 추가: 오늘의 완료율 표시 (선택사항) -->
+        <p th:if="${todayCompletion.totalCount > 0}">
+          📊 오늘의 완료율: <strong th:text="${#numbers.formatDecimal(todayCompletion.completionRate, 1, 1)} + '%'">0.0%</strong>
+        </p>
+        <p th:if="${todayCompletion.totalCount == 0}" style="color: rgba(255, 255, 255, 0.7);">
+          📭 오늘 등록된 루틴이 없습니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- 중간 왼쪽: 학습 시간 그래프 -->
+    <div class="card chart-card">
+      <h2>📈 학습 시간 그래프</h2>
+      <div class="chart-container">
+        <canvas id="focusChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- 중간 오른쪽: 오늘의 일정 -->
+    <div class="card schedule-card">
+      <h3>📅 오늘의 일정</h3>
+      <div class="summary-box">
+        <div th:if="${todayTodos.size() == 0}" class="empty-state">
+          <p>📭 오늘 등록된 일정이 없습니다.</p>
+        </div>
+        <ul th:if="${todayTodos.size() > 0}">
+          <li th:each="todo : ${todayTodos}">
+            🗓️ <strong th:text="${#temporals.format(todo.startTime, 'HH:mm')}">시간</strong> -
+            <span th:text="${todo.title}">할 일 제목</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 하단: 카테고리별 완료 통계 (전체 폭) -->
+    <div class="card category-card">
+      <h3>📚 카테고리별 완료 통계</h3>
+      <div class="summary-box">
+        <table>
+          <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>완료</th>
+            <th>전체</th>
+            <th>완료율</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="stat : ${categoryStats}">
+            <td th:text="${stat.category}">카테고리</td>
+            <td th:text="${stat.completedCount}">0</td>
+            <td th:text="${stat.totalCount}">0</td>
+            <td><strong th:text="${#numbers.formatDecimal(stat.completionRate, 1, 1)} + '%'">0.0%</strong></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 챗봇 -->
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+
+<script th:inline="javascript">
+  // 차트 데이터
+  const labels = /*[[${focusTimes.keySet()}]]*/ [];
+  const values = /*[[${focusTimes.values()}]]*/ [];
+
+  // 차트 생성
+  const ctx = document.getElementById('focusChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '집중 시간 (분)',
+        data: values,
+        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+        borderColor: 'rgba(102, 126, 234, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: 'rgba(255, 255, 255, 0.9)',
+            font: {
+              size: 14,
+              weight: 'bold'
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.8)',
+            font: {
+              size: 12,
+              weight: '500'
+            }
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.8)',
+            font: {
+              size: 12,
+              weight: '500'
+            }
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

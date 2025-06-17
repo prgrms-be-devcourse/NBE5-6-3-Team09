@@ -1,0 +1,165 @@
+<!-- ✅ 기본 사이드바와 동일한 디자인의 관리자 사이드바 Fragment -->
+<div th:fragment="sidebar" class="sidebar">
+  <!-- 네비게이션 -->
+  <nav class="sidebar-nav">
+    <!-- 대시보드 -->
+    <a th:href="@{/admin/dashboard}" class="nav-item" data-nav="dashboard">
+      <div class="nav-icon">📊</div>
+      <span class="nav-text">대시보드</span>
+      <div class="nav-indicator"></div>
+    </a>
+
+    <!-- 구분선 -->
+    <div class="nav-divider"></div>
+
+    <!-- 회원 관리 -->
+    <a th:href="@{/admin/users}" class="nav-item" data-nav="users">
+      <div class="nav-icon">👥</div>
+      <span class="nav-text">회원 관리</span>
+      <div class="nav-indicator"></div>
+    </a>
+
+    <!-- 컨텐츠 관리 -->
+    <a th:href="@{/admin/contents}" class="nav-item" data-nav="contents">
+      <div class="nav-icon">📝</div>
+      <span class="nav-text">컨텐츠 관리</span>
+      <div class="nav-indicator"></div>
+    </a>
+
+    <!-- 구분선 -->
+    <div class="nav-divider"></div>
+
+    <!-- 시스템 관리 -->
+    <a th:href="@{/admin/system}" class="nav-item" data-nav="system">
+      <div class="nav-icon">⚙️</div>
+      <span class="nav-text">시스템 관리</span>
+      <div class="nav-indicator"></div>
+    </a>
+
+    <!-- 통계 -->
+    <a th:href="@{/admin/statistics}" class="nav-item" data-nav="statistics">
+      <div class="nav-icon">📈</div>
+      <span class="nav-text">통계</span>
+      <div class="nav-indicator"></div>
+    </a>
+  </nav>
+</div>
+
+<!-- ✅ 관리자 사이드바 스크립트 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navItems = document.querySelectorAll('.sidebar .nav-item');
+
+    // 관리자 경로 매핑
+    const pathMapping = {
+      '/admin/dashboard': 'dashboard',
+      '/admin/users': 'users',
+      '/admin/contents': 'contents',
+      '/admin/system': 'system',
+      '/admin/statistics': 'statistics'
+    };
+
+    // 현재 경로에 따른 활성화
+    let activeNav = pathMapping[currentPath];
+    if (!activeNav) {
+      for (const [path, nav] of Object.entries(pathMapping)) {
+        if (currentPath.startsWith(path) && path !== '/') {
+          activeNav = nav;
+          break;
+        }
+      }
+    }
+
+    // 활성 상태 설정
+    if (activeNav) {
+      const activeItem = document.querySelector(`.sidebar [data-nav="${activeNav}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    // 클릭 이벤트 - 부드러운 전환 효과
+    navItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        // 기존 활성 상태 제거
+        navItems.forEach(nav => nav.classList.remove('active'));
+
+        // 새로운 활성 상태 추가
+        this.classList.add('active');
+
+        // 부드러운 클릭 효과
+        const icon = this.querySelector('.nav-icon');
+        if (icon) {
+          icon.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            icon.style.transform = '';
+          }, 150);
+        }
+      });
+
+      // 호버 효과 개선
+      item.addEventListener('mouseenter', function() {
+        if (!this.classList.contains('active')) {
+          this.style.transform = 'translateX(4px)';
+        }
+      });
+
+      item.addEventListener('mouseleave', function() {
+        if (!this.classList.contains('active')) {
+          this.style.transform = '';
+        }
+      });
+    });
+
+    // 모바일에서 네비게이션 클릭시 사이드바 닫기
+    if (window.innerWidth <= 768) {
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          setTimeout(() => {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            if (sidebar && toggleBtn) {
+              sidebar.classList.remove('open');
+              toggleBtn.classList.remove('active');
+              document.body.classList.remove('sidebar-open');
+            }
+          }, 200);
+        });
+      });
+    }
+  });
+
+  // 외부 클릭시 닫기 (모바일 전용) - 헤더 스크립트와 중복 방지
+  if (!window.adminSidebarClickHandlerAdded) {
+    window.adminSidebarClickHandlerAdded = true;
+
+    document.addEventListener('click', function(event) {
+      const sidebar = document.querySelector('.sidebar');
+      const toggleButton = document.querySelector('.sidebar-toggle');
+
+      if (window.innerWidth <= 768 &&
+          sidebar &&
+          sidebar.classList.contains('open') &&
+          !sidebar.contains(event.target) &&
+          !toggleButton?.contains(event.target)) {
+        sidebar.classList.remove('open');
+        toggleButton?.classList.remove('active');
+        document.body.classList.remove('sidebar-open');
+      }
+    });
+
+    // ESC 키로 닫기 (모바일 전용)
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleButton = document.querySelector('.sidebar-toggle');
+        if (sidebar && sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          toggleButton?.classList.remove('active');
+          document.body.classList.remove('sidebar-open');
+        }
+      }
+    });
+  }
+</script>

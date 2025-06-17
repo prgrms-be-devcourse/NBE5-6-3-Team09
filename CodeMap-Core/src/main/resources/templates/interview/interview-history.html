@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>면접 이력</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 116px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        aside {
+            position: fixed;
+            top: 116px;
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 116px);
+            z-index: 900;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        main {
+            position: absolute;
+            top: 116px;
+            margin-left: 270px;
+            width: calc(100vw - 270px);
+            min-height: calc(100vh - 116px);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: -0.025em;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            color: #374151;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .difficulty-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* 난이도 색상: 하(초록), 중(노랑), 상(빨강) */
+        .difficulty-하 {
+            background: #10b981;
+            color: white;
+        }
+
+        .difficulty-중 {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .difficulty-상 {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* 기존 영어 클래스들도 유지 (호환성) */
+        .difficulty-easy {
+            background: #10b981;
+            color: white;
+        }
+
+        .difficulty-medium {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .difficulty-hard {
+            background: #ef4444;
+            color: white;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            line-height: 1.4;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .no-history-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* 페이지네이션 스타일 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            color: #374151;
+        }
+
+        .pagination a:hover:not(.disabled) {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .pagination .current {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pagination .prev,
+        .pagination .next {
+            width: 80px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* 페이지 번호 가로 정렬 및 고정 개수 */
+        .page-numbers {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-numbers li {
+            list-style: none;
+        }
+
+        /* 5개 고정 */
+        .page-numbers li:nth-child(n+6) {
+            display: none;
+        }
+
+        /* 숨김 처리용 클래스 */
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1000px) {
+            .content-box {
+                margin: 0 20px;
+                max-width: 800px;
+                padding: 2.5rem 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                margin-left: 0;
+                width: 100vw;
+                padding: 20px 15px;
+            }
+
+            .content-box {
+                margin: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.3rem;
+            }
+
+            .history-item {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .question-meta {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .pagination a,
+            .pagination span {
+                width: 36px;
+                height: 36px;
+                font-size: 0.85rem;
+            }
+
+            .pagination .prev,
+            .pagination .next {
+                width: 70px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-box {
+                padding: 1.5rem 1rem;
+            }
+
+            .page-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .history-item {
+                padding: 1rem 1.2rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .category-badge,
+            .difficulty-badge {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/common/alert-script :: alert-script}"></th:block>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/user/user-sidenav :: sidebar}"></aside>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
+
+<main>
+    <div class="main-container">
+        <div class="content-box">
+            <div class="page-title">
+                답변 히스토리
+            </div>
+
+            <div th:if="${answeredQuestions != null and !#lists.isEmpty(answeredQuestions)}">
+                <ul class="history-list" id="history-list">
+                    <li th:each="q : ${answeredQuestions}" class="history-item"
+                        th:onclick="|location.href='/interview/history/' + ${q.id}|">
+                        <div class="question-meta">
+                            <span class="category-badge" th:text="${q.category}">카테고리</span>
+                            <span class="difficulty-badge"
+                                  th:classappend="|difficulty-${q.difficulty}|"
+                                  th:text="${q.difficulty}">난이도</span>
+                        </div>
+                        <div class="question-text" th:text="${q.questionText}">질문 내용</div>
+                    </li>
+                </ul>
+
+                <!-- 페이지네이션 -->
+                <div class="pagination-container" id="pagination-container">
+                    <ul class="pagination" id="pagination">
+                        <li>
+                            <a href="#" class="prev" id="prev-btn">이전</a>
+                        </li>
+                        <ul id="page-numbers" class="page-numbers"></ul>
+                        <li>
+                            <a href="#" class="next" id="next-btn">다음</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div th:if="${answeredQuestions == null or #lists.isEmpty(answeredQuestions)}" class="no-history">
+                <div class="no-history-icon">📝</div>
+                <p>아직 답변한 질문이 없습니다.</p>
+                <p>면접 연습을 시작해보세요!</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        window.scrollTo(0, 0);
+
+        // 페이지네이션 초기화
+        initializePagination();
+    });
+
+    window.addEventListener('pageshow', function(event) {
+        window.scrollTo(0, 0);
+    });
+
+    window.addEventListener('load', function() {
+        window.scrollTo(0, 0);
+    });
+
+    // 페이지네이션 관련 변수
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    let totalItems = 0;
+    let totalPages = 0;
+
+    function initializePagination() {
+        const historyItems = document.querySelectorAll('.history-item');
+        totalItems = historyItems.length;
+        totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        // if (totalPages <= 1) {
+        //     // 페이지가 1개 이하면 페이지네이션 숨기기
+        //     document.getElementById('pagination-container').style.display = 'none';
+        //     return;
+        // }
+
+        // 초기 페이지 표시
+        showPage(1);
+        renderPagination();
+
+        // 이벤트 리스너 추가
+        document.getElementById('prev-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        });
+    }
+
+    function showPage(pageNum) {
+        currentPage = pageNum;
+        const historyItems = document.querySelectorAll('.history-item');
+
+        // 모든 아이템 숨기기
+        historyItems.forEach(item => {
+            item.classList.add('hidden');
+        });
+
+        // 현재 페이지의 아이템들만 표시
+        const startIndex = (pageNum - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
+        for (let i = startIndex; i < endIndex; i++) {
+            if (historyItems[i]) {
+                historyItems[i].classList.remove('hidden');
+            }
+        }
+
+        // 페이지네이션 업데이트
+        renderPagination();
+
+        // 페이지 상단으로 스크롤
+        document.querySelector('.content-box').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    function renderPagination() {
+        const pageNumbersContainer = document.getElementById('page-numbers');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // 페이지 번호 초기화
+        pageNumbersContainer.innerHTML = '';
+
+        const pagesPerGroup = 5;
+        const currentGroup = Math.floor((currentPage - 1) / pagesPerGroup);
+        const startPage = currentGroup * pagesPerGroup + 1;
+        const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageItem = document.createElement('li');
+            if (i === currentPage) {
+                pageItem.innerHTML = `<span class="current">${i}</span>`;
+            } else {
+                pageItem.innerHTML = `<a href="#" data-page="${i}">${i}</a>`;
+            }
+            pageNumbersContainer.appendChild(pageItem);
+        }
+
+        // 페이지 번호 클릭 이벤트 추가
+        pageNumbersContainer.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const pageNum = parseInt(this.getAttribute('data-page'));
+                showPage(pageNum);
+            });
+        });
+
+        // 이전/다음 버튼 상태
+        const maxGroup = Math.floor((totalPages - 1) / pagesPerGroup);
+        prevBtn.classList.toggle('disabled', currentGroup === 0);
+        nextBtn.classList.toggle('disabled', currentGroup === maxGroup);
+
+        // 이전/다음 버튼 기능 변경
+        prevBtn.onclick = function (e) {
+            e.preventDefault();
+            if (currentGroup > 0) {
+                showPage((currentGroup - 1) * pagesPerGroup + 1);
+            }
+        };
+        nextBtn.onclick = function (e) {
+            e.preventDefault();
+            if (currentGroup < maxGroup) {
+                showPage((currentGroup + 1) * pagesPerGroup + 1);
+            }
+        };
+    }
+
+</script>
+</body>
+</html>

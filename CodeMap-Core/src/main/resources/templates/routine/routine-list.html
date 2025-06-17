@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>데일리 루틴</title>
+
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+
+  <style>
+    /* ===== 완전히 수정된 루틴 페이지 스타일 ===== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 배경 애니메이션 - 메인 페이지와 동일 */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 20%;
+      animation-delay: -7s;
+    }
+
+    .floating-shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      bottom: 30%;
+      left: 60%;
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.7;
+      }
+      33% {
+        transform: translateY(-30px) rotate(120deg);
+        opacity: 0.9;
+      }
+      66% {
+        transform: translateY(30px) rotate(240deg);
+        opacity: 0.5;
+      }
+    }
+
+    /* 히스토리 회고 버튼 스타일 */
+    .routine-btn.history-review {
+      background-color: #8b5cf6;
+      color: white;
+    }
+
+    .routine-btn.history-review:hover {
+      background-color: #7c3aed;
+      transform: translateY(-1px);
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .nav-item:hover {
+      background-color: #f3f4f6;
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background-color: #f0f4ff;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .nav-item.active .nav-indicator {
+      opacity: 1;
+    }
+
+    main {
+      margin-left: 280px !important;
+      margin-top: 0 !important;
+      padding: 30px !important;
+      min-height: calc(100vh - 70px) !important;
+      transition: margin-left 0.3s ease;
+      position: relative;
+      z-index: 1;
+      overflow: visible !important;
+    }
+
+    .routine-wrapper {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 1200px !important;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 2;
+      overflow: visible !important;
+    }
+
+    /* ✅ 루틴 헤더 수정 */
+    .routine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+      overflow: visible !important; /* ✅ overflow visible 추가 */
+      min-height: 50px; /* ✅ 최소 높이 설정 */
+    }
+
+    .routine-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0; /* ✅ 제목이 줄어들지 않도록 */
+    }
+
+    /*.history-indicator {
+      background: linear-gradient(135deg, #667eea, #764ba2);;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }*/
+
+    /* ✅ 날짜 네비게이션 수정 */
+    .date-navigation {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0; /* ✅ 버튼들이 줄어들지 않도록 */
+      flex-wrap: wrap; /* ✅ 필요시 줄바꿈 허용 */
+    }
+
+    .nav-btn {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+      min-width: fit-content; /* ✅ 최소 너비 설정 */
+    }
+
+    .nav-btn:hover {
+      background: linear-gradient(135deg, #45a049, #4CAF50);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .date-filter {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow: visible; /* ✅ overflow visible 추가 */
+    }
+
+    .date-filter label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #4b5563;
+      margin-right: 12px;
+    }
+
+    .date-filter input[type="date"] {
+      padding: 8px 16px;
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .date-filter input[type="date"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* 히스토리 통계 */
+    .history-stats {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .history-stats h4 {
+      margin-bottom: 12px;
+      color: #374151;
+      font-size: 16px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* 고정 루틴 섹션 */
+    .fixed-routines-section {
+      margin-bottom: 32px;
+      overflow: visible; /* ✅ overflow visible 추가 */
+    }
+
+    .fixed-routines-section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+
+    .fixed-routines-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 16px;
+    }
+
+    .fixed-routine-card {
+      background: linear-gradient(135deg, rgba(240, 244, 255, 0.8), rgba(224, 231, 255, 0.8));
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(199, 210, 254, 0.5);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .fixed-routine-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+      border-color: rgba(102, 126, 234, 0.8);
+    }
+
+    .fixed-routine-info {
+      flex: 1;
+    }
+
+    .fixed-routine-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+
+    .fixed-routine-description {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .fixed-routine-start-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .fixed-routine-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .all-routines-section {
+      margin-bottom: 32px;
+      overflow: visible !important;
+    }
+
+    /* ✅ 섹션 헤더 수정 */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      overflow: visible !important; /* ✅ overflow visible 추가 */
+      min-height: 40px; /* ✅ 최소 높이 설정 */
+      gap: 16px; /* ✅ 요소 간 간격 추가 */
+    }
+
+    .section-header h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #374151;
+      margin: 0;
+      flex-shrink: 0; /* ✅ 제목이 줄어들지 않도록 */
+    }
+
+    /* ✅ 버튼 스타일 수정 */
+    .add-routine-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+      flex-shrink: 0; /* ✅ 버튼이 줄어들지 않도록 */
+      min-width: fit-content; /* ✅ 최소 너비 설정 */
+    }
+
+    .add-routine-btn:hover {
+      background: linear-gradient(135deg, #059669, #10b981);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* ✅ 루틴 아이템 수정 */
+    .routine-item {
+      background: rgba(249, 250, 251, 0.8);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative; /* ✅ relative 포지션 추가 */
+      overflow: visible; /* ✅ overflow visible 추가 */
+    }
+
+    .routine-item:hover {
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+      z-index: 10; /* ✅ 호버 시 z-index 조정 */
+    }
+
+    /* 완료된 루틴 스타일 */
+    .routine-item.completed .routine-title {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    .routine-info {
+      flex: 1;
+    }
+
+    .routine-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .routine-category {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    /* ✅ 루틴 우측 영역 수정 */
+    .routine-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    /* ✅ 메뉴 버튼 컨테이너 명시적 스타일 */
+    .routine-right > div {
+      position: relative !important;
+      z-index: 50; /* ✅ 메뉴 컨테이너 z-index */
+    }
+
+    /* 버튼 스타일 통합 */
+    .routine-btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    /* 시작하기 버튼 */
+    .routine-btn.start {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .routine-btn.start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* 완료 버튼 */
+    .routine-btn.completed {
+      background: linear-gradient(135deg, #9ca3af, #6b7280);
+      color: white;
+    }
+
+    /* 쉬어가기 버튼 */
+    .routine-btn.passed {
+      background: linear-gradient(135deg, #d1d5db, #9ca3af);
+      color: white;
+    }
+
+    .menu-button {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(229, 231, 235, 0.5);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      color: #6b7280;
+    }
+
+    .menu-button:hover {
+      background: rgba(243, 244, 246, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .menu-box {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      border: 1px solid rgba(229, 231, 235, 0.5);
+      border-radius: 8px;
+      display: none;
+      z-index: 1000 !important; /* ✅ z-index를 1000으로 설정 */
+      min-width: 120px;
+      overflow: hidden;
+      /* ✅ 단순화된 그림자 효과 */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
+      0 2px 8px rgba(0, 0, 0, 0.08);
+      /* ✅ 단순화된 애니메이션 */
+      opacity: 0;
+      transform: translateY(-5px);
+      transition: all 0.15s ease;
+    }
+
+    .menu-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .menu-box div {
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      color: #374151;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    }
+
+    .menu-box div:last-child {
+      border-bottom: none;
+    }
+
+    .menu-box div:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .menu-box div:first-child {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .menu-box div:last-child {
+      border-radius: 0 0 12px 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .empty-state p {
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    /* 히스토리 뷰에서는 버튼들 숨기기 */
+    .history-view .add-routine-btn {
+      display: none;
+    }
+
+    .history-view .fixed-routines-section {
+      display: none;
+    }
+
+    .history-view .menu-box {
+      display: none !important;
+    }
+
+    .history-view .routine-btn:not(.history-review) {
+      display: none;
+    }
+
+    /* ✅ 모달 z-index 조정 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 9998; /* ✅ 메뉴보다 낮게 설정 */
+    }
+
+    #routineModal, #codingTestModal, #interviewModal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      z-index: 9999; /* ✅ 메뉴보다 낮게 설정 */
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #routineModal h3, #codingTestModal h3, #interviewModal h3 {
+      font-size: 24px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+
+    #routineModal input, #routineModal select, #routineModal textarea,
+    #codingTestModal input, #codingTestModal select, #codingTestModal textarea,
+    #interviewModal input, #interviewModal select, #interviewModal textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    #routineModal input:focus, #routineModal select:focus, #routineModal textarea:focus,
+    #codingTestModal input:focus, #codingTestModal select:focus, #codingTestModal textarea:focus,
+    #interviewModal input:focus, #interviewModal select:focus, #interviewModal textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    #routineModal textarea, #codingTestModal textarea, #interviewModal textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button-group button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .button-group button.cancel {
+      background: rgba(229, 231, 235, 0.8);
+      color: #4b5563;
+      backdrop-filter: blur(10px);
+    }
+
+    .button-group button.cancel:hover {
+      background: rgba(209, 213, 219, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .button-group button.submit {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .button-group button.submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* ✅ 반응형 디자인 개선 */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0 !important;
+        padding: 20px !important;
+      }
+
+      .routine-wrapper {
+        max-width: 100% !important;
+        padding: 20px;
+      }
+
+      .fixed-routines-container {
+        grid-template-columns: 1fr;
+      }
+
+      .date-navigation {
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+      }
+
+      .nav-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .routine-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .date-navigation {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* ✅ 섹션 헤더 모바일 대응 */
+      .section-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .section-header h3 {
+        text-align: center;
+      }
+
+      .add-routine-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      /* ✅ 루틴 아이템 모바일 대응 */
+      .routine-item {
+        background: rgba(249, 250, 251, 0.8);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(229, 231, 235, 0.5);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: visible;
+      }
+
+      .routine-right {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      /* ✅ 모바일에서 메뉴 드롭다운 위치 조정 */
+      .menu-box {
+        right: 0;
+        left: auto;
+        min-width: 140px;
+      }
+    }
+  </style>
+</head>
+<body th:class="${isHistoryView} ? 'history-view' : ''">
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- 헤더 -->
+<header th:replace="fragments/header/header :: header"></header>
+
+<!-- 사이드바 -->
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
+
+<!-- 메인 컨텐츠 -->
+<main>
+  <div class="routine-wrapper">
+    <div class="routine-header">
+      <h2>
+        데일리 루틴
+
+      </h2>
+
+      <!-- 날짜 네비게이션 -->
+      <div class="date-navigation">
+        <a th:href="@{/routines(date=${selectedDate.minusDays(1)})}" class="nav-btn">◀ 이전</a>
+        <a th:href="@{/routines}" class="nav-btn" th:if="${!selectedDate.equals(today)}">오늘</a>
+        <a th:href="@{/routines(date=${selectedDate.plusDays(1)})}"
+           class="nav-btn"
+           th:unless="${selectedDate.equals(today)}">다음 ▶</a>
+      </div>
+    </div>
+
+    <div class="date-filter">
+      <form id="dateFilterForm" action="/routines" method="get">
+        <label for="dateFilter">날짜 선택 : </label>
+        <input type="date" id="dateFilter" name="date"
+               th:value="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
+               onchange="this.form.submit()">
+      </form>
+    </div>
+
+    <!-- 히스토리 통계 (히스토리 뷰일 때만 표시) -->
+    <div th:if="${isHistoryView}" class="history-stats">
+      <h4>📊 [[${#temporals.format(selectedDate, 'yyyy년 MM월 dd일')}]] 루틴 요약</h4>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">완료된 루틴</span>
+          <span class="stat-value" th:text="${completedHistories?.size() ?: 0} + '개'">0개</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">진행중이었던 루틴</span>
+          <span class="stat-value" th:text="${activeHistories?.size() ?: 0} + '개'">0개</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">스킵한 루틴</span>
+          <span class="stat-value" th:text="${passedHistories?.size() ?: 0} + '개'">0개</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 고정 루틴 섹션 - 가로 배치 (현재 날짜에만 표시) -->
+    <div th:unless="${isHistoryView}" class="fixed-routines-section">
+      <h3>필수 루틴</h3>
+
+      <div class="fixed-routines-container">
+        <div class="fixed-routine-card">
+          <div class="fixed-routine-content">
+            <div class="fixed-routine-info">
+              <span class="fixed-routine-title">코딩테스트 준비</span>
+              <span class="fixed-routine-description">알고리즘 및 코딩테스트 대비</span>
+            </div>
+          </div>
+          <button class="fixed-routine-start-btn" onclick="openCodingTestModal()">추가하기</button>
+        </div>
+
+        <div class="fixed-routine-card">
+          <div class="fixed-routine-content">
+            <div class="fixed-routine-info">
+              <span class="fixed-routine-title">면접 준비</span>
+              <span class="fixed-routine-description">기술 면접 질문 연습</span>
+            </div>
+          </div>
+          <button class="fixed-routine-start-btn" onclick="openInterviewModal()">추가하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 통합된 루틴 섹션 -->
+    <div class="all-routines-section">
+      <div class="section-header">
+        <h3>데일리 루틴</h3>
+        <button th:unless="${isHistoryView}" class="add-routine-btn" onclick="openModal()">+ 추가</button>
+      </div>
+
+      <!-- 활성 루틴 목록 -->
+      <div th:if="${(activeRoutines != null and !activeRoutines.isEmpty()) or (activeHistories != null and !activeHistories.isEmpty())}">
+        <!-- 현재 루틴 -->
+        <div th:if="${!isHistoryView}" th:each="routine : ${activeRoutines}" class="routine-item">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title" th:text="${routine.title}">데일리 루틴 1</span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <button class="routine-btn start" th:data-routine-id="${routine.id}" onclick="navigateToTimer(this)">시작하기</button>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <div th:data-routine-id="${routine.id}" onclick="editRoutine(this.dataset.routineId)">수정</div>
+                <div th:data-routine-id="${routine.id}" onclick="deleteRoutine(this.dataset.routineId)">삭제</div>
+                <div th:data-routine-id="${routine.id}" onclick="skipRoutine(this.dataset.routineId)">쉬어가기</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 히스토리 루틴 -->
+        <div th:if="${isHistoryView}" th:each="history : ${activeHistories}" class="routine-item">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title" th:text="${history.title}">데일리 루틴 1</span>
+              <span class="routine-category" th:text="${history.category}">카테고리</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 쉬어가기 루틴 목록 -->
+      <div th:if="${(passedRoutines != null and !passedRoutines.isEmpty()) or (passedHistories != null and !passedHistories.isEmpty())}">
+        <!-- 현재 루틴 -->
+        <div th:if="${!isHistoryView}" th:each="routine : ${passedRoutines}" class="routine-item passed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title">
+                <span style="color: #888;">(PASS)</span> <span th:text="${routine.title}">쉬어가기 루틴</span>
+              </span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <button class="routine-btn passed">쉬어가기</button>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <div th:data-routine-id="${routine.id}" onclick="cancelPass(this.dataset.routineId)">쉬어가기 취소</div>
+                <div th:data-routine-id="${routine.id}" onclick="deleteRoutine(this.dataset.routineId)">삭제</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 히스토리 루틴 -->
+        <div th:if="${isHistoryView}" th:each="history : ${passedHistories}" class="routine-item passed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title">
+                <span style="color: #888;">(PASS)</span> <span th:text="${history.title}">쉬어가기 루틴</span>
+              </span>
+              <span class="routine-category" th:text="${history.category}">카테고리</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 완료된 루틴 목록 -->
+      <div th:if="${(completedRoutines != null and !completedRoutines.isEmpty()) or (completedHistories != null and !completedHistories.isEmpty())}">
+        <!-- 현재 루틴 -->
+        <div th:if="${!isHistoryView}" th:each="routine : ${completedRoutines}" class="routine-item completed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title" th:text="${routine.title}">완료된 루틴 1</span>
+              <span class="routine-category" th:text="${routine.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <button class="routine-btn completed">완료</button>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
+              <div class="menu-box">
+                <!-- 코딩테스트 루틴인 경우 정보보기 추가 -->
+                <div th:if="${routine.category != null and #strings.startsWith(routine.category, '코딩테스트 준비')}"
+                     th:data-routine-id="${routine.id}" onclick="viewCodingReview(this.dataset.routineId)">정보보기</div>
+                <!-- 면접준비 루틴인 경우 정보보기 추가 -->
+                <div th:if="${routine.category != null and #strings.startsWith(routine.category, '면접준비')}"
+                     th:data-routine-id="${routine.id}" onclick="viewInterviewReview(this.dataset.routineId)">정보보기</div>
+                <div th:data-routine-id="${routine.id}" onclick="cancelComplete(this.dataset.routineId)">완료 취소</div>
+                <div th:data-routine-id="${routine.id}" onclick="deleteRoutine(this.dataset.routineId)">삭제</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 히스토리 루틴 -->
+        <div th:if="${isHistoryView}" th:each="history : ${completedHistories}" class="routine-item completed">
+          <div class="routine-left">
+            <div class="routine-info">
+              <span class="routine-title" th:text="${history.title}">완료된 루틴 1</span>
+              <span class="routine-category" th:text="${history.category}">카테고리</span>
+            </div>
+          </div>
+          <div class="routine-right">
+            <!-- 히스토리 회고 버튼 추가 -->
+            <div th:if="${history.category != null and #strings.startsWith(history.category, '코딩테스트 준비')}"
+                 style="position: relative;">
+              <button class="routine-btn history-review"
+                      th:data-routine-id="${history.originalRoutineId}"
+                      th:data-date="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
+                      onclick="viewHistoryCodingReview(this.dataset.routineId, this.dataset.date)">
+                회고보기
+              </button>
+            </div>
+            <div th:if="${history.category != null and #strings.startsWith(history.category, '면접준비')}"
+                 style="position: relative;">
+              <button class="routine-btn history-review"
+                      th:data-routine-id="${history.originalRoutineId}"
+                      th:data-date="${#temporals.format(selectedDate, 'yyyy-MM-dd')}"
+                      onclick="viewHistoryInterviewReview(this.dataset.routineId, this.dataset.date)">
+                회고보기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 루틴이 없을 때 보여줄 빈 상태 -->
+      <div th:if="${(activeRoutines == null or activeRoutines.isEmpty()) and (passedRoutines == null or passedRoutines.isEmpty()) and (completedRoutines == null or completedRoutines.isEmpty()) and (activeHistories == null or activeHistories.isEmpty()) and (passedHistories == null or passedHistories.isEmpty()) and (completedHistories == null or completedHistories.isEmpty())}" class="empty-state">
+        <p th:if="${isHistoryView}">[[${#temporals.format(selectedDate, 'yyyy년 MM월 dd일')}]]에는 루틴 기록이 없습니다.</p>
+        <p th:unless="${isHistoryView}">등록된 데일리 루틴이 없습니다.</p>
+        <p th:unless="${isHistoryView}">오늘의 루틴을 추가해 보세요!</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 모달 배경 -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+<!-- 일반 루틴 추가/수정 모달 -->
+<div id="routineModal">
+  <h3>루틴 추가</h3>
+  <form id="routineForm" th:action="@{/routines}" method="post">
+    <input type="hidden" id="routineId" name="id" />
+    <input type="text" name="category" placeholder="카테고리 입력" required />
+    <input type="text" name="title" placeholder="루틴 제목" required />
+    <textarea name="description" placeholder="상세 설명"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180" required />
+    <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 코딩테스트 준비 루틴 모달 -->
+<div id="codingTestModal">
+  <h3>코딩테스트 준비 루틴 추가</h3>
+  <form id="codingTestForm" th:action="@{/routines}" method="post">
+
+    <input type="text" name="title" placeholder="루틴 제목 (예: 백준 알고리즘 풀이)" required />
+    <select name="problemType" required>
+      <option value="">문제 종류 선택</option>
+      <option value="자료구조">자료구조</option>
+      <option value="BFS/DFS">BFS/DFS</option>
+      <option value="구현">구현</option>
+      <option value="다익스트라">다익스트라</option>
+      <option value="트리">트리</option>
+      <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
+      <option value="탐색">탐색</option>
+      <option value="그리디">그리디</option>
+      <option value="기타">기타</option>
+    </select>
+    <textarea name="description" placeholder="상세 설명"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180" required />
+    <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+    <input type="hidden" name="category" id="codingTestCategory" />
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeCodingTestModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 면접 준비 루틴 모달 -->
+<div id="interviewModal">
+  <h3>면접 준비 루틴 추가</h3>
+  <form id="interviewForm" th:action="@{/routines}" method="post">
+
+    <input type="text" name="title" placeholder="루틴 제목 입력 (예: Java 기초 개념 정리)" required />
+
+    <select name="techType" required>
+      <option value="">기술 종류 선택</option>
+      <option value="알고리즘">알고리즘</option>
+      <option value="자료구조">자료구조</option>
+      <option value="데이터베이스">데이터베이스</option>
+      <option value="운영체제">운영체제</option>
+      <option value="네트워크">네트워크</option>
+      <option value="컴퓨터구조">컴퓨터구조</option>
+    </select>
+
+    <textarea name="description" placeholder="상세 설명 (선택사항)"></textarea>
+    <input type="number" name="focusTime" placeholder="집중 시간(분)" min="1" max="180"  required />
+    <input type="number" name="breakTime" placeholder="휴식 시간(분)" min="1" max="60" value="5" required />
+
+    <input type="hidden" name="category" id="interviewCategory" />
+
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeInterviewModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // ✅ 수정된 메뉴 버튼 이벤트 설정
+    const menuButtons = document.querySelectorAll('.menu-button');
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menuBox = this.nextElementSibling;
+
+        // 다른 열린 메뉴 닫기
+        document.querySelectorAll('.menu-box').forEach(box => {
+          if (box !== menuBox) {
+            box.classList.remove('show');
+            // 애니메이션 후 display none
+            setTimeout(() => {
+              if (!box.classList.contains('show')) {
+                box.style.display = 'none';
+              }
+            }, 200);
+          }
+        });
+
+        // 현재 메뉴 토글
+        if (menuBox.classList.contains('show')) {
+          // 메뉴 닫기
+          menuBox.classList.remove('show');
+          setTimeout(() => {
+            if (!menuBox.classList.contains('show')) {
+              menuBox.style.display = 'none';
+            }
+          }, 200);
+        } else {
+          // 메뉴 열기
+          menuBox.style.display = 'block';
+          // 다음 프레임에서 show 클래스 추가 (애니메이션을 위해)
+          requestAnimationFrame(() => {
+            menuBox.classList.add('show');
+          });
+        }
+      });
+    });
+
+    // 문서 클릭 시 열린 메뉴 닫기
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.menu-box').forEach(box => {
+        box.classList.remove('show');
+        setTimeout(() => {
+          if (!box.classList.contains('show')) {
+            box.style.display = 'none';
+          }
+        }, 200);
+      });
+    });
+  });
+
+  // 모달 배경 요소
+  const modalBackdrop = document.getElementById('modalBackdrop');
+
+  function openModal() {
+    // 폼 초기화
+    document.getElementById('routineForm').reset();
+    document.getElementById('routineId').value = '';
+    document.getElementById('routineModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('routineModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  }
+
+  function openCodingTestModal() {
+    document.getElementById('codingTestForm').reset();
+    document.getElementById('codingTestModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
+  }
+
+  function closeCodingTestModal() {
+    document.getElementById('codingTestModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  }
+
+  function openInterviewModal() {
+    document.getElementById('interviewForm').reset();
+    document.getElementById('interviewModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
+  }
+
+  function closeInterviewModal() {
+    document.getElementById('interviewModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  }
+
+  // 모달 배경 클릭 시 모달 닫기
+  modalBackdrop.addEventListener('click', function() {
+    closeModal();
+    closeCodingTestModal();
+    closeInterviewModal();
+  });
+
+  // 코딩테스트 폼 제출 시
+  document.getElementById('codingTestForm').addEventListener('submit', function(e) {
+    const problemType = document.querySelector('select[name="problemType"]').value;
+    if (problemType) {
+      document.getElementById('codingTestCategory').value = `코딩테스트 준비 - ${problemType}`;
+    }
+  });
+
+  // 면접준비 폼 제출 시
+  document.getElementById('interviewForm').addEventListener('submit', function(e) {
+    const techType = document.querySelector('select[name="techType"]').value;
+    if (techType) {
+      document.getElementById('interviewCategory').value = `면접준비 - ${techType}`;
+    }
+  });
+
+  // 타이머로 이동 함수
+  function navigateToTimer(element) {
+    const routineId = element.dataset.routineId;
+    location.href = '/routines/' + routineId + '/timer';
+  }
+
+  // 코딩테스트 회고 정보보기
+  function viewCodingReview(routineId) {
+    location.href = '/routines/' + routineId + '/coding-review';
+  }
+
+  // 면접준비 회고 정보보기
+  function viewInterviewReview(routineId) {
+    location.href = '/routines/' + routineId + '/interview-review';
+  }
+
+  function editRoutine(routineId) {
+    fetch(`/routines/${routineId}/edit`)
+    .then(response => response.json())
+    .then(data => {
+      // 모달 제목 변경
+      document.querySelector('#routineModal h3').textContent = '루틴 수정';
+
+      // 폼 데이터 채우기
+      document.getElementById('routineId').value = data.id;
+      document.querySelector('input[name="category"]').value = data.category || '';
+      document.querySelector('input[name="title"]').value = data.title || '';
+      document.querySelector('textarea[name="description"]').value = data.description || '';
+      document.querySelector('input[name="focusTime"]').value = data.focusTime || '';
+      document.querySelector('input[name="breakTime"]').value = data.breakTime || 5;
+
+      // 폼 액션 및 메서드 변경
+      const form = document.getElementById('routineForm');
+      form.action = `/routines/${routineId}`;
+
+      // CSRF 토큰 추가
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      let csrfInput = form.querySelector('input[name="_csrf"]');
+      if (!csrfInput) {
+        csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      } else {
+        csrfInput.value = csrfToken;
+      }
+
+      // hidden input 추가
+      let methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'PATCH';
+      form.appendChild(methodInput);
+
+      // 모달 표시
+      document.getElementById('routineModal').style.display = 'block';
+      modalBackdrop.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('루틴 정보를 불러오는 데 실패했습니다.');
+    });
+  }
+
+  function deleteRoutine(routineId) {
+    if (confirm('정말 이 루틴을 삭제하시겠습니까?')) {
+      // CSRF 토큰 가져오기
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+      fetch(`/routines/${routineId}`, {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // 성공 시 해당 요소만 DOM에서 제거
+          const routineElement = document.querySelector(`[data-routine-id="${routineId}"]`).closest('.routine-item');
+          if (routineElement) {
+            routineElement.remove();
+            showNotification(data.message);
+            checkEmptySections();
+          } else {
+            window.location.reload();
+          }
+        } else {
+          alert(data.message || '루틴 삭제에 실패했습니다.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('루틴 삭제 중 오류가 발생했습니다.');
+      });
+    }
+  }
+
+  function skipRoutine(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/skip`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function cancelPass(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function cancelComplete(routineId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/routines/${routineId}/cancel`;
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+    form.appendChild(methodInput);
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function showNotification(message) {
+    // 알림 표시 로직
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    background-color: #10b981;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+  `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.5s';
+      setTimeout(() => notification.remove(), 500);
+    }, 3000);
+  }
+
+  function checkEmptySections() {
+    const allRoutines = document.querySelectorAll('.all-routines-section .routine-item');
+    const emptyStateExists = document.querySelector('.empty-state');
+
+    if (allRoutines.length === 0 && !emptyStateExists) {
+      const emptyState = document.createElement('div');
+      emptyState.className = 'empty-state';
+      emptyState.innerHTML = '<p>등록된 데일리 루틴이 없습니다.</p><p>오늘의 루틴을 추가해 보세요!</p>';
+
+      const allRoutinesSection = document.querySelector('.all-routines-section');
+      allRoutinesSection.appendChild(emptyState);
+    }
+  }
+
+  // 히스토리 코딩테스트 회고 보기
+  function viewHistoryCodingReview(routineId, date) {
+    location.href = '/routines/history/' + routineId + '/coding-review?date=' + date;
+  }
+
+  // 히스토리 면접준비 회고 보기
+  function viewHistoryInterviewReview(routineId, date) {
+    location.href = '/routines/history/' + routineId + '/interview-review?date=' + date;
+  }
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap - 문항 등록</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <style>
+        /* 헤더와 로그아웃 버튼만을 위한 스타일 - 스코프 제한을 위해 선택자 구체화 */
+        body > header form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 0;
+        }
+
+        body > header button.logout-button {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: white;
+            border-radius: 16px;
+            border: none;
+            color: #0019a5;
+            box-shadow: 0 0 0 2px #aac4ff;
+            cursor: pointer;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #0019a5;
+            margin-bottom: 24px;
+        }
+
+        /* main 내부 폼 스타일 - 스코프 제한 */
+        main form {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        main label {
+            font-weight: 600;
+            color: #0019a5;
+        }
+
+        main input[type="text"],
+        main select,
+        main textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        main textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* 폼 액션 버튼 스타일 - 구체적인 선택자로 스코프 제한 */
+        main .form-actions button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        main .save-button {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+            padding: 10px 24px;
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        main .save-button:hover {
+            background-color: #2563eb;
+        }
+
+        main .cancel-button {
+            background-color: #ccc;
+            color: #333;
+            font-weight: 500;
+        }
+
+        main .cancel-button:hover {
+            background-color: #bbb;
+        }
+
+        /*!* 좀 더 모바일 친화적인 반응형 디자인 *!*/
+        /*@media (max-width: 768px) {*/
+        /*    main {*/
+        /*        margin-left: 0;*/
+        /*        padding: 100px 16px 40px;*/
+        /*    }*/
+
+        /*    main form {*/
+        /*        width: 100%;*/
+        /*        padding: 24px;*/
+        /*    }*/
+        /*}*/
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/admin/admin-sidenav :: sidebar"></aside>
+<main>
+    <h1 th:text="${isEdit} ? '문항 수정' : '문항 등록'">문항 등록</h1>
+
+    <form th:action="@{${formAction}}" th:object="${form}" method="post">
+        <input type="hidden" name="_method" value="patch" th:if="${isEdit}" />
+        <input type="hidden" th:field="*{id}" />
+
+        <label for="category">카테고리</label>
+        <input type="text" id="category" th:field="*{category}" required />
+
+        <label for="questionText">질문</label>
+        <input type="text" id="questionText" th:field="*{questionText}" required />
+
+        <label for="difficulty">난이도</label>
+        <select id="difficulty" th:field="*{difficulty}" required>
+            <option value="하">하</option>
+            <option value="중">중</option>
+            <option value="상">상</option>
+        </select>
+
+        <label for="answerText">모범 답안</label>
+        <textarea id="answerText" th:field="*{answerText}"></textarea>
+
+        <div class="form-actions">
+            <button type="submit" class="save-button" th:text="${isEdit} ? '수정하기' : '등록하기'">저장</button>
+            <button type="button" class="cancel-button" onclick="history.back()">취소</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

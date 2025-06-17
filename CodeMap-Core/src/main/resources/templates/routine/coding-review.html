@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>코딩테스트 회고</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 배경 애니메이션 - routine-list.html과 동일 */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 20%;
+      animation-delay: -7s;
+    }
+
+    .floating-shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      bottom: 30%;
+      left: 60%;
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.7;
+      }
+      33% {
+        transform: translateY(-30px) rotate(120deg);
+        opacity: 0.9;
+      }
+      66% {
+        transform: translateY(30px) rotate(240deg);
+        opacity: 0.5;
+      }
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    aside {
+      position: fixed;
+      top: 116px;
+      left: 0;
+      width: 250px;
+      height: calc(100% - 116px);
+      z-index: 900;
+    }
+
+    /* 메인 컨텐츠 스타일 - routine-list.html과 동일 */
+    main {
+      margin-left: 280px !important;
+      margin-top: 0 !important;
+      padding: 30px !important;
+      min-height: calc(100vh - 70px) !important;
+      transition: margin-left 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .review-wrapper {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 1200px !important;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 2;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .review-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .routine-info {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border: 2px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .routine-info h3 {
+      color: #1b2c50;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 15px 0;
+    }
+
+    .routine-info p {
+      color: #666;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .problem-section {
+      background: rgba(249, 250, 251, 0.8);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .problem-section:hover {
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 15px 30px rgba(102, 126, 234, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .problem-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .problem-header h4 {
+      color: #374151;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .remove-problem {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .remove-problem:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .problem-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .problem-section input,
+    .problem-section select,
+    .problem-section textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      border-radius: 10px;
+      font-family: "Pretendard", sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .problem-section input:focus,
+    .problem-section select:focus,
+    .problem-section textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .problem-section textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .add-problem-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .add-problem-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .button-group button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .cancel-btn {
+      background: rgba(108, 117, 125, 0.8);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .cancel-btn:hover {
+      background: rgba(75, 85, 99, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .view-mode .problem-section input,
+    .view-mode .problem-section select,
+    .view-mode .problem-section textarea {
+      background: rgba(248, 249, 250, 0.8);
+      border: 1px solid rgba(233, 236, 239, 0.5);
+      cursor: default;
+    }
+
+    .view-mode .add-problem-btn,
+    .view-mode .remove-problem,
+    .view-mode .save-btn {
+      display: none;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0 !important;
+        padding: 20px !important;
+      }
+
+      .review-wrapper {
+        max-width: 100% !important;
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .review-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .button-group {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .button-group button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
+
+<main>
+  <div class="review-wrapper" th:classappend="${isViewMode} ? 'view-mode' : ''">
+    <div class="review-header">
+      <h2 th:text="${isViewMode} ? '코딩테스트 회고 조회' : '코딩테스트 회고 작성'">코딩테스트 회고 작성</h2>
+    </div>
+
+    <div class="routine-info">
+      <h3 th:text="${routine.title}">루틴 제목</h3>
+      <p><strong>설명:</strong> <span th:text="${routine.description}">설명</span></p>
+      <p><strong>집중 시간:</strong> <span th:text="${routine.actualFocusTime}">60</span>분</p>
+    </div>
+
+    <!-- 작성 모드 -->
+    <form th:if="${!isViewMode}" th:action="@{'/routines/' + ${routine.id} + '/coding-review'}" method="post" id="reviewForm">
+      <input type="hidden" name="sessionId" th:value="${sessionId}" />
+
+      <div id="problemsContainer">
+        <div class="problem-section">
+          <div class="problem-header">
+            <h4>문제 1</h4>
+            <button type="button" class="remove-problem" onclick="removeProblem(this)" style="display: none;">삭제</button>
+          </div>
+
+          <label>문제 제목</label>
+          <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
+
+          <label>문제 상세 정보</label>
+          <textarea name="problemDescriptions" placeholder="문제에 대한 상세 정보를 입력하세요" required></textarea>
+
+          <label>내 풀이</label>
+          <textarea name="mySolutions" placeholder="내가 작성한 풀이를 입력하세요" required></textarea>
+
+          <label>정답 풀이</label>
+          <textarea name="correctSolutions" placeholder="정답 풀이 또는 개선된 풀이를 입력하세요" required></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="add-problem-btn" onclick="addProblem()">문항 추가</button>
+
+      <div class="button-group">
+        <button type="submit" class="save-btn">저장하기</button>
+        <button type="button" class="cancel-btn" onclick="location.href='/routines'">취소</button>
+      </div>
+    </form>
+
+    <!-- 조회 모드 -->
+    <div th:if="${isViewMode}">
+      <div th:each="review, iterStat : ${existingReviews}" class="problem-section">
+        <div class="problem-header">
+          <h4 th:text="'문제 ' + ${iterStat.count}">문제 1</h4>
+        </div>
+
+        <label>문제 제목</label>
+        <input type="text" th:value="${review.problemTitle}" readonly />
+
+        <label>문제 상세 정보</label>
+        <textarea th:text="${review.problemDescription}" readonly></textarea>
+
+        <label>내 풀이</label>
+        <textarea th:text="${review.mySolution}" readonly></textarea>
+
+        <label>정답 풀이</label>
+        <textarea th:text="${review.correctSolution}" readonly></textarea>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="cancel-btn" onclick="location.href='/routines'">돌아가기</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  let problemCount = 1;
+
+  function addProblem() {
+    problemCount++;
+    const container = document.getElementById('problemsContainer');
+    const newProblem = document.createElement('div');
+    newProblem.className = 'problem-section';
+
+    newProblem.innerHTML = `
+      <div class="problem-header">
+        <h4>문제 ${problemCount}</h4>
+        <button type="button" class="remove-problem" onclick="removeProblem(this)">삭제</button>
+      </div>
+
+      <label>문제 제목</label>
+      <input type="text" name="problemTitles" placeholder="문제 제목을 입력하세요" required />
+
+      <label>문제 상세 정보</label>
+      <textarea name="problemDescriptions" placeholder="문제에 대한 상세 정보를 입력하세요" required></textarea>
+
+      <label>내 풀이</label>
+      <textarea name="mySolutions" placeholder="내가 작성한 풀이를 입력하세요" required></textarea>
+
+      <label>정답 풀이</label>
+      <textarea name="correctSolutions" placeholder="정답 풀이 또는 개선된 풀이를 입력하세요" required></textarea>
+    `;
+
+    container.appendChild(newProblem);
+    updateProblemNumbers();
+    updateRemoveButtons();
+  }
+
+  function removeProblem(button) {
+    const problemSection = button.closest('.problem-section');
+    problemSection.remove();
+    problemCount--;
+    updateProblemNumbers();
+    updateRemoveButtons();
+  }
+
+  function updateProblemNumbers() {
+    const problems = document.querySelectorAll('.problem-section');
+    problems.forEach((problem, index) => {
+      const header = problem.querySelector('h4');
+      header.textContent = `문제 ${index + 1}`;
+    });
+  }
+
+  function updateRemoveButtons() {
+    const removeButtons = document.querySelectorAll('.remove-problem');
+    removeButtons.forEach(button => {
+      button.style.display = removeButtons.length > 1 ? 'block' : 'none';
+    });
+  }
+
+  // 페이지 로드 시 초기 설정
+  document.addEventListener('DOMContentLoaded', function() {
+    updateRemoveButtons();
+
+    // 사이드바 루틴 메뉴 활성화
+    const routineButton = Array.from(document.querySelectorAll('.nav-link-button'))
+    .find(el => el.textContent.includes('데일리 루틴'));
+    if (routineButton) {
+      routineButton.classList.add('active');
+    }
+  });
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

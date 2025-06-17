@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMap - 회원가입</title>
+
+  <link rel="stylesheet" th:href="@{/css/landing/signup.css}"/>
+</head>
+<body>
+<!-- 다크모드 토글 버튼 -->
+<button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+  <span class="sun-icon">☀️</span>
+  <span class="moon-icon">🌙</span>
+</button>
+
+<!-- 애니메이션 배경 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<main>
+  <div class="signup-container">
+    <!-- 왼쪽 패널 -->
+    <div class="left-panel">
+      <img src="/img/codemap_blue.png" alt="CodeMap Logo" class="logo" />
+      <h1 class="brand-title">CodeMap</h1>
+      <p class="brand-slogan">Stay on Track, Become a Dev.</p>
+      <p class="welcome-text">
+        지금 가입하고 개발자로서의<br>
+        성장 여정을 체계적으로 관리해보세요
+      </p>
+
+      <div class="features-preview">
+        <div class="feature-item">
+          <span class="feature-icon">📊</span>
+          <span>실시간 진도 추적</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span>스마트 할일 관리</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🎯</span>
+          <span>맞춤형 루틴 제공</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💬</span>
+          <span>AI 면접 준비</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 패널 -->
+    <div class="right-panel">
+      <div class="signup-header">
+        <h2 class="signup-title">회원가입</h2>
+        <p class="signup-subtitle">새로운 계정을 만들어 CodeMap을 시작하세요</p>
+      </div>
+
+      <form th:action="@{/user/signup}" method="post" id="signupForm">
+        <div class="form-group">
+          <label class="form-label">이메일</label>
+          <input type="email" name="email" class="form-input" placeholder="이메일을 입력하세요" required id="emailField" />
+          <div class="validation-message" id="emailValidation"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">닉네임</label>
+          <input type="text" name="nickname" class="form-input" placeholder="닉네임을 입력하세요" required id="nicknameField" />
+          <div class="validation-message" id="nicknameValidation"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">비밀번호</label>
+          <div class="password-group">
+            <input type="password" name="password" class="form-input password-input" placeholder="비밀번호를 입력하세요" required id="passwordField" />
+            <button type="button" class="password-toggle" id="togglePassword">
+              👁️
+            </button>
+          </div>
+          <div class="password-strength" id="passwordStrength">
+            <div class="strength-bar">
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+              <div class="strength-segment"></div>
+            </div>
+            <div class="strength-text">비밀번호 강도</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">비밀번호 확인</label>
+          <div class="password-group">
+            <input type="password" name="passwordConfirm" class="form-input password-input" placeholder="비밀번호를 다시 입력하세요" required id="passwordConfirmField" />
+            <button type="button" class="password-toggle" id="togglePasswordConfirm">
+              👁️
+            </button>
+          </div>
+          <div class="validation-message" id="passwordConfirmValidation"></div>
+        </div>
+
+        <button type="submit" class="submit-button" id="submitButton">
+          계정 생성하기
+        </button>
+      </form>
+
+      <div class="login-link">
+        이미 계정이 있으신가요? <a href="/user/signin">로그인하기</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // 다크모드 토글 기능
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const logo = document.querySelector('.logo');
+
+  // 로고 이미지 변경 함수
+  function updateLogo(theme) {
+    if (theme === 'dark') {
+      logo.src = '/img/codemap_white.png';
+    } else {
+      logo.src = '/img/codemap_blue.png';
+    }
+  }
+
+  // 저장된 테마 불러오기
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  body.classList.add(savedTheme + '-theme');
+  updateLogo(savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light-theme')) {
+      body.classList.remove('light-theme');
+      body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+      updateLogo('dark');
+    } else {
+      body.classList.remove('dark-theme');
+      body.classList.add('light-theme');
+      localStorage.setItem('theme', 'light');
+      updateLogo('light');
+    }
+  });
+
+  // 비밀번호 토글 기능
+  const setupPasswordToggle = (toggleId, fieldId) => {
+    const toggle = document.getElementById(toggleId);
+    const field = document.getElementById(fieldId);
+
+    toggle.addEventListener('click', () => {
+      const isPassword = field.type === 'password';
+      field.type = isPassword ? 'text' : 'password';
+      toggle.textContent = isPassword ? '🙈' : '👁️';
+    });
+  };
+
+  setupPasswordToggle('togglePassword', 'passwordField');
+  setupPasswordToggle('togglePasswordConfirm', 'passwordConfirmField');
+
+  // 비밀번호 강도 체크
+  const passwordField = document.getElementById('passwordField');
+  const strengthBar = document.querySelector('.strength-bar');
+  const strengthText = document.querySelector('.strength-text');
+
+  passwordField.addEventListener('input', () => {
+    const password = passwordField.value;
+    const strength = calculatePasswordStrength(password);
+    updateStrengthBar(strength);
+  });
+
+  function calculatePasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  }
+
+  function updateStrengthBar(strength) {
+    const segments = strengthBar.querySelectorAll('.strength-segment');
+    const texts = ['매우 약함', '약함', '보통', '강함', '매우 강함'];
+    const classes = ['weak', 'weak', 'medium', 'strong', 'strong'];
+
+    segments.forEach((segment, index) => {
+      segment.classList.remove('active', 'weak', 'medium', 'strong');
+      if (index < strength) {
+        segment.classList.add('active', classes[strength - 1]);
+      }
+    });
+
+    strengthText.textContent = strength > 0 ? `비밀번호 강도: ${texts[strength - 1]}` : '비밀번호 강도';
+  }
+
+  // 실시간 유효성 검사
+  const emailField = document.getElementById('emailField');
+  const nicknameField = document.getElementById('nicknameField');
+  const passwordConfirmField = document.getElementById('passwordConfirmField');
+
+  emailField.addEventListener('input', validateEmail);
+  nicknameField.addEventListener('input', validateNickname);
+  passwordConfirmField.addEventListener('input', validatePasswordConfirm);
+
+  function validateEmail() {
+    const email = emailField.value;
+    const validation = document.getElementById('emailValidation');
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email && emailPattern.test(email)) {
+      emailField.classList.add('valid');
+      emailField.classList.remove('invalid');
+      validation.textContent = '유효한 이메일입니다.';
+      validation.classList.add('valid');
+    } else if (email) {
+      emailField.classList.add('invalid');
+      emailField.classList.remove('valid');
+      validation.textContent = '올바른 이메일 형식을 입력해주세요.';
+      validation.classList.remove('valid');
+    } else {
+      emailField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  function validateNickname() {
+    const nickname = nicknameField.value;
+    const validation = document.getElementById('nicknameValidation');
+
+    if (nickname.length >= 2 && nickname.length <= 20) {
+      nicknameField.classList.add('valid');
+      nicknameField.classList.remove('invalid');
+      validation.textContent = '사용 가능한 닉네임입니다.';
+      validation.classList.add('valid');
+    } else if (nickname) {
+      nicknameField.classList.add('invalid');
+      nicknameField.classList.remove('valid');
+      validation.textContent = '닉네임은 2-20자 사이여야 합니다.';
+      validation.classList.remove('valid');
+    } else {
+      nicknameField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  function validatePasswordConfirm() {
+    const password = passwordField.value;
+    const passwordConfirm = passwordConfirmField.value;
+    const validation = document.getElementById('passwordConfirmValidation');
+
+    if (passwordConfirm && password === passwordConfirm) {
+      passwordConfirmField.classList.add('valid');
+      passwordConfirmField.classList.remove('invalid');
+      validation.textContent = '비밀번호가 일치합니다.';
+      validation.classList.add('valid');
+    } else if (passwordConfirm) {
+      passwordConfirmField.classList.add('invalid');
+      passwordConfirmField.classList.remove('valid');
+      validation.textContent = '비밀번호가 일치하지 않습니다.';
+      validation.classList.remove('valid');
+    } else {
+      passwordConfirmField.classList.remove('valid', 'invalid');
+      validation.textContent = '';
+    }
+  }
+
+  // 폼 제출
+  const form = document.getElementById('signupForm');
+  const submitButton = document.getElementById('submitButton');
+
+  form.addEventListener('submit', (e) => {
+    submitButton.innerHTML = '계정 생성 중...';
+    submitButton.disabled = true;
+  });
+
+  // 입력 필드 포커스 애니메이션
+  const inputs = document.querySelectorAll('.form-input');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+
+    input.addEventListener('blur', function() {
+      if (this.value === '') {
+        this.parentElement.classList.remove('focused');
+      }
+    });
+  });
+</script>
+</body>
+</html>

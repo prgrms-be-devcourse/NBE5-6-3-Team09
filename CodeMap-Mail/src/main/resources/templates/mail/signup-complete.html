@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeMap에 오신 것을 환영합니다!</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', 'Malgun Gothic', sans-serif; background-color: #f5f7fa;">
+
+<!-- 메인 컨테이너 -->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #f5f7fa;">
+  <tr>
+    <td style="padding: 20px 0;">
+
+      <!-- 이메일 본문 -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+
+        <!-- 헤더 -->
+        <tr>
+          <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center; border-radius: 20px 20px 0 0;">
+
+            <!-- 로고 -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto 20px;">
+              <tr>
+                <td style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); border-radius: 50%; text-align: center; vertical-align: middle; border: 2px solid rgba(255,255,255,0.3);">
+                  <span style="font-size: 20px; font-weight: 800; color: #ffffff;">CodeMap</span>
+                </td>
+              </tr>
+            </table>
+
+            <h1 style="margin: 0 0 10px 0; font-size: 28px; font-weight: 700; color: #ffffff;">🎉 환영합니다!</h1>
+            <p style="margin: 0; font-size: 16px; color: rgba(255,255,255,0.9);">Stay on Track, Become a Dev.</p>
+          </td>
+        </tr>
+
+        <!-- 메인 콘텐츠 -->
+        <tr>
+          <td style="padding: 40px 30px;">
+
+            <!-- 인사말 -->
+            <h2 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #333333; text-align: center;">
+              안녕하세요, <span style="color: #667eea; font-weight: 700;" th:text="${email}">user@example.com</span>님!
+            </h2>
+
+            <p style="margin: 0 0 30px 0; font-size: 16px; color: #666666; text-align: center; line-height: 1.6;">
+              CodeMap 가족이 되어주셔서 진심으로 감사드립니다! 🚀<br>
+              이제 개발자로의 여정을 함께 시작해봐요.
+            </p>
+
+            <!-- 회원가입 정보 -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: rgba(102,126,234,0.05); border-radius: 10px; border-left: 4px solid #667eea; margin: 20px 0;">
+              <tr>
+                <td style="padding: 20px;">
+                  <p style="margin: 5px 0; font-size: 14px; color: #666666;">
+                    <strong>🗓 가입일시:</strong>
+                    <span style="color: #667eea; font-weight: 600;" th:text="${#temporals.format(#temporals.createNow(), 'yyyy년 MM월 dd일 HH:mm')}">2025년 06월 16일 14:30</span>
+                  </p>
+                  <p style="margin: 5px 0; font-size: 14px; color: #666666;">
+                    <strong>📧 이메일:</strong>
+                    <span style="color: #667eea; font-weight: 600;" th:text="${email}">user@example.com</span>
+                  </p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- 주요 기능 소개 -->
+            <h3 style="margin: 30px 0 20px 0; font-size: 18px; font-weight: 600; color: #333333; text-align: center;">🚀 CodeMap의 핵심 기능들</h3>
+
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0 0 30px 0;">
+              <tr>
+                <!-- 기능 1: 포모도로 루틴 관리 -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">⏰</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">포모도로 루틴 관리</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">집중시간 타이머와 함께하는 일일 루틴. 코딩테스트와 면접준비 회고까지 한번에!</p>
+                </td>
+                <td style="width: 4%;"></td>
+                <!-- 기능 2: AI 면접 질문 연습 -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">💬</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">AI 면접 질문 연습</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">카테고리별 면접 질문과 키워드 분석. 내 답변이 얼마나 정확한지 실시간 피드백!</p>
+                </td>
+              </tr>
+              <tr><td colspan="3" style="height: 15px;"></td></tr>
+              <tr>
+                <!-- 기능 3: 스마트 캘린더 Todo -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">📅</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">스마트 캘린더 Todo</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">시작 10분 전 실시간 알림과 함께하는 일정 관리. 놓칠 일이 없어요!</p>
+                </td>
+                <td style="width: 4%;"></td>
+                <!-- 기능 4: AI 일정 추천 챗봇 -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">🤖</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">AI 일정 추천 챗봇</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">취업준비 상황에 맞는 맞춤형 학습 계획을 AI가 추천해드려요!</p>
+                </td>
+              </tr>
+              <tr><td colspan="3" style="height: 15px;"></td></tr>
+              <tr>
+                <!-- 기능 5: 상세한 학습 통계 -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">📊</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">상세한 학습 통계</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">집중시간, 완료율, 요일별 분석까지. 내 성장을 한눈에 확인하세요!</p>
+                </td>
+                <td style="width: 4%;"></td>
+                <!-- 기능 6: 목표기업 관리 -->
+                <td style="width: 48%; padding: 20px; background-color: #f8f9fa; border-radius: 15px; text-align: center; vertical-align: top;">
+                  <div style="font-size: 32px; margin-bottom: 10px;">🏢</div>
+                  <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #333333;">목표기업 관리</h3>
+                  <p style="margin: 0; font-size: 11px; color: #666666; line-height: 1.4;">관심있는 채용공고 마감일 추적과 지원 현황 관리로 기회를 놓치지 마세요!</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- CTA 버튼 -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 30px 0;">
+              <tr>
+                <td style="text-align: center;">
+                  <a href="http://localhost:8080/user/signin" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 50px; font-weight: 600; font-size: 16px;">
+                    🚀 지금 시작하기
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <!-- 통계 섹션 -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #f8f9fa; border-radius: 15px; margin: 30px 0;">
+              <tr>
+                <td style="padding: 25px; text-align: center;">
+                  <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600; color: #333333;">📊 CodeMap과 함께하는 개발자들</h3>
+
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                    <tr>
+                      <td style="text-align: center; width: 33.33%;">
+                        <span style="display: block; font-size: 24px; font-weight: 700; color: #667eea; margin-bottom: 5px;">1,000+</span>
+                        <span style="font-size: 12px; color: #666666;">활성 사용자</span>
+                      </td>
+                      <td style="text-align: center; width: 33.33%;">
+                        <span style="display: block; font-size: 24px; font-weight: 700; color: #667eea; margin-bottom: 5px;">50,000+</span>
+                        <span style="font-size: 12px; color: #666666;">완료된 루틴</span>
+                      </td>
+                      <td style="text-align: center; width: 33.33%;">
+                        <span style="display: block; font-size: 24px; font-weight: 700; color: #667eea; margin-bottom: 5px;">98%</span>
+                        <span style="font-size: 12px; color: #666666;">만족도</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- 푸터 -->
+        <tr>
+          <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef; border-radius: 0 0 20px 20px;">
+            <p style="margin: 0 0 15px 0; font-size: 14px; color: #666666;">
+              궁금한 점이 있으시면 언제든 문의해주세요! 💪
+            </p>
+
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 15px auto;">
+              <tr>
+                <td style="padding: 0 10px;">
+                  <a href="#" style="display: inline-block; padding: 8px 16px; background-color: rgba(102,126,234,0.1); color: #667eea; text-decoration: none; border-radius: 20px; font-size: 12px; font-weight: 500;">📞 고객지원</a>
+                </td>
+                <td style="padding: 0 10px;">
+                  <a href="#" style="display: inline-block; padding: 8px 16px; background-color: rgba(102,126,234,0.1); color: #667eea; text-decoration: none; border-radius: 20px; font-size: 12px; font-weight: 500;">📚 가이드</a>
+                </td>
+                <td style="padding: 0 10px;">
+                  <a href="#" style="display: inline-block; padding: 8px 16px; background-color: rgba(102,126,234,0.1); color: #667eea; text-decoration: none; border-radius: 20px; font-size: 12px; font-weight: 500;">💡 팁 & 노하우</a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin: 20px 0 0 0; font-size: 12px; color: #999999; line-height: 1.4;">
+              © 2025 CodeMap. 개발자 여정의 든든한 동반자<br>
+              이 이메일은 회원가입 확인용으로 발송되었습니다.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

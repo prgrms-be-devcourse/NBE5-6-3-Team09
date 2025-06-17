@@ -1,0 +1,980 @@
+/* ✅ PC 전용 헤더 CSS 변수 */
+:root {
+  --header-height: 70px;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --header-border: rgba(255, 255, 255, 0.3);
+  --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --header-primary: #667eea;
+  --header-secondary: #764ba2;
+  --header-accent: #f093fb;
+  --header-text-primary: #2d3748;
+  --header-text-secondary: #4a5568;
+  --header-text-light: #718096;
+  --header-success: #48bb78;
+  --header-danger: #f56565;
+  --header-warning: #ed8936;
+  --header-radius: 16px;
+  --header-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --header-z-index: 9999;
+}
+
+/* ✅ 다크 테마 변수 */
+body.dark-theme {
+  --header-bg: rgba(26, 32, 44, 0.85);
+  --header-text-primary: #f7fafc;
+  --header-text-secondary: #e2e8f0;
+  --header-text-light: #cbd5e0;
+  --header-border: rgba(45, 55, 72, 0.3);
+  --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 테마 전환 애니메이션 */
+body.theme-transition {
+  transition: all 0.3s ease !important;
+}
+
+body.theme-transition * {
+  transition: all 0.3s ease !important;
+}
+
+/* ✅ 페이지 레이아웃 보정 */
+body:has(.header) {
+  padding-top: var(--header-height) !important;
+  transition: var(--header-transition) !important;
+  margin-top: 0 !important;
+}
+
+main:has(~ .header),
+main + .header ~ main,
+body:has(.header) main {
+  margin-top: 0 !important;
+}
+
+/* 사이드바가 있는 경우 */
+body:has(.header) aside,
+.header ~ aside,
+.header + * aside {
+  top: var(--header-height) !important;
+  height: calc(100vh - var(--header-height)) !important;
+}
+
+/* ✅ 헤더 메인 컨테이너 */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: var(--header-height) !important;
+  z-index: var(--header-z-index) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+
+  padding: 0 2rem !important;
+  margin: 0 !important;
+
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+
+  transition: var(--header-transition) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* ✅ 헤더 내부 요소 기본값 리셋 */
+.header *,
+.header *::before,
+.header *::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  vertical-align: baseline !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  list-style: none !important;
+  font-size: 100% !important;
+  font: inherit !important;
+  color: inherit !important;
+}
+
+/* ✅ 헤더 배경 효과 */
+.header .header-background {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: -1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .header-blur-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: var(--header-bg) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .header-gradient-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.1) 0%,
+  rgba(118, 75, 162, 0.05) 50%,
+  rgba(240, 147, 251, 0.08) 100%) !important;
+  border-bottom: 1px solid var(--header-border) !important;
+  box-shadow: var(--header-shadow) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 다크 테마 헤더 배경 */
+body.dark-theme .header .header-gradient-overlay {
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.15) 0%,
+  rgba(118, 75, 162, 0.08) 50%,
+  rgba(240, 147, 251, 0.12) 100%) !important;
+}
+
+/* 스크롤 시 헤더 효과 */
+.header.scrolled .header-gradient-overlay {
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.15) 0%,
+  rgba(118, 75, 162, 0.08) 50%,
+  rgba(240, 147, 251, 0.12) 100%) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.dark-theme .header.scrolled .header-gradient-overlay {
+  background: linear-gradient(135deg,
+  rgba(102, 126, 234, 0.2) 0%,
+  rgba(118, 75, 162, 0.12) 50%,
+  rgba(240, 147, 251, 0.15) 100%) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ✅ 로고 영역 */
+.header .header-logo {
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+.header .logo-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  text-decoration: none !important;
+  transition: var(--header-transition) !important;
+  padding: 8px !important;
+  border-radius: 12px !important;
+  margin: 0 !important;
+  height: auto !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.header .logo-link:hover {
+  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  text-decoration: none !important;
+}
+
+body.dark-theme .header .logo-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.header .logo-icon {
+  position: relative !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .logo-gradient {
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  transition: var(--header-transition) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .logo-emoji {
+  font-size: 22px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+.header .logo-shine {
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent) !important;
+  animation: logoRotate 4s linear infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .logo-ring {
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  border: 2px solid transparent !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.3)) !important;
+  background-clip: padding-box !important;
+  opacity: 0 !important;
+  transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .logo-link:hover .logo-gradient {
+  transform: scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+.header .logo-link:hover .logo-ring {
+  opacity: 1 !important;
+}
+
+@keyframes logoRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.header .logo-text-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .logo-text {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.header .logo-subtitle {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: var(--header-text-light) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  opacity: 0.8 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+/* ✅ 헤더 중앙 빈 공간 */
+.header .header-center {
+  flex: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+/* ✅ 헤더 액션 영역 */
+.header .header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+/* ✅ 액션 버튼 공통 스타일 */
+.header .action-btn {
+  position: relative !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: var(--header-transition) !important;
+  overflow: hidden !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+}
+
+body.dark-theme .header .action-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.header .btn-content {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 100% !important;
+  padding: 0 18px !important;
+  justify-content: center !important;
+  margin: 0 !important;
+}
+
+.header .btn-icon {
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.header .btn-text {
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  color: var(--header-text-primary) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+}
+
+.header .btn-hover-effect {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+  opacity: 0 !important;
+  transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .action-btn:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  text-decoration: none !important;
+}
+
+body.dark-theme .header .action-btn:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.header .action-btn:hover .btn-hover-effect {
+  opacity: 1 !important;
+}
+
+/* ✅ 테마 토글 버튼 */
+.header .theme-toggle-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 48px !important;
+}
+
+.header .theme-toggle-btn {
+  width: 48px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+body.dark-theme .header .theme-toggle-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.header .theme-toggle-btn .btn-content {
+  padding: 0 !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.header .theme-icon {
+  position: relative !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.header .light-icon,
+.header .dark-icon {
+  position: absolute !important;
+  font-size: 18px !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.header .light-icon {
+  transform: rotate(0deg) scale(1) !important;
+}
+
+.header .dark-icon {
+  transform: rotate(180deg) scale(0) !important;
+}
+
+/* 다크 테마일 때 아이콘 상태 */
+body.dark-theme .header .light-icon {
+  transform: rotate(-180deg) scale(0) !important;
+}
+
+body.dark-theme .header .dark-icon {
+  transform: rotate(0deg) scale(1) !important;
+}
+
+.header .theme-effect {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.12) 100%) !important;
+}
+
+body.dark-theme .header .theme-effect {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 123, 255, 0.12) 100%) !important;
+}
+
+.header .theme-toggle-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2) !important;
+}
+
+body.dark-theme .header .theme-toggle-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2) !important;
+}
+
+/* ✅ 알림 영역 */
+.header .notification-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 48px !important;
+}
+
+.header #notification-icon {
+  font-size: 20px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+body.dark-theme .header #notification-icon {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.header #notification-icon:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.dark-theme .header #notification-icon:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.header #notification-popup {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
+  z-index: 10000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ✅ 사용자 정보 */
+.header .user-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 18px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  transition: var(--header-transition) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
+body.dark-theme .header .user-info {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.header .user-info:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+}
+
+body.dark-theme .header .user-info:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+}
+
+.header .user-avatar-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .user-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  transition: var(--header-transition) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.header .avatar-glow {
+  position: absolute !important;
+  top: -4px !important;
+  left: -4px !important;
+  right: -4px !important;
+  bottom: -4px !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)) !important;
+  border-radius: 16px !important;
+  opacity: 0 !important;
+  transition: var(--header-transition) !important;
+  animation: avatarGlow 3s ease-in-out infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@keyframes avatarGlow {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.05); }
+}
+
+.header .status-indicator {
+  position: absolute !important;
+  bottom: -1px !important;
+  right: -1px !important;
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+  max-width: 12px !important;
+  max-height: 12px !important;
+  background: var(--header-success) !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4) !important;
+  animation: statusPulse 2s ease-in-out infinite !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@keyframes statusPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.header .user-details {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .user-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--header-text-primary) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.header .user-status {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  color: var(--header-success) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.header .status-dot {
+  width: 6px !important;
+  height: 6px !important;
+  min-width: 6px !important;
+  min-height: 6px !important;
+  max-width: 6px !important;
+  max-height: 6px !important;
+  background: var(--header-success) !important;
+  border-radius: 50% !important;
+  animation: statusDot 1.5s ease-in-out infinite !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+@keyframes statusDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ✅ 로그아웃 버튼 */
+.header .logout-form {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  height: 48px !important;
+}
+
+.header .logout-btn {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
+  border-color: rgba(245, 101, 101, 0.2) !important;
+  color: var(--header-danger) !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+}
+
+body.dark-theme .header .logout-btn {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.12) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
+  border-color: rgba(245, 101, 101, 0.18) !important;
+}
+
+.header .logout-effect {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.15) 0%, rgba(229, 62, 62, 0.12) 100%) !important;
+}
+
+.header .logout-btn:hover {
+  border-color: rgba(245, 101, 101, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(245, 101, 101, 0.2) !important;
+  text-decoration: none !important;
+}
+
+body.dark-theme .header .logout-btn:hover {
+  border-color: rgba(245, 101, 101, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(245, 101, 101, 0.25) !important;
+}
+
+.header .logout-btn .btn-text {
+  color: var(--header-danger) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+/* ✅ 접근성 강화 */
+.header .action-btn:focus-visible,
+.header .logo-link:focus-visible {
+  outline: 2px solid var(--header-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2) !important;
+}
+
+.header .action-btn:focus,
+.header .logo-link:focus {
+  outline: none !important;
+}
+
+/* ✅ 키보드 네비게이션 지원 */
+.header .action-btn:focus-visible {
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 1rem !important;
+  }
+
+  .header .header-actions {
+    gap: 12px !important;
+  }
+
+  .header .logo-text {
+    font-size: 22px !important;
+  }
+
+  .header .user-details {
+    display: none !important;
+  }
+
+  .header .btn-text {
+    display: none !important;
+  }
+
+  .header .theme-toggle-btn,
+  .header #notification-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .user-info {
+    padding: 0 12px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .header .logout-btn {
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0 0.8rem !important;
+  }
+
+  .header .header-actions {
+    gap: 8px !important;
+  }
+
+  .header .logo-text-wrapper {
+    display: none !important;
+  }
+
+  .header .theme-toggle-btn,
+  .header #notification-icon {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .header .user-info {
+    padding: 0 8px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .header .logout-btn {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .header .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  .header .status-indicator {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    max-width: 8px !important;
+    max-height: 8px !important;
+  }
+}
+
+/* ✅ 애니메이션 줄이기 설정 */
+@media (prefers-reduced-motion: reduce) {
+  .header *,
+  .header *::before,
+  .header *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+
+  .header .logo-shine {
+    animation: none !important;
+  }
+
+  .header .avatar-glow {
+    animation: none !important;
+  }
+
+  .header .status-indicator,
+  .header .status-dot {
+    animation: none !important;
+  }
+
+  .header .light-icon,
+  .header .dark-icon {
+    transition: none !important;
+  }
+
+  body.theme-transition {
+    transition: none !important;
+  }
+
+  body.theme-transition * {
+    transition: none !important;
+  }
+}
+
+/* ✅ 고대비 모드 대응 */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .action-btn,
+  .header .user-info {
+    border: 2px solid var(--header-text-primary) !important;
+  }
+
+  .header .logo-gradient {
+    border: 2px solid white !important;
+  }
+}
+
+/* ✅ 인쇄 시 헤더 숨김 */
+@media print {
+  .header {
+    display: none !important;
+  }
+
+  body:has(.header) {
+    padding-top: 0 !important;
+  }
+}
+
+/* ✅ 외부 스타일 차단 및 재적용 */
+.header {
+  isolation: isolate !important;
+  contain: layout style paint !important;
+}

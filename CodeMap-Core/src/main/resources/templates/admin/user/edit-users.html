@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+        }
+
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 50px 60px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 720px; /* 🔼 기존 600px보다 넓게 */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            /*color: #0019a5;*/
+            margin-bottom: 32px;
+            text-align: left;
+            width: 100%;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* 🔼 간격 키움 */
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0019a5;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            background-color: white;
+            height: 48px; /* 🔼 높이 키움 */
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .save-btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 28px;
+            font-size: 15px;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+            padding: 12px 28px;
+            font-size: 15px;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .cancel-btn:hover {
+            background-color: #bbb;
+        }
+
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
+
+<main>
+    <div class="category-container">
+        <h2 class="title">회원정보 수정</h2>
+
+        <form th:action="@{'/admin/users/' + ${user.id}}" method="post">
+            <input type="hidden" name="_method" value="PATCH" />
+
+            <label for="nickname">닉네임 수정</label>
+            <input type="text" id="nickname" name="nickname" th:value="${user.nickname}" />
+
+            <label for="email">이메일 수정</label>
+            <input type="email" id="email" name="email" th:value="${user.email}" />
+
+            <label for="newPassword">새 비밀번호</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="비워두면 비밀번호 유지" />
+
+            <div class="form-actions">
+                <button type="submit" class="save-btn">저장</button>
+                <button type="button" class="cancel-btn" onclick="history.back()">취소</button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

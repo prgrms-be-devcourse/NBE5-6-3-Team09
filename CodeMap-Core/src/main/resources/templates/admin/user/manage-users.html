@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원정보 관리</title>
+
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+        }
+
+        .category-container {
+            background-color: #d8e3ff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 제목: 왼쪽 정렬 + 검정색 */
+        .user-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        /* 유저 리스트 컨테이너 */
+        .user-list-box {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 유저 항목 */
+        .user-item {
+            background-color: white;
+            border: 2px solid #0019a5;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        /* 케밥 메뉴 (⋮ 버튼) */
+        .kebab-menu {
+            background-color: #e9f11f;
+            color: #0019a5;
+            font-weight: bold;
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* 드롭다운 박스 */
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 36px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+            min-width: 100px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* 공통 항목 (기본은 회색) */
+        .dropdown a.dropdown-item,
+        .dropdown button.dropdown-item {
+            padding: 12px 16px;
+            font-size: 15px;
+            color: #333;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Pretendard', sans-serif;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        /* 링크 상태 리셋 */
+        .dropdown a.dropdown-item:link,
+        .dropdown a.dropdown-item:visited,
+        .dropdown a.dropdown-item:active {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* 일반 hover: 파란색으로 */
+        .dropdown a.dropdown-item:hover,
+        .dropdown button.dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #0019a5;
+        }
+
+        /* 삭제 항목 기본: 회색 */
+        .dropdown .dropdown-item.delete {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 삭제 hover: 빨간색 */
+        .dropdown .dropdown-item.delete:hover {
+            background-color: #f5f5f5;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
+
+<main>
+    <div class="category-container">
+        <h2 class="user-title">회원정보 관리</h2>
+
+        <div class="user-list" th:each="user : ${users}">
+            <div class="user-item">
+                <span th:text="${user.nickname}">유저 닉네임</span>
+                <div class="kebab-menu" onclick="toggleDropdown(this)">
+                    ⋮
+                    <div class="dropdown">
+                        <a class="dropdown-item"
+                           th:href="@{'/admin/users/' + ${user.id} + '/edit'}">
+                            수정
+                        </a>
+
+                        <button type="button" class="dropdown-item delete">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<div th:replace="~{admin/user/user-delete-modal :: deleteModal}"></div>
+
+<script>
+    let openDropdown = null;
+    function toggleDropdown(button) {
+        const dropdown = button.querySelector('.dropdown');
+        if (openDropdown && openDropdown !== dropdown) {
+            openDropdown.style.display = 'none';
+        }
+        dropdown.style.display = (dropdown.style.display === 'flex') ? 'none' : 'flex';
+        openDropdown = dropdown.style.display === 'flex' ? dropdown : null;
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.kebab-menu')) {
+            if (openDropdown) {
+                openDropdown.style.display = 'none';
+                openDropdown = null;
+            }
+        }
+    });
+</script>
+</body>
+</html>

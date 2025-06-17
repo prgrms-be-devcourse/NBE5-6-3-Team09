@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>캘린더 - 날짜 선택</title>
+
+  <!-- ✅ 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      font-family: "Pretendard", sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 116px;
+      z-index: 1000;
+      background: white;
+    }
+
+    aside {
+      position: fixed;
+      top: 116px;
+      left: 0;
+      width: 250px;
+      height: calc(100vh - 116px);
+      z-index: 900;
+      background: white;
+    }
+
+    main {
+      margin-left: 280px;
+      margin-top: 100px;
+      padding: 40px;
+      min-height: calc(100vh - 100px);
+    }
+
+    .calendar-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 60px 50px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      box-shadow:
+          0 32px 64px rgba(0, 0, 0, 0.1),
+          0 0 0 1px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calendar-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      border-radius: 24px 24px 0 0;
+    }
+
+    .calendar-header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .calendar-title {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .calendar-subtitle {
+      font-size: 16px;
+      color: #6b7280;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    #calendar {
+      width: 100%;
+      min-height: 600px;
+      --fc-border-color: rgba(229, 231, 235, 0.3);
+      --fc-button-bg-color: linear-gradient(135deg, #667eea, #764ba2);
+      --fc-button-border-color: transparent;
+      --fc-button-active-bg-color: linear-gradient(135deg, #5a67d8, #6b46c1);
+      --fc-today-bg-color: rgba(102, 126, 234, 0.1);
+    }
+
+    /* FullCalendar 커스텀 스타일 */
+    .fc-toolbar {
+      background: rgba(248, 249, 250, 0.8);
+      padding: 20px 24px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .fc-toolbar-title {
+      font-size: 24px !important;
+      font-weight: 700 !important;
+      color: #1f2937;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .fc-button {
+      background: linear-gradient(135deg, #667eea, #764ba2) !important;
+      border: none !important;
+      border-radius: 12px !important;
+      padding: 8px 16px !important;
+      font-weight: 600 !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+      margin: 0 4px !important;
+    }
+
+    .fc-button:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4) !important;
+    }
+
+    .fc-button:active {
+      transform: translateY(0px) !important;
+    }
+
+    .fc-daygrid-day {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .fc-daygrid-day:hover {
+      background-color: rgba(102, 126, 234, 0.05) !important;
+      transform: scale(1.02);
+    }
+
+    .fc-daygrid-day-number {
+      font-weight: 600;
+      color: #374151;
+      transition: all 0.3s ease;
+    }
+
+    .fc-day-today {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
+      border: 2px solid rgba(102, 126, 234, 0.3) !important;
+      border-radius: 8px;
+    }
+
+    .fc-day-today .fc-daygrid-day-number {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+    }
+
+    .fc-event {
+      background: linear-gradient(135deg, #fef3c7, #fbbf24) !important;
+      border: 1px solid #f59e0b !important;
+      border-radius: 8px !important;
+      padding: 4px 8px !important;
+      margin: 2px 4px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      color: #92400e !important;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2) !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .fc-event:hover {
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+    }
+
+    .fc-event-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 월 이름 스타일링 */
+    .fc-col-header-cell {
+      background: rgba(102, 126, 234, 0.1) !important;
+      font-weight: 700 !important;
+      color: #4c51bf !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none !important;
+    }
+
+    /* 애니메이션 효과 */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .calendar-container {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      main {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .calendar-container {
+        padding: 30px 20px;
+        border-radius: 16px;
+      }
+
+      .calendar-title {
+        font-size: 24px;
+      }
+
+      .fc-toolbar {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fc-toolbar-title {
+        font-size: 20px !important;
+      }
+    }
+
+    /* 스크롤바 스타일링 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #5a67d8, #6b46c1);
+    }
+  </style>
+
+</head>
+
+<body>
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
+
+<main>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <h1 class="calendar-title">✨ 나만의 캘린더</h1>
+      <p class="calendar-subtitle">날짜를 클릭하여 투두리스트를 확인해보세요</p>
+    </div>
+    <div id="calendar"></div>
+  </div>
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+
+    fetch('/api/todos/summary')
+    .then(response => response.json())
+    .then(data => {
+      const events = [];
+
+      Object.entries(data).forEach(([date, titles]) => {
+        titles.forEach((title, index) => {
+          events.push({
+            title: title,
+            start: date,
+            allDay: true,
+            backgroundColor: '#FEF3C7',
+            textColor: '#92400E',
+            borderColor: '#F59E0B',
+            classNames: ['todo-event']
+          });
+        });
+      });
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        height: 'auto',
+        selectable: true,
+        headerToolbar: {
+          start: 'title',
+          center: '',
+          end: 'prev today next'
+        },
+        buttonText: {
+          today: '오늘'
+        },
+        dateClick: function(info) {
+          const selectedDate = info.dateStr;
+
+          // 클릭 효과 애니메이션
+          info.dayEl.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            info.dayEl.style.transform = 'scale(1)';
+          }, 100);
+
+          // 페이지 이동
+          setTimeout(() => {
+            window.location.href = `/todos?date=${selectedDate}`;
+          }, 200);
+        },
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          const selectedDate = info.event.startStr;
+          window.location.href = `/todos?date=${selectedDate}`;
+        },
+        events: events,
+        eventDidMount: function(info) {
+          // 이벤트 호버 효과
+          info.el.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.05)';
+          });
+
+          info.el.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+          });
+        }
+      });
+
+      calendar.render();
+
+      // 캘린더 렌더링 후 부드러운 애니메이션 효과
+      setTimeout(() => {
+        const days = document.querySelectorAll('.fc-daygrid-day');
+        days.forEach((day, index) => {
+          day.style.opacity = '0';
+          day.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            day.style.transition = 'all 0.3s ease';
+            day.style.opacity = '1';
+            day.style.transform = 'translateY(0)';
+          }, index * 30);
+        });
+      }, 100);
+    })
+    .catch(error => {
+      console.error('Failed to load calendar data:', error);
+    });
+  });
+</script>
+
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

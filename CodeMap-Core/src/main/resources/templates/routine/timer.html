@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>포모도로 타이머</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" th:href="@{/css/fragment/header.css}" />
+  <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}" />
+  <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 배경 애니메이션 - routine-list와 동일 */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 20%;
+      animation-delay: -7s;
+    }
+
+    .floating-shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      bottom: 30%;
+      left: 60%;
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.7;
+      }
+      33% {
+        transform: translateY(-30px) rotate(120deg);
+        opacity: 0.9;
+      }
+      66% {
+        transform: translateY(30px) rotate(240deg);
+        opacity: 0.5;
+      }
+    }
+
+    /* 메인 컨텐츠 스타일 - routine-list와 동일하게 */
+    main {
+      margin-left: 280px !important;
+      margin-top: 0 !important;
+      padding: 30px !important;
+      min-height: calc(100vh - 70px) !important;
+      transition: margin-left 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timer-wrapper {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 50px;
+      border-radius: 20px;
+      max-width: 1200px !important;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .timer-info {
+      margin-bottom: 40px;
+    }
+
+    .current-routine {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .next-routine {
+      font-size: 18px;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+
+    .phase-indicator {
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .phase-focus {
+      color: #667eea;
+    }
+
+    .phase-break {
+      color: #48bb78;
+    }
+
+    .timer-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .timer-info-item {
+      background: rgba(249, 250, 251, 0.8);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      padding: 25px;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .timer-info-item:hover {
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .timer-info-label {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .timer-info-value {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .timer-display {
+      font-size: 120px;
+      font-weight: 700;
+      color: #667eea;
+      margin: 50px 0;
+      font-family: 'Roboto Mono', monospace;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin-bottom: 40px;
+    }
+
+    .timer-button {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(249, 250, 251, 0.8);
+      border: 2px solid rgba(229, 231, 235, 0.5);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-button:hover {
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .timer-button:active {
+      transform: scale(0.95);
+    }
+
+    .timer-button.complete-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: 2px solid #667eea;
+    }
+
+    .timer-button.complete-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .timer-button i {
+      font-size: 36px;
+      color: #374151;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timer-button.complete-button i {
+      color: white;
+    }
+
+    .timer-progress {
+      display: none;
+      width: 100%;
+      height: 12px;
+      background: rgba(229, 231, 235, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 15px;
+      border: 1px solid rgba(229, 231, 235, 0.3);
+    }
+
+    .timer-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 6px;
+      transition: width 1s linear;
+    }
+
+    .break-progress-container .timer-progress {
+      display: block;
+    }
+
+    .break-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #48bb78, #38a169);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 1s linear;
+      z-index: 5;
+    }
+
+    #breakTimeDisplay {
+      margin-top: 20px;
+      color: #48bb78;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    /* 아이콘 스타일 */
+    .icon-pause {
+      background-color: transparent;
+      position: relative;
+      width: 20px;
+      height: 20px;
+    }
+
+    .icon-pause:before, .icon-pause:after {
+      content: '';
+      position: absolute;
+      background-color: #374151;
+      width: 6px;
+      height: 20px;
+      border-radius: 3px;
+    }
+
+    .icon-pause:before {
+      left: 4px;
+    }
+
+    .icon-pause:after {
+      right: 4px;
+    }
+
+    .icon-play {
+      background-color: transparent;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 12px 0 12px 20px;
+      border-color: transparent transparent transparent #374151;
+      margin-left: 3px;
+    }
+
+    .icon-check {
+      color: white;
+      font-size: 36px;
+    }
+
+    .icon-next {
+      background-color: transparent;
+      position: relative;
+      width: 20px;
+      height: 20px;
+    }
+
+    .icon-next:before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 15px;
+      border-color: transparent transparent transparent #374151;
+      left: 0;
+    }
+
+    .icon-next:after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 20px;
+      background-color: #374151;
+      right: 0;
+      border-radius: 2px;
+    }
+
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 40px;
+      border-radius: 20px;
+      width: 450px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-text {
+      margin-bottom: 30px;
+      color: #6b7280;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .modal-button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .modal-button.cancel {
+      background: rgba(229, 231, 235, 0.8);
+      color: #4b5563;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-button.cancel:hover {
+      background: rgba(209, 213, 219, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .modal-button.confirm {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .modal-button.confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* 반응형 디자인 - routine-list와 동일하게 */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0 !important;
+        padding: 20px !important;
+      }
+
+      .timer-wrapper {
+        max-width: 100% !important;
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .timer-wrapper {
+        padding: 20px;
+      }
+
+      .timer-display {
+        font-size: 80px;
+      }
+
+      .timer-info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .timer-controls {
+        gap: 30px;
+      }
+
+      .timer-button {
+        width: 70px;
+        height: 70px;
+      }
+
+      .timer-button i {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!--알림 -->
+<th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
+
+<!-- 배경 애니메이션 추가 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<header th:replace="fragments/header/header :: header"></header>
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
+
+<main>
+  <div class="timer-wrapper">
+    <div class="timer-info">
+      <div class="current-routine" id="currentRoutine" th:text="${routine.title}">데일리 루틴 1</div>
+      <div class="next-routine" id="nextRoutine">다음 루틴: <span th:if="${nextRoutine}" th:text="${nextRoutine.title}">다음 루틴 제목</span><span th:unless="${nextRoutine}">마지막 루틴</span></div>
+
+      <div class="phase-indicator">
+        <span id="phaseText" class="phase-focus">집중 시간</span>
+      </div>
+
+      <div class="timer-info-grid">
+        <div class="timer-info-item">
+          <div class="timer-info-label">포모도로</div>
+          <div class="timer-info-value" id="pomodoroInfo" th:text="${routine.focusTime} + '분'">25분</div>
+        </div>
+        <div class="timer-info-item">
+          <div class="timer-info-label">휴식 시간</div>
+          <div class="timer-info-value" id="breakInfo">5분</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timer-display" id="timerDisplay">25:00</div>
+
+    <div class="timer-controls">
+      <button class="timer-button pause-button" id="pauseButton">
+        <div class="icon-pause" id="pauseIcon"></div>
+      </button>
+      <button class="timer-button complete-button" id="completeButton">
+        <span class="icon-check">✓</span>
+      </button>
+      <button class="timer-button next-button" id="nextButton">
+        <div class="icon-next"></div>
+      </button>
+    </div>
+
+    <div class="timer-progress">
+      <div class="timer-progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+
+  </div>
+
+  <!-- 확인 모달 -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-title">루틴 완료</div>
+      <div class="modal-text" id="modalText">정말 이 루틴을 완료하시겠습니까?</div>
+      <div class="modal-buttons">
+        <button class="modal-button cancel" id="modalCancel">취소</button>
+        <button class="modal-button confirm" id="modalConfirm">확인</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script th:inline="javascript">
+  // Thymeleaf 변수 가져오기
+  const routineId = [[${routine.id}]];
+  const pomodoroSessionId  = [[${pomodoroSession.id}]];
+  const focusTimeMinutes = [[${routine.focusTime}]];
+  const breakTimeMinutes = [[${routine.breakTime != null ? routine.breakTime : 5}]];
+  const nextRoutineId = [[${nextRoutine != null ? nextRoutine.id : null}]];
+
+  // 타이머 관련 변수
+  let timerInterval;
+  let breakInterval;
+  let isPaused = false;
+  let isBreakTime = false;
+  let totalSeconds = focusTimeMinutes * 60;
+  let currentSeconds = totalSeconds;
+  let breakSeconds = 0;
+  let startTime;
+
+  let actualStartTime = null;    // 실제 타이머 시작 시간
+  let totalPausedTime = 0;       // 총 일시정지 시간 (초)
+  let pauseStartTime = null;     // 일시정지 시작 시간
+  let isActuallyRunning = false; // 실제 진행 중인지 여부
+
+  // DOM 요소
+  const timerDisplay = document.getElementById('timerDisplay');
+  const pauseButton = document.getElementById('pauseButton');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const completeButton = document.getElementById('completeButton');
+  const nextButton = document.getElementById('nextButton');
+  const phaseText = document.getElementById('phaseText');
+  const startTimeElement = document.getElementById('startTime');
+  const endTimeElement = document.getElementById('endTime');
+
+  // 모달 요소
+  const confirmModal = document.getElementById('confirmModal');
+  const modalText = document.getElementById('modalText');
+  const modalCancel = document.getElementById('modalCancel');
+  const modalConfirm = document.getElementById('modalConfirm');
+
+  const progressBar = document.getElementById('progressBar');
+  let breakTimeDisplay = null;
+  let breakProgressBar = document.createElement('div');
+  breakProgressBar.className = 'break-progress-bar';
+  breakProgressBar.style.position = 'absolute';
+  breakProgressBar.style.top = '0';
+  breakProgressBar.style.left = '0';
+  breakProgressBar.style.height = '100%';
+  breakProgressBar.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+  breakProgressBar.style.borderRadius = '6px';
+  breakProgressBar.style.width = '0%';
+  breakProgressBar.style.transition = 'width 1s linear';
+  breakProgressBar.style.boxShadow = '0 2px 8px rgba(72, 187, 120, 0.4)';
+  document.querySelector('.timer-progress').appendChild(breakProgressBar);
+
+
+  // 페이지 로드 시 시작 시간 설정
+  document.addEventListener('DOMContentLoaded', function() {
+
+    actualStartTime = new Date();
+    isActuallyRunning = true;
+    startTime = new Date();
+
+    // 휴식 시간 초기화 (페이지 로드 시 한 번만)
+    breakSeconds = 0;
+
+    // 휴식 시간 표시 요소 추가
+    addBreakTimeDisplay();
+
+
+
+    // 타이머 시작
+    startTimer();
+
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+
+    // 휴식 시간 UI 업데이트
+    document.getElementById('breakInfo').textContent = breakTimeMinutes + '분';
+    // 포커스 아웃 시 타이머 일시정지
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden' && !isPaused && !isBreakTime) {
+        pauseTimer();
+        startBreakTimer(); // 휴식 시간 시작
+      }
+    });
+
+    // CSRF 토큰 헤더 설정
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    // 이벤트 리스너
+    pauseButton.addEventListener('click', togglePause);
+    completeButton.addEventListener('click', function() {
+      modalText.textContent = '이 루틴을 완료하고 루틴 목록으로 돌아가시겠습니까?';
+      confirmModal.style.display = 'flex';
+      document.getElementById('modalConfirm').onclick = function() {
+        completeRoutine(false);
+      };
+    });
+
+    nextButton.addEventListener('click', function() {
+      if (nextRoutineId) {
+        modalText.textContent = '이 루틴을 완료하고 다음 루틴으로 이동하시겠습니까?';
+      } else {
+        modalText.textContent = '이 루틴을 완료하고 루틴 목록으로 돌아가시겠습니까?';
+      }
+      confirmModal.style.display = 'flex';
+      document.getElementById('modalConfirm').onclick = function() {
+        completeRoutine(true);
+      };
+    });
+
+    modalCancel.addEventListener('click', function() {
+      confirmModal.style.display = 'none';
+    });
+  });
+
+  // 타이머 시작 함수
+  function startTimer() {
+    if (!timerInterval) {
+      timerInterval = setInterval(updateTimer, 1000);
+      updateTimerDisplay();
+    }
+  }
+
+  // 타이머 일시정지 토글 함수
+  function togglePause() {
+    if (isPaused) {
+      // 타이머 재개
+      isPaused = false;
+      isActuallyRunning = true;
+      pauseIcon.className = 'icon-pause';
+
+      // 일시정지 시간 계산 및 누적
+      if (pauseStartTime) {
+        totalPausedTime += Math.floor((new Date() - pauseStartTime) / 1000);
+        pauseStartTime = null;
+      }
+
+      startTimer();
+      clearInterval(breakInterval);
+      breakInterval = null;
+
+    } else {
+      // 타이머 일시정지
+      pauseTimer();
+      isActuallyRunning = false;
+      pauseStartTime = new Date();
+      startBreakTimer();
+    }
+  }
+
+  function getActualElapsedMinutes() {
+    if (!actualStartTime) return 0;
+
+    const now = new Date();
+    const totalElapsedSeconds = Math.floor((now - actualStartTime) / 1000);
+    const actualElapsedSeconds = totalElapsedSeconds - totalPausedTime;
+
+    // 현재 일시정지 중이면 현재 일시정지 시간도 제외
+    if (isPaused && pauseStartTime) {
+      const currentPauseSeconds = Math.floor((now - pauseStartTime) / 1000);
+      return Math.floor((actualElapsedSeconds - currentPauseSeconds) / 60);
+    }
+
+    return Math.floor(actualElapsedSeconds / 60);
+  }
+
+  // 타이머 일시정지 함수
+  function pauseTimer() {
+    isPaused = true;
+    pauseIcon.className = 'icon-play';
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // 휴식시간 타이머 시작 함수
+  function startBreakTimer() {
+
+    if (breakInterval) {
+      return;
+    }
+
+
+    // 휴식 타이머 시작
+    breakInterval = setInterval(updateBreakTimer, 1000);
+    updateBreakProgressBar();
+
+  }
+
+  // 휴식 시간 표시 요소 생성 함수
+  function createBreakTimeDisplay() {
+    // 이미 생성된 요소가 있는지 확인
+    if (document.getElementById('breakTimeDisplay') || document.querySelector('.break-progress-container')) {
+      return;
+    }
+
+    // 휴식 시간 표시 요소 생성
+    breakTimeDisplay = document.createElement('div');
+    breakTimeDisplay.id = 'breakTimeDisplay';
+    breakTimeDisplay.style.marginTop = '10px';
+    breakTimeDisplay.style.color = '#43a047';
+    breakTimeDisplay.style.fontWeight = 'bold';
+    breakTimeDisplay.textContent = '휴식: 0:00';
+
+    // 프로그레스 바 다음에 추가
+    document.querySelector('.timer-progress').after(breakTimeDisplay);
+  }
+
+  // 휴식시간 업데이트 함수
+  function updateBreakTimer() {
+    breakSeconds++;
+    updateBreakProgressBar();
+
+    // 휴식 시간이 종료되었는지 확인
+    const maxBreakTime = breakTimeMinutes * 60;
+    if (breakSeconds >= maxBreakTime) {
+      // 휴식 시간 종료 처리
+      clearInterval(breakInterval);
+      breakInterval = null;
+
+      // 휴식 시간 초기화
+      breakSeconds = 0;
+      breakProgressBar.style.width = '0%';
+
+      // 일시 정지 상태 해제
+      isPaused = false;
+      pauseIcon.className = 'icon-pause';
+
+      // 타이머 재개
+      startTimer();
+
+      // 알림 표시
+      alert('휴식 시간이 종료되었습니다. 다시 루틴을 진행해 주세요.');
+
+      // 집중 시간 표시로 변경
+      phaseText.textContent = '집중 시간';
+      phaseText.className = 'phase-focus';
+    }
+  }
+
+  // 휴식시간 바 업데이트 함수
+  function updateBreakProgressBar() {
+
+    const breakTimeDisplayElement = document.getElementById('breakTimeDisplay');
+    if (!breakTimeDisplayElement) {
+      console.log("Break time display element not found!");
+      return;
+    }
+
+    // 최대 휴식 시간 설정
+    const maxBreakTime = breakTimeMinutes * 60;
+    const breakProgress = Math.min((breakSeconds / maxBreakTime) * 100, 100);
+
+    breakProgressBar.style.width = `${breakProgress}%`;
+    breakProgressBar.style.display = 'block';
+
+    const breakMinutes = Math.floor(breakSeconds / 60);
+    const breakRemainingSeconds = breakSeconds % 60;
+
+    document.getElementById('breakTimeDisplay').textContent =
+        `휴식: ${breakMinutes}:${breakRemainingSeconds.toString().padStart(2, '0')}`;
+  }
+
+  // 타이머 업데이트 함수
+  function updateTimer() {
+    if (currentSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      if (isBreakTime) {
+        // 휴식 시간 종료 후 다시 포모도로 시작
+        isBreakTime = false;
+        currentSeconds = totalSeconds;
+        phaseText.textContent = '집중 시간';
+        phaseText.className = 'phase-focus';
+
+        // 휴식시간 바 초기화
+        breakProgressBar.style.width = '0%';
+
+        // 알림
+        alert('휴식 시간이 종료되었습니다. 다시 루틴을 진행해 주세요.');
+
+        // 타이머 재시작
+        startTimer();
+      } else {
+        // 포모도로 종료 후 루틴 완료 처리 및 메인 페이지로 이동
+        alert('루틴이 완료되었습니다.');
+
+        // 루틴 완료 처리 함수 호출 (false = 다음 루틴으로 이동하지 않음)
+        completeRoutine(false);
+
+      }
+    } else {
+      currentSeconds--;
+      updateTimerDisplay();
+    }
+  }
+
+  // 타이머 표시 업데이트 함수
+  function updateTimerDisplay() {
+    const minutes = Math.floor(currentSeconds / 60);
+    const seconds = currentSeconds % 60;
+    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  }
+
+  // 시간 포맷팅 함수
+  function formatTimeForDisplay(date) {
+    return date.toTimeString().split(' ')[0];
+  }
+
+  function beforeUnloadHandler(e) {
+    if (!isPaused && !isBreakTime) {
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  }
+  // 루틴 완료 함수
+  function completeRoutine(goToNext) {
+    confirmModal.style.display = 'none';
+
+    // 실제 진행 시간 계산
+    const actualSeconds = (totalSeconds - currentSeconds);
+    const actualMinutes = actualSeconds < 60 ? 0 : Math.ceil(actualSeconds / 60);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+
+    // 휴식 시간 초기화
+    breakSeconds = 0;
+
+    if (breakInterval) {
+      clearInterval(breakInterval);
+      breakInterval = null;
+    }
+
+    if (breakProgressBar) {
+      breakProgressBar.style.width = '0%';
+    }
+
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+
+    // 루틴 카테고리 확인
+    const routineCategory = /*[[${routine.category}]]*/ '';
+    const isCodingTest = routineCategory && routineCategory.startsWith('코딩테스트 준비');
+    const isInterview = routineCategory && routineCategory.startsWith('면접준비');
+
+
+    if (isCodingTest) {
+      form.action = '/routines/timer/complete-coding';
+    } else if(isInterview){
+      form.action = '/routines/timer/complete-interview';
+    } else {
+      form.action = '/routines/timer/complete';
+    }
+
+    // 기존 필드들 추가
+    const sessionIdInput = document.createElement('input');
+    sessionIdInput.type = 'hidden';
+    sessionIdInput.name = 'sessionId';
+    sessionIdInput.value = pomodoroSessionId;
+    form.appendChild(sessionIdInput);
+
+    const routineIdInput = document.createElement('input');
+    routineIdInput.type = 'hidden';
+    routineIdInput.name = 'routineId';
+    routineIdInput.value = routineId;
+    form.appendChild(routineIdInput);
+
+    // 실제 진행 시간 추가
+    const actualTimeInput = document.createElement('input');
+    actualTimeInput.type = 'hidden';
+    actualTimeInput.name = 'actualMinutes';
+    actualTimeInput.value = actualMinutes;
+    form.appendChild(actualTimeInput);
+
+    // CSRF 토큰 추가
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_csrf';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+    form.appendChild(methodInput);
+
+    if (goToNext && nextRoutineId && !isCodingTest && !isInterview) {
+      const nextInput = document.createElement('input');
+      nextInput.type = 'hidden';
+      nextInput.name = 'nextRoutineId';
+      nextInput.value = nextRoutineId;
+      form.appendChild(nextInput);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+
+  function addBreakTimeDisplay() {
+    // 기존 휴식 시간 텍스트 요소
+    const breakTimeDisplay = document.createElement('div');
+    breakTimeDisplay.id = 'breakTimeDisplay';
+    breakTimeDisplay.style.marginTop = '10px';
+    breakTimeDisplay.style.color = '#43a047';
+    breakTimeDisplay.style.fontWeight = 'bold';
+    breakTimeDisplay.textContent = '휴식: 0:00';
+
+    // 새로운 휴식 시간 프로그레스 바 컨테이너
+    const breakProgressContainer = document.createElement('div');
+    breakProgressContainer.className = 'break-progress-container';
+    breakProgressContainer.style.marginTop = '20px';
+
+    // 휴식 시간 프로그레스 바
+    const breakProgressBarContainer = document.createElement('div');
+    breakProgressBarContainer.className = 'timer-progress';
+
+    // 휴식 시간 프로그레스 바 (실제 진행 상태 표시)
+    const breakProgressBarElement = document.createElement('div');
+    breakProgressBarElement.className = 'break-progress-bar';
+    breakProgressBarElement.style.width = '0%';
+    breakProgressBarContainer.appendChild(breakProgressBarElement);
+
+
+    // 요소들을 컨테이너에 추가
+    breakProgressContainer.appendChild(breakTimeDisplay);
+    breakProgressContainer.appendChild(breakProgressBarContainer);
+
+    // 기존 타이머 프로그레스 바 다음에 추가
+    document.querySelector('.timer-progress').after(breakProgressContainer);
+
+    // breakProgressBar 참조 업데이트
+    breakProgressBar = breakProgressBarElement;
+  }
+</script>
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+</body>
+</html>

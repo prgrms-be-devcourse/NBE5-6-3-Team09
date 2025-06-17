@@ -1,0 +1,419 @@
+/* ✅ 메인 화면과 조화로운 사이드바 CSS */
+
+/* ✅ 사이드바 메인 컨테이너 - 메인 화면 디자인과 일치 */
+.sidebar {
+  position: fixed !important;
+  top: 70px !important;
+  left: 0 !important;
+  width: 250px !important;
+  height: calc(100vh - 70px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
+  z-index: 900 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  font-family: 'Pretendard', sans-serif !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ✅ 다크 테마 사이드바 */
+body.dark-theme .sidebar {
+  background: rgba(30, 30, 46, 0.95) !important;
+  border-right-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
+}
+
+/* ✅ 네비게이션 컨테이너 */
+.sidebar .sidebar-nav {
+  padding: 25px 15px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  flex: 1 !important;
+}
+
+/* ✅ 구분선 */
+.sidebar .nav-divider {
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%) !important;
+  margin: 15px 8px !important;
+}
+
+body.dark-theme .sidebar .nav-divider {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%) !important;
+}
+
+/* ✅ 네비게이션 아이템 그룹 */
+.nav-item-group {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  margin-bottom: 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* ✅ 네비게이션 아이템 - 메인 화면 글래스모피즘 스타일 */
+.sidebar .nav-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+/* ✅ 다크 테마 네비게이션 아이템 */
+body.dark-theme .sidebar .nav-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.sidebar .nav-item:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: white !important;
+  transform: translateX(4px) !important;
+  text-decoration: none !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
+}
+
+.sidebar .nav-item.active {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4) !important;
+}
+
+.sidebar .nav-item.active:hover {
+  transform: translateX(2px) !important;
+}
+
+/* ✅ 아이콘 */
+.sidebar .nav-icon {
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  transition: all 0.3s ease !important;
+  flex-shrink: 0 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .sidebar .nav-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.sidebar .nav-item:hover .nav-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05) !important;
+}
+
+body.dark-theme .sidebar .nav-item:hover .nav-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.sidebar .nav-item.active .nav-icon {
+  background: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .sidebar .nav-item.active .nav-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ✅ 텍스트 */
+.sidebar .nav-text {
+  flex: 1 !important;
+  white-space: nowrap !important;
+  font-weight: inherit !important;
+}
+
+/* ✅ 인디케이터 */
+.sidebar .nav-indicator {
+  width: 6px !important;
+  height: 6px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 50% !important;
+  opacity: 0 !important;
+  transform: scale(0) !important;
+  transition: all 0.3s ease !important;
+}
+
+.sidebar .nav-item:hover .nav-indicator {
+  opacity: 0.7 !important;
+  transform: scale(1) !important;
+}
+
+.sidebar .nav-item.active .nav-indicator {
+  background: white !important;
+  opacity: 1 !important;
+  transform: scale(1.2) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ✅ 드롭다운 화살표 */
+.dropdown-arrow {
+  margin-left: auto !important;
+  transition: transform 0.3s ease !important;
+  opacity: 0.7 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 14px !important;
+}
+
+.nav-item-group.open .dropdown-arrow {
+  transform: rotate(180deg) !important;
+  opacity: 1 !important;
+}
+
+.nav-item-group:hover .dropdown-arrow {
+  opacity: 1 !important;
+  color: white !important;
+}
+
+/* ✅ 드롭다운 메뉴 */
+.dropdown-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 16px !important;
+  margin: 6px 0 0 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.nav-item-group.open .dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-height: 200px !important;
+  padding: 6px 0 0 0 !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ✅ 드롭다운 아이템 */
+.dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  text-decoration: none !important;
+  border-radius: 14px !important;
+  transition: all 0.3s ease !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin: 0 12px 4px 12px !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .dropdown-item {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dropdown-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  transform: translateX(2px) !important;
+  text-decoration: none !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3) !important;
+}
+
+.dropdown-item.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .dropdown-item.active {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4) !important;
+}
+
+/* ✅ 드롭다운 아이콘 */
+.dropdown-icon {
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  flex-shrink: 0 !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .dropdown-icon {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dropdown-item:hover .dropdown-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.05) !important;
+}
+
+body.dark-theme .dropdown-item:hover .dropdown-icon {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dropdown-item.active .dropdown-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .dropdown-item.active .dropdown-icon {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ✅ 드롭다운 텍스트 */
+.dropdown-text {
+  flex: 1 !important;
+  font-weight: inherit !important;
+  white-space: nowrap !important;
+}
+
+/* ✅ 스크롤바 스타일 - 메인 화면과 일치 */
+.sidebar::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.dark-theme .sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-theme .sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ✅ 포커스 접근성 */
+.sidebar .nav-item:focus-visible,
+.dropdown-item:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+  outline-offset: 2px !important;
+}
+
+.sidebar .nav-item:focus,
+.dropdown-item:focus {
+  outline: none !important;
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+}
+
+/* ✅ 애니메이션 최적화 */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar *,
+  .sidebar *::before,
+  .sidebar *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ✅ 인쇄 시 사이드바 숨김 */
+@media print {
+  .sidebar {
+    display: none !important;
+  }
+}

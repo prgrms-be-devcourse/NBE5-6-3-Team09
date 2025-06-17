@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeMap - 오류가 발생했습니다</title>
+  <link rel="stylesheet" th:href="@{/css/user/error.css}"/>
+</head>
+<body>
+<!-- 애니메이션 배경 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<main>
+  <div class="error-container">
+    <!-- 에러 아이콘 -->
+    <div class="error-icon-wrapper">
+      <span class="error-icon">🚧</span>
+      <div class="icon-glow"></div>
+    </div>
+
+    <!-- 에러 정보 -->
+    <div class="error-info">
+      <h1 class="error-code" th:text="${status != null ? status : '500'}">500</h1>
+      <h2 class="error-title">앗! 문제가 발생했어요</h2>
+      <p class="error-description" th:text="${message != null ? message : '서버에서 예상치 못한 오류가 발생했습니다.'}">
+        서버에서 예상치 못한 오류가 발생했습니다.
+      </p>
+
+      <!-- 추가 정보 (개발 환경에서만 표시) -->
+      <div class="error-details" th:if="${trace}">
+        <details>
+          <summary>🔍 개발자 정보</summary>
+          <pre th:text="${trace}"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- 액션 버튼들 -->
+    <div class="action-buttons">
+      <a href="javascript:history.back()" class="btn btn-secondary">
+        ← 이전 페이지
+      </a>
+      <a href="/" class="btn btn-primary">
+        🏠 홈으로 돌아가기
+      </a>
+      <a href="/user/main" class="btn btn-tertiary" th:if="${session.userId}">
+        📱 대시보드로
+      </a>
+    </div>
+
+    <!-- 도움말 섹션 -->
+    <div class="help-section">
+      <h3>💡 이런 경우 확인해보세요</h3>
+      <ul class="help-list">
+        <li>인터넷 연결 상태를 확인해주세요</li>
+        <li>페이지를 새로고침 해보세요</li>
+        <li>브라우저 캐시를 삭제해보세요</li>
+        <li>문제가 계속 발생하면 관리자에게 문의해주세요</li>
+      </ul>
+    </div>
+
+    <!-- 로고 -->
+    <div class="logo-section">
+      <img src="/img/codemap_blue.png" alt="CodeMap Logo" class="error-logo" />
+      <p class="brand-message">CodeMap과 함께 계속 성장해요! 💪</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  // 에러 코드별 메시지 커스터마이징
+  const errorCode = document.querySelector('.error-code').textContent;
+  const errorTitle = document.querySelector('.error-title');
+  const errorIcon = document.querySelector('.error-icon');
+
+  const errorMessages = {
+    '404': {
+      title: '페이지를 찾을 수 없어요',
+      icon: '🔍'
+    },
+    '403': {
+      title: '접근 권한이 없어요',
+      icon: '🚫'
+    },
+    '401': {
+      title: '로그인이 필요해요',
+      icon: '🔐'
+    },
+    '500': {
+      title: '서버에 문제가 생겼어요',
+      icon: '🚧'
+    }
+  };
+
+  if (errorMessages[errorCode]) {
+    errorTitle.textContent = errorMessages[errorCode].title;
+    errorIcon.textContent = errorMessages[errorCode].icon;
+  }
+
+  // 애니메이션 효과
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.error-container');
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(30px)';
+
+    setTimeout(() => {
+      container.style.transition = 'all 0.6s ease-out';
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 100);
+  });
+
+  // 자동 새로고침 제안 (선택적)
+  let retryCount = 0;
+  function suggestRetry() {
+    if (retryCount < 3) {
+      retryCount++;
+      setTimeout(() => {
+        if (confirm('페이지를 다시 불러올까요?')) {
+          location.reload();
+        }
+      }, 5000);
+    }
+  }
+
+  // 5xx 에러인 경우에만 자동 새로고침 제안
+  if (errorCode.startsWith('5')) {
+    suggestRetry();
+  }
+</script>
+</body>
+</html>

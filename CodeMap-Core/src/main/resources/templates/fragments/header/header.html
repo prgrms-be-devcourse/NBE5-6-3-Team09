@@ -1,0 +1,176 @@
+<!-- ✅ PC 전용 헤더 Fragment -->
+<div th:fragment="header" class="header">
+  <!-- 헤더 배경 효과 -->
+  <div class="header-background">
+    <div class="header-blur-overlay"></div>
+    <div class="header-gradient-overlay"></div>
+  </div>
+
+  <!-- 좌측 로고 영역 -->
+  <div class="header-logo">
+    <a th:href="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? @{/admin/users} : @{/user/main}" class="logo-link">
+      <div class="logo-icon">
+        <div class="logo-gradient">
+          <span class="logo-emoji">📊</span>
+          <div class="logo-shine"></div>
+        </div>
+        <div class="logo-ring"></div>
+      </div>
+      <div class="logo-text-wrapper">
+        <span class="logo-text">CodeMap</span>
+        <div class="logo-subtitle">Developer Journey</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 중앙 빈 공간 -->
+  <div class="header-center"></div>
+
+  <!-- 우측 사용자 정보 영역 -->
+  <div class="header-actions">
+    <!-- 테마 토글 버튼 -->
+    <div class="theme-toggle-wrapper">
+      <button id="theme-toggle" class="action-btn theme-toggle-btn" title="테마 변경">
+        <div class="btn-content">
+          <div class="btn-icon theme-icon">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+          </div>
+        </div>
+        <div class="btn-hover-effect theme-effect"></div>
+      </button>
+    </div>
+
+    <!-- 알림 아이콘 -->
+    <div class="notification-wrapper">
+      <span id="notification-icon">🔔</span>
+      <div id="notification-popup"></div>
+    </div>
+
+    <!-- 사용자 정보 -->
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <div class="user-avatar" th:text="${user != null ? #strings.substring(user.nickname, 0, 1) : 'U'}">U</div>
+        <div class="avatar-glow"></div>
+        <div class="status-indicator"></div>
+      </div>
+      <div class="user-details">
+        <span class="user-name" th:text="${user != null ? user.nickname : '사용자'}">사용자</span>
+        <div class="user-status">
+          <div class="status-dot"></div>
+          <span>온라인</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로그아웃 버튼 -->
+    <form th:action="@{/user/logout}" method="post" class="logout-form">
+      <button type="submit" class="action-btn logout-btn">
+        <div class="btn-content">
+          <div class="btn-icon">🚪</div>
+          <span class="btn-text">로그아웃</span>
+        </div>
+        <div class="btn-hover-effect logout-effect"></div>
+      </button>
+    </form>
+  </div>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+      // ✅ 테마 초기화 및 적용
+      function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.classList.remove('light-theme', 'dark-theme');
+        document.body.classList.add(savedTheme + '-theme');
+        updateThemeToggleIcon(savedTheme);
+      }
+
+      // ✅ 테마 토글 아이콘 업데이트
+      function updateThemeToggleIcon(theme) {
+        const lightIcon = document.querySelector('.light-icon');
+        const darkIcon = document.querySelector('.dark-icon');
+
+        if (theme === 'dark') {
+          if (lightIcon) lightIcon.style.display = 'block';
+          if (darkIcon) darkIcon.style.display = 'none';
+        } else {
+          if (lightIcon) lightIcon.style.display = 'none';
+          if (darkIcon) darkIcon.style.display = 'block';
+        }
+      }
+
+      // ✅ 테마 토글 기능
+      function toggleTheme() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        // localStorage에 저장
+        localStorage.setItem('theme', newTheme);
+
+        // body 클래스 변경 (애니메이션 효과)
+        document.body.classList.add('theme-transition');
+        document.body.classList.remove('light-theme', 'dark-theme');
+        document.body.classList.add(newTheme + '-theme');
+
+        // 아이콘 업데이트
+        updateThemeToggleIcon(newTheme);
+
+        // 애니메이션 완료 후 클래스 제거
+        setTimeout(() => {
+          document.body.classList.remove('theme-transition');
+        }, 300);
+      }
+
+      // ✅ 테마 토글 버튼 이벤트 리스너
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+      }
+
+      // ✅ 초기 테마 적용
+      initializeTheme();
+
+      // 헤더 고정
+      const header = document.querySelector('.header');
+      if (header) {
+        header.style.position = 'fixed';
+        header.style.top = '0';
+        header.style.left = '0';
+        header.style.right = '0';
+        header.style.zIndex = '9999';
+        header.style.width = '100%';
+      }
+
+      // 스크롤 효과
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateHeader() {
+        const currentScrollY = window.scrollY;
+        const header = document.querySelector('.header');
+
+        if (header) {
+          if (currentScrollY > 50) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      });
+    });
+    /*]]>*/
+  </script>
+</div>
+
+<!-- ✅ 알림 스크립트 연결 -->
+<th:block th:replace="~{fragments/common/alert-script :: alert-script}" />

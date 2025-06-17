@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeMap - 문항 목록</title>
+    <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
+    <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 250px;
+            margin-top: -31vw;
+            padding: 40px;
+        }
+        .header-row {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between; /* 왼쪽: 카테고리 / 오른쪽: 버튼 */
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .category-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0019a5;
+        }
+        .add-button {
+            padding: 10px 20px;              /* 🔼 패딩 키움 */
+            font-size: 15px;                 /* 🔼 글씨 키움 */
+            border: none;
+            border-radius: 999px;
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);  /* 👁 시각 강조 */
+            transition: background-color 0.2s ease;
+        }
+        .add-button:hover {
+            background-color: #2563eb;
+        }
+        .question-list {
+            background: #e8f0ff;
+            padding: 32px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 800px;  /* ✅ 너비 제한 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .question-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+        }
+        /* 케밥 메뉴 (⋮ 버튼) */
+        .kebab-menu {
+            background-color: #e9f11f;
+            color: #0019a5;
+            font-weight: bold;
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* 드롭다운 박스 */
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 36px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+            min-width: 100px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        /* 공통 항목 */
+        .dropdown a.dropdown-item,
+        .dropdown button.dropdown-item {
+            padding: 12px 16px;
+            font-size: 15px;
+            color: #333;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Pretendard', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            text-decoration: none;
+        }
+
+        /* 링크 상태 리셋 */
+        .dropdown a.dropdown-item:link,
+        .dropdown a.dropdown-item:visited,
+        .dropdown a.dropdown-item:active {
+            color: #333;
+            text-decoration: none;
+        }
+
+        /* Hover 효과 (기본 항목) */
+        .dropdown a.dropdown-item:hover,
+        .dropdown button.dropdown-item:hover {
+            background-color: #f5f5f5;
+            color: #0019a5;
+        }
+
+        /* 삭제 항목 */
+        .dropdown .dropdown-item.delete {
+            color: #dc2626;
+        }
+
+        /* 삭제 항목 hover 시 배경만 회색, 글자색 유지 */
+        .dropdown .dropdown-item.delete:hover {
+            background-color: #f5f5f5;
+            color: #dc2626;
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header/header :: header}"></header>
+<aside th:replace="~{fragments/sidenav/admin/admin-sidenav :: sidebar}"></aside>
+<main>
+    <div class="header-row">
+        <div class="category-title" th:text="${category}">카테고리명</div>
+        <a class="add-button"
+           th:href="@{/admin/contents/questions/new(category=${category})}">
+            문항 추가
+        </a>
+    </div>
+
+    <div class="question-list">
+        <!-- 문항이 없을 때 -->
+        <div th:if="${#lists.isEmpty(questions)}" style="text-align: center; padding: 20px; color: gray;">
+            등록된 문항이 없습니다.
+        </div>
+
+        <!-- 문항이 있을 때 -->
+        <div class="question-item" th:each="question : ${questions}">
+            <span th:text="${question.questionText}">문제 A</span>
+            <div class="kebab-menu" onclick="toggleDropdown(this)">
+                ⋮
+                <div class="dropdown">
+                    <!-- ✅ 수정: class 추가 -->
+                    <a class="dropdown-item"
+                       th:href="@{'/admin/contents/questions/' + ${question.id} + '/edit'(category=${category})}">
+                        수정
+                    </a>
+
+                    <!-- ✅ 삭제: 그대로 유지 -->
+                    <a class="dropdown-item delete"
+                       href="javascript:void(0)"
+                       th:attr="data-id=${question.id}"
+                       th:attrappend="data-category=${#strings.replace(#strings.trim(category), ',', '')}"
+                       onclick="showDeleteModalFromAttr(this)">
+                        삭제
+                    </a>
+                </div>
+
+
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div th:replace="~{admin/content/content-delete-modal :: deleteModal}"></div>
+
+
+<!-- ✅ JS 코드 -->
+<script>
+    let openDropdown = null;
+
+    function toggleDropdown(button) {
+        const dropdown = button.querySelector('.dropdown');
+        if (openDropdown && openDropdown !== dropdown) {
+            openDropdown.style.display = 'none';
+        }
+        if (dropdown.style.display === 'flex') {
+            dropdown.style.display = 'none';
+            openDropdown = null;
+        } else {
+            dropdown.style.display = 'flex';
+            openDropdown = dropdown;
+        }
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.kebab-menu')) {
+            if (openDropdown) {
+                openDropdown.style.display = 'none';
+                openDropdown = null;
+            }
+        }
+    });
+
+    function showDeleteModalFromAttr(element) {
+        const id = element.getAttribute("data-id");
+        const category = element.getAttribute("data-category");
+        showDeleteModal(id, category);
+    }
+
+    function showDeleteModal(questionId, category) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        form.action = `/admin/contents/questions/${questionId}/delete?category=${encodeURIComponent(category)}`;
+        modal.style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+</script>
+</body>
+</html>

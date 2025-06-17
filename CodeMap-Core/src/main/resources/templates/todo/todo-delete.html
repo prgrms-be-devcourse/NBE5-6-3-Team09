@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>삭제 확인</title>
+  <style>
+    #deleteModal {
+      display: block;
+      position: fixed;
+      top: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      z-index: 2000;
+      width: 400px;
+      text-align: center;
+      font-family: "Pretendard", sans-serif;
+    }
+
+    #deleteModal h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .modal-message {
+      font-size: 16px;
+      color: #374151;
+      margin-bottom: 30px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .delete-button,
+    .cancel-button {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      width: 120px;
+    }
+
+    .delete-button {
+      background-color: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .delete-button:hover {
+      background-color: #dc2626;
+    }
+
+    .cancel-button {
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .cancel-button:hover {
+      background-color: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+
+<div id="deleteModal">
+  <h2>투두 삭제</h2>
+  <div class="modal-message">정말로 삭제하시겠습니까?</div>
+  <div class="button-group">
+    <button id="confirmDeleteBtn" class="delete-button">삭제</button>
+    <button class="cancel-button" onclick="closeModal()">취소</button>
+  </div>
+</div>
+
+</body>
+</html>
