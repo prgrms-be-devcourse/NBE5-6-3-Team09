@@ -18,6 +18,13 @@
 </head>
 
 <body>
+<!-- 배경 애니메이션 -->
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
 <header th:replace="fragments/header/header :: header"></header>
 <aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
@@ -31,12 +38,12 @@
 
 <main id="mainContent">
   <div class="jobposting-container">
-    <h1 class="page-title">💼 채용공고 & 목표기업 관리</h1>
-    <p class="page-subtitle">채용 사이트를 확인하고 목표 기업의 마감일을 관리해보세요</p>
 
     <!-- 채용사이트 링크 섹션 -->
-    <div class="job-sites-section">
-      <h2 class="section-title">🔗 주요 채용 사이트</h2>
+    <div class="content-section">
+      <div class="section-header">
+        <h3 class="section-title">🔗 주요 채용 사이트</h3>
+      </div>
       <div class="job-sites-grid">
         <a href="https://www.wanted.co.kr" target="_blank" class="job-site-card">
           <div class="job-site-logo">🎯</div>
@@ -82,17 +89,18 @@
     </div>
 
     <!-- 목표기업 관리 섹션 -->
-    <div class="target-companies-section">
-      <h2 class="section-title">🎯 목표기업 관리</h2>
-
-      <!-- 목표기업 추가 버튼 -->
-      <button class="add-company-btn" onclick="openAddCompanyModal()">📌 목표기업 추가</button>
+    <div class="content-section">
+      <div class="section-header">
+        <h3 class="section-title">🎯 목표기업 관리</h3>
+        <button class="add-company-btn" onclick="openAddCompanyModal()">📌 목표기업 추가</button>
+      </div>
 
       <!-- 목표기업 리스트 -->
       <div id="companyList" class="company-list">
         <!-- 여기에 목표기업들이 동적으로 추가됩니다 -->
       </div>
     </div>
+
   </div>
 
   <!-- 삭제 확인 모달 -->
@@ -134,9 +142,12 @@
 </main>
 
 <script>
+  // ✅ 저장된 테마 불러오기 (페이지 로드 시 최우선 실행)
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.classList.add(savedTheme + '-theme');
+
   document.addEventListener('DOMContentLoaded', function () {
     let targetCompanies = [];
-
 
     loadTargetCompanies();
     updateDDayNotification();
@@ -267,7 +278,6 @@
       document.getElementById('deleteConfirmModal').style.display = 'flex';
     }
 
-
     function calculateDDay(deadline) {
       const today = new Date();
       const dueDate = new Date(deadline);
@@ -360,13 +370,12 @@
       });
     }
 
-// 모달 외부 클릭시 닫기 이벤트 추가 (기존 모달 이벤트 아래에)
+    // 모달 외부 클릭시 닫기 이벤트 추가 (기존 모달 이벤트 아래에)
     document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeDeleteModal();
       }
     });
-
 
     // 전역 등록
     window.closeDeleteModal = closeDeleteModal;

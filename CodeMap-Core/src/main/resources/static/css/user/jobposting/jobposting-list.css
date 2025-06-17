@@ -1,44 +1,132 @@
-body {
+/* ✅ 전체 리셋 */
+* {
   margin: 0;
   padding: 0;
-  background-color: #F8F9FA;
-  font-family: "Pretendard", sans-serif;
+  box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+/* ✅ 라이트 테마 (기본) */
+body.light-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+}
+
+/* ✅ 다크 테마 */
+body.dark-theme {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f7fafc;
+}
+
+/* 배경 애니메이션 - 메인과 동일 */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+  background: white;
+}
+
+body.dark-theme .floating-shape {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.floating-shape:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  top: 60%;
+  right: 10%;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  animation-delay: 2s;
+}
+
+.floating-shape:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  width: 60px;
+  height: 60px;
+  transform: rotate(45deg);
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* ✅ 헤더 고정 */
 header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 116px;
+  height: 70px;
   z-index: 1000;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
+body.dark-theme header {
+  background: rgba(30, 30, 46, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* ✅ 사이드바 고정 */
 aside {
   position: fixed;
-  top: 116px;
+  top: 70px;
   left: 0;
   width: 250px;
-  height: calc(100vh - 116px);
+  height: calc(100vh - 70px);
   z-index: 900;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-main {
-  margin-left: 280px;
-  margin-top: 100px;
-  padding: 30px;
-  min-height: calc(100vh - 100px);
-  background-color: #f8f9fa;
+body.dark-theme aside {
+  background: rgba(30, 30, 46, 0.95);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
 }
 
-/* D-Day 알림 바 - 모든 페이지에 표시 */
+/* D-Day 알림 바 */
 .dday-notification {
   position: fixed;
-  top: 67px;
-  left: 261px; /* sidenav 고려해서 좌측 여백 줌 */
-  right: 10px;
+  top: 70px;
+  left: 250px;
+  right: 0;
   background: linear-gradient(90deg, #ff6b6b, #ee5a24);
   color: white;
   padding: 12px 20px;
@@ -46,8 +134,9 @@ main {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   animation: slideDown 0.5s ease-out;
   display: none;
-  width: 1300px; /* sidenav 가리지 않도록 */
+  backdrop-filter: blur(10px);
 }
+
 .dday-notification.show {
   display: block;
 }
@@ -76,123 +165,375 @@ main {
   100% { opacity: 1; }
 }
 
-/* 메인 컨테이너 */
+/* ✅ 메인 콘텐츠 영역 */
+main {
+  margin-top: 70px;
+  margin-left: 250px;
+  min-height: calc(100vh - 70px);
+  padding: 30px;
+  position: relative;
+  background: transparent;
+}
+
+/* D-Day 알림이 있을 때 메인 콘텐츠 마진 조정 */
+main.with-dday {
+  margin-top: 120px;
+}
+
+/* ✅ 컨테이너 */
 .jobposting-container {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 32px;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  padding: 0;
+  position: relative;
 }
 
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 8px;
-  text-align: center;
+/* 콘텐츠 섹션 - 메인과 동일 */
+.content-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out both;
 }
 
-.page-subtitle {
-  font-size: 16px;
-  color: #6b7280;
-  margin-bottom: 32px;
-  text-align: center;
+body.dark-theme .content-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* 채용사이트 링크 섹션 */
-.job-sites-section {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 32px;
+.content-section:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .content-section:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* 첫 번째와 두 번째 섹션에 지연 애니메이션 */
+.content-section:nth-child(1) { animation-delay: 0.2s; }
+.content-section:nth-child(2) { animation-delay: 0.4s; }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 1rem;
+}
+
+body.dark-theme .section-header {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
+body.dark-theme .section-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ✅ 채용사이트 카드 그리드 */
 .job-sites-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  gap: 1.5rem;
 }
 
 .job-site-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
   text-decoration: none;
   color: inherit;
-  border: 2px solid #e5e7eb;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-}
-
-.job-site-card:hover {
-  border-color: #6366f1;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.job-site-logo {
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-
-.job-site-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.job-site-desc {
-  font-size: 14px;
-  color: #6b7280;
+  gap: 1rem;
   text-align: center;
 }
 
-/* 목표기업 관리 섹션 */
-.target-companies-section {
-  background: #f0f9ff;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 32px;
+body.dark-theme .job-site-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.add-company-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
+.job-site-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-decoration: none;
+}
+
+body.dark-theme .job-site-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.job-site-logo {
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 50%;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme .job-site-logo {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.job-site-name {
   font-size: 1.1rem;
   font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .job-site-name {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.job-site-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+body.dark-theme .job-site-desc {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ✅ 목표기업 추가 버튼 - 캘린더와 동일한 스타일 */
+.add-company-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
   border-radius: 50px;
-  cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  margin-bottom: 2rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  cursor: pointer;
+}
+
+body.dark-theme .add-company-btn {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
 }
 
 .add-company-btn:hover {
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  text-decoration: none;
 }
 
-/* 모달 스타일 */
+body.dark-theme .add-company-btn:hover {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
+}
+
+/* ✅ 목표기업 리스트 */
+.company-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.company-item {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+body.dark-theme .company-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.company-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(5px);
+}
+
+body.dark-theme .company-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.company-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.company-icon {
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.8rem;
+  border-radius: 50%;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme .company-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.company-details {
+  flex: 1;
+}
+
+.company-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .company-name {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.company-deadline {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+body.dark-theme .company-deadline {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ✅ D-Day 배지 */
+.dday-badge {
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 80px;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.dday-urgent {
+  background: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+body.dark-theme .dday-urgent {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(220, 53, 69, 0.25);
+}
+
+.dday-warning {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+body.dark-theme .dday-warning {
+  background: rgba(255, 193, 7, 0.15);
+  border-color: rgba(255, 193, 7, 0.25);
+}
+
+.dday-normal {
+  background: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+body.dark-theme .dday-normal {
+  background: rgba(40, 167, 69, 0.15);
+  border-color: rgba(40, 167, 69, 0.25);
+}
+
+/* ✅ 삭제 버튼 */
+.delete-btn {
+  background: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  padding: 0.6rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+body.dark-theme .delete-btn {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(220, 53, 69, 0.25);
+}
+
+.delete-btn:hover {
+  background: rgba(220, 53, 69, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+body.dark-theme .delete-btn:hover {
+  background: rgba(220, 53, 69, 0.25);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+/* ✅ 빈 상태 */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-theme .empty-state {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ✅ 모달 스타일 - 메인과 일관성 */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -208,25 +549,38 @@ main {
 }
 
 .modal-box {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 3rem;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   animation: fadeIn 0.4s ease-out;
   max-width: 500px;
   width: 90%;
   margin: 1rem;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme .modal-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .modal-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #667eea;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
   text-align: center;
   margin-bottom: 2rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 1rem;
+}
+
+body.dark-theme .modal-title {
+  color: rgba(255, 255, 255, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
 .modal-form-group {
@@ -235,27 +589,57 @@ main {
 
 .modal-form-label {
   display: block;
-  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
-  color: #333;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .modal-form-label {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .modal-form-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 1rem;
+  color: white;
+  font-weight: 500;
   transition: all 0.3s ease;
+  font-family: 'Pretendard', sans-serif;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-theme .modal-form-input {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.modal-form-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-theme .modal-form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .modal-form-input:focus {
   outline: none;
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-theme .modal-form-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .modal-button-group {
@@ -266,184 +650,70 @@ main {
 
 .modal-confirm-button {
   flex: 1;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 50px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  cursor: pointer;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1.2rem 2rem;
+  border-radius: 50px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  cursor: pointer;
+}
+
+body.dark-theme .modal-confirm-button {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
+}
+
+.modal-confirm-button:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  text-decoration: none;
+}
+
+body.dark-theme .modal-confirm-button:hover {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
 }
 
 .modal-cancel-button {
   flex: 1;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
   font-weight: 600;
-  border: 2px solid #667eea;
+  padding: 1.2rem 2rem;
   border-radius: 50px;
-  background: transparent;
-  color: #667eea;
-  cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
 }
 
-.modal-confirm-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+body.dark-theme .modal-cancel-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .modal-cancel-button:hover {
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-decoration: none;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+body.dark-theme .modal-cancel-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-/* 목표기업 리스트 */
-.company-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.company-item {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  border: 2px solid #e0f2fe;
-  display: flex;
-  justify-content: between;
-  align-items: center;
-  position: relative;
-}
-
-.company-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-
-.company-icon {
-  font-size: 24px;
-  background: #f0f9ff;
-  padding: 12px;
-  border-radius: 50%;
-}
-
-.company-details {
-  flex: 1;
-}
-
-.company-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 4px;
-}
-
-.company-deadline {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.dday-badge {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-right: 16px;
-}
-
-.dday-urgent {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.dday-warning {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.dday-normal {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.delete-btn {
-  background: #fee2e2;
-  color: #dc2626;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.delete-btn:hover {
-  background: #fecaca;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #6b7280;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-  main {
-    margin-left: 0;
-    padding: 20px;
-  }
-
-  .job-sites-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .company-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .company-info {
-    width: 100%;
-  }
-
-  .dday-badge {
-    margin-right: 0;
-    margin-bottom: 8px;
-  }
-
-  .modal-box {
-    padding: 2rem;
-  }
-
-  .modal-button-group {
-    flex-direction: column;
-  }
-}
-/* 삭제 확인 모달 스타일 */
+/* ✅ 삭제 확인 모달 */
 .delete-modal-overlay {
   position: fixed;
   top: 0;
@@ -459,17 +729,23 @@ main {
 }
 
 .delete-modal-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(220, 53, 69, 0.3);
   padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
+  box-shadow: 0 10px 30px rgba(220, 53, 69, 0.2);
   animation: fadeIn 0.4s ease-out;
   max-width: 400px;
   width: 90%;
   margin: 1rem;
-  backdrop-filter: blur(20px);
-  border: 2px solid rgba(220, 38, 38, 0.1);
   text-align: center;
+}
+
+body.dark-theme .delete-modal-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(220, 53, 69, 0.25);
+  box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
 }
 
 .delete-modal-icon {
@@ -479,17 +755,26 @@ main {
 }
 
 .delete-modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
   margin-bottom: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .delete-modal-title {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .delete-modal-message {
   font-size: 1rem;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 2rem;
   line-height: 1.5;
+}
+
+body.dark-theme .delete-modal-message {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .delete-modal-company-name {
@@ -504,44 +789,196 @@ main {
 
 .delete-modal-cancel {
   flex: 1;
-  padding: 0.8rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
   font-size: 1rem;
   font-weight: 600;
-  border: 2px solid #d1d5db;
-  border-radius: 12px;
-  background: white;
-  color: #6b7280;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .delete-modal-cancel {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .delete-modal-cancel:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .delete-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .delete-modal-confirm {
   flex: 1;
-  padding: 0.8rem 1.5rem;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: white;
   font-size: 1rem;
   font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
   box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
 }
 
 .delete-modal-confirm:hover {
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
 }
 
+/* ✅ 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-/* D-Day 알림이 있을 때 메인 콘텐츠 마진 조정 */
-main.with-dday {
-  margin-top: 150px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ✅ 스크롤바 스타일링 - 메인과 동일 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-top: 70px;
+    margin-left: 0;
+    width: 100vw;
+    padding: 1rem;
+  }
+
+  main.with-dday {
+    margin-top: 120px;
+  }
+
+  .dday-notification {
+    left: 0;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-section {
+    padding: 2rem;
+  }
+
+  .job-sites-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .company-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .company-info {
+    width: 100%;
+  }
+
+  .dday-badge {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-box {
+    padding: 2rem;
+  }
+
+  .modal-button-group {
+    flex-direction: column;
+  }
+
+  .content-section {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .welcome-section {
+    padding: 1.5rem;
+  }
+
+  .content-section {
+    padding: 1.2rem;
+  }
+
+  .job-sites-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-box {
+    padding: 1.5rem;
+  }
 }
