@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class DailyRoutineService {
 
     private final DailyRoutineRepository dailyRoutineRepository;
@@ -91,40 +93,51 @@ public class DailyRoutineService {
     public Map<String, List<DailyRoutineDto>> getRoutinesByDate(Long userId, LocalDate date) {
         User user = userService.getUserById(userId);
 
-        // 오늘 날짜인 경우에만 daily_routines에서 조회
-        if (date.equals(LocalDate.now())) {
-            List<DailyRoutine> dateRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, date);
+        // 🔧 1단계: 디버깅 로그 추가
+        log.info("=== getRoutinesByDate Debug ===");
+        log.info("Requested date: {}", date);
+        log.info("Current system date: {}", LocalDate.now());
+        log.info("User ID: {}", userId);
 
-            Map<String, List<DailyRoutineDto>> result = new HashMap<>();
+        // 🔧 2단계: 오늘 날짜 조건 완전 제거
+        // 모든 날짜에 대해 조회하도록 수정
+        List<DailyRoutine> dateRoutines = dailyRoutineRepository.findRoutinesByUserAndDate(user, date);
 
-            List<DailyRoutineDto> activeRoutines = dateRoutines.stream()
-                .filter(r -> "ACTIVE".equals(r.getStatus()))
-                .map(DailyRoutineDto::fromEntity)
-                .collect(Collectors.toList());
-
-            List<DailyRoutineDto> completedRoutines = dateRoutines.stream()
-                .filter(r -> "COMPLETED".equals(r.getStatus()))
-                .map(DailyRoutineDto::fromEntity)
-                .collect(Collectors.toList());
-
-            List<DailyRoutineDto> passedRoutines = dateRoutines.stream()
-                .filter(r -> "PASS".equals(r.getStatus()))
-                .map(DailyRoutineDto::fromEntity)
-                .collect(Collectors.toList());
-
-            result.put("active", activeRoutines);
-            result.put("completed", completedRoutines);
-            result.put("passed", passedRoutines);
-
-            return result;
-        } else {
-            // 과거 날짜는 히스토리에서 조회하도록 빈 결과 반환
-            Map<String, List<DailyRoutineDto>> result = new HashMap<>();
-            result.put("active", List.of());
-            result.put("completed", List.of());
-            result.put("passed", List.of());
-            return result;
+        // 🔧 3단계: 조회된 루틴들 디버깅
+        log.info("Found {} routines for date {}", dateRoutines.size(), date);
+        for (DailyRoutine routine : dateRoutines) {
+            log.info("Routine: id={}, title={}, createdAt={}, status={}",
+                routine.getId(), routine.getTitle(), routine.getCreatedAt(), routine.getStatus());
         }
+
+        Map<String, List<DailyRoutineDto>> result = new HashMap<>();
+
+        // 조회된 루틴들을 상태별로 분류
+        List<DailyRoutineDto> activeRoutines = dateRoutines.stream()
+            .filter(r -> "ACTIVE".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        List<DailyRoutineDto> completedRoutines = dateRoutines.stream()
+            .filter(r -> "COMPLETED".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        List<DailyRoutineDto> passedRoutines = dateRoutines.stream()
+            .filter(r -> "PASS".equals(r.getStatus()))
+            .map(DailyRoutineDto::fromEntity)
+            .collect(Collectors.toList());
+
+        result.put("active", activeRoutines);
+        result.put("completed", completedRoutines);
+        result.put("passed", passedRoutines);
+
+        // 🔧 4단계: 결과 디버깅
+        log.info("Result - Active: {}, Completed: {}, Passed: {}",
+            activeRoutines.size(), completedRoutines.size(), passedRoutines.size());
+        log.info("=== End Debug ===");
+
+        return result;
     }
 
 
