@@ -1,15 +1,15 @@
 /* ✅ PC 전용 헤더 CSS 변수 */
 :root {
   --header-height: 70px;
-  --header-bg: rgba(255, 255, 255, 0.85);
-  --header-border: rgba(255, 255, 255, 0.3);
-  --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --header-bg: rgba(255, 255, 255, 0.1);
+  --header-border: rgba(255, 255, 255, 0.2);
+  --header-shadow: 0 2px 10px rgba(0,0,0,0.1);
   --header-primary: #667eea;
   --header-secondary: #764ba2;
   --header-accent: #f093fb;
-  --header-text-primary: #2d3748;
-  --header-text-secondary: #4a5568;
-  --header-text-light: #718096;
+  --header-text-primary: rgba(255, 255, 255, 0.95);
+  --header-text-secondary: rgba(255, 255, 255, 0.8);
+  --header-text-light: rgba(255, 255, 255, 0.7);
   --header-success: #48bb78;
   --header-danger: #f56565;
   --header-warning: #ed8936;
@@ -20,12 +20,12 @@
 
 /* ✅ 다크 테마 변수 */
 body.dark-theme {
-  --header-bg: rgba(26, 32, 44, 0.85);
+  --header-bg: rgba(30, 30, 46, 0.95);
   --header-text-primary: #f7fafc;
   --header-text-secondary: #e2e8f0;
   --header-text-light: #cbd5e0;
-  --header-border: rgba(45, 55, 72, 0.3);
-  --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --header-border: rgba(255, 255, 255, 0.1);
+  --header-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 /* ✅ 테마 전환 애니메이션 */
@@ -58,7 +58,7 @@ body:has(.header) aside,
   height: calc(100vh - var(--header-height)) !important;
 }
 
-/* ✅ 헤더 메인 컨테이너 */
+/* ✅ 헤더 메인 컨테이너 - 메인 화면과 동일한 글래스모피즘 */
 .header {
   position: fixed !important;
   top: 0 !important;
@@ -75,8 +75,11 @@ body:has(.header) aside,
   padding: 0 2rem !important;
   margin: 0 !important;
 
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
+  background: var(--header-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--header-border) !important;
+  box-shadow: var(--header-shadow) !important;
 
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased !important;
@@ -105,76 +108,17 @@ body:has(.header) aside,
   color: inherit !important;
 }
 
-/* ✅ 헤더 배경 효과 */
+/* ✅ 헤더 배경 효과 제거 (단순화) */
 .header .header-background {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  z-index: -1 !important;
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  display: none !important;
 }
 
 .header .header-blur-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: var(--header-bg) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  display: none !important;
 }
 
 .header .header-gradient-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(135deg,
-  rgba(102, 126, 234, 0.1) 0%,
-  rgba(118, 75, 162, 0.05) 50%,
-  rgba(240, 147, 251, 0.08) 100%) !important;
-  border-bottom: 1px solid var(--header-border) !important;
-  box-shadow: var(--header-shadow) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* 다크 테마 헤더 배경 */
-body.dark-theme .header .header-gradient-overlay {
-  background: linear-gradient(135deg,
-  rgba(102, 126, 234, 0.15) 0%,
-  rgba(118, 75, 162, 0.08) 50%,
-  rgba(240, 147, 251, 0.12) 100%) !important;
-}
-
-/* 스크롤 시 헤더 효과 */
-.header.scrolled .header-gradient-overlay {
-  background: linear-gradient(135deg,
-  rgba(102, 126, 234, 0.15) 0%,
-  rgba(118, 75, 162, 0.08) 50%,
-  rgba(240, 147, 251, 0.12) 100%) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
-}
-
-body.dark-theme .header.scrolled .header-gradient-overlay {
-  background: linear-gradient(135deg,
-  rgba(102, 126, 234, 0.2) 0%,
-  rgba(118, 75, 162, 0.12) 50%,
-  rgba(240, 147, 251, 0.15) 100%) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  display: none !important;
 }
 
 /* ✅ 로고 영역 */
@@ -193,33 +137,43 @@ body.dark-theme .header.scrolled .header-gradient-overlay {
   gap: 16px !important;
   text-decoration: none !important;
   transition: var(--header-transition) !important;
-  padding: 8px !important;
-  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 16px !important;
   margin: 0 !important;
   height: auto !important;
-  background: transparent !important;
-  border: none !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   cursor: pointer !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.dark-theme .header .logo-link {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .header .logo-link:hover {
   transform: translateY(-2px) !important;
   background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
   text-decoration: none !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
 
 body.dark-theme .header .logo-link:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 .header .logo-icon {
   position: relative !important;
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -231,12 +185,12 @@ body.dark-theme .header .logo-link:hover {
   width: 100% !important;
   height: 100% !important;
   background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   transition: var(--header-transition) !important;
   position: relative !important;
   overflow: hidden !important;
@@ -245,7 +199,7 @@ body.dark-theme .header .logo-link:hover {
 }
 
 .header .logo-emoji {
-  font-size: 22px !important;
+  font-size: 18px !important;
   position: relative !important;
   z-index: 2 !important;
   margin: 0 !important;
@@ -273,7 +227,7 @@ body.dark-theme .header .logo-link:hover {
   right: -2px !important;
   bottom: -2px !important;
   border: 2px solid transparent !important;
-  border-radius: 16px !important;
+  border-radius: 14px !important;
   background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.3)) !important;
   background-clip: padding-box !important;
   opacity: 0 !important;
@@ -284,7 +238,7 @@ body.dark-theme .header .logo-link:hover {
 
 .header .logo-link:hover .logo-gradient {
   transform: scale(1.05) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
 .header .logo-link:hover .logo-ring {
@@ -305,9 +259,9 @@ body.dark-theme .header .logo-link:hover {
 }
 
 .header .logo-text {
-  font-size: 26px !important;
+  font-size: 24px !important;
   font-weight: 800 !important;
-  background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -316,6 +270,15 @@ body.dark-theme .header .logo-link:hover {
   margin: 0 !important;
   padding: 0 !important;
   display: block !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+body.dark-theme .header .logo-text {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
 }
 
 .header .logo-subtitle {
@@ -343,30 +306,30 @@ body.dark-theme .header .logo-link:hover {
 .header .header-actions {
   display: flex !important;
   align-items: center !important;
-  gap: 20px !important;
+  gap: 16px !important;
   flex-shrink: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
 }
 
-/* ✅ 액션 버튼 공통 스타일 */
+/* ✅ 액션 버튼 공통 스타일 - 메인 화면과 동일 */
 .header .action-btn {
   position: relative !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 16px !important;
   cursor: pointer !important;
   transition: var(--header-transition) !important;
   overflow: hidden !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   text-decoration: none !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -376,8 +339,8 @@ body.dark-theme .header .logo-link:hover {
 }
 
 body.dark-theme .header .action-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .header .btn-content {
@@ -387,7 +350,7 @@ body.dark-theme .header .action-btn {
   align-items: center !important;
   gap: 8px !important;
   height: 100% !important;
-  padding: 0 18px !important;
+  padding: 0 16px !important;
   justify-content: center !important;
   margin: 0 !important;
 }
@@ -420,7 +383,7 @@ body.dark-theme .header .action-btn {
   bottom: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   opacity: 0 !important;
   transition: var(--header-transition) !important;
   margin: 0 !important;
@@ -428,15 +391,17 @@ body.dark-theme .header .action-btn {
 }
 
 .header .action-btn:hover {
-  transform: translateY(-3px) scale(1.02) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
   text-decoration: none !important;
 }
 
 body.dark-theme .header .action-btn:hover {
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 .header .action-btn:hover .btn-hover-effect {
@@ -450,20 +415,20 @@ body.dark-theme .header .action-btn:hover {
   align-items: center !important;
   margin: 0 !important;
   padding: 0 !important;
-  height: 48px !important;
+  height: 44px !important;
 }
 
 .header .theme-toggle-btn {
-  width: 48px !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  width: 44px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   position: relative !important;
   overflow: hidden !important;
 }
 
 body.dark-theme .header .theme-toggle-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .header .theme-toggle-btn .btn-content {
@@ -484,7 +449,7 @@ body.dark-theme .header .theme-toggle-btn {
 .header .light-icon,
 .header .dark-icon {
   position: absolute !important;
-  font-size: 18px !important;
+  font-size: 16px !important;
   transition: all 0.3s ease !important;
   display: flex !important;
   align-items: center !important;
@@ -509,23 +474,19 @@ body.dark-theme .header .dark-icon {
 }
 
 .header .theme-effect {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.12) 100%) !important;
-}
-
-body.dark-theme .header .theme-effect {
-  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 123, 255, 0.12) 100%) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .header .theme-toggle-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
 
 body.dark-theme .header .theme-toggle-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 /* ✅ 알림 영역 */
@@ -535,22 +496,22 @@ body.dark-theme .header .theme-toggle-btn:hover {
   align-items: center !important;
   margin: 0 !important;
   padding: 0 !important;
-  height: 48px !important;
+  height: 44px !important;
 }
 
 .header #notification-icon {
-  font-size: 20px !important;
+  font-size: 18px !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 48px !important;
-  height: 48px !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-radius: 12px !important;
+  width: 44px !important;
+  height: 44px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 16px !important;
   transition: var(--header-transition) !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -558,19 +519,21 @@ body.dark-theme .header .theme-toggle-btn:hover {
 }
 
 body.dark-theme .header #notification-icon {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .header #notification-icon:hover {
-  transform: translateY(-3px) scale(1.02) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
 
 body.dark-theme .header #notification-icon:hover {
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 .header #notification-popup {
@@ -586,16 +549,16 @@ body.dark-theme .header #notification-icon:hover {
 .header .user-info {
   display: flex !important;
   align-items: center !important;
-  gap: 14px !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
-  padding: 0 18px !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border-radius: 14px !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  gap: 12px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 16px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   transition: var(--header-transition) !important;
   position: relative !important;
   overflow: hidden !important;
@@ -603,21 +566,21 @@ body.dark-theme .header #notification-icon:hover {
 }
 
 body.dark-theme .header .user-info {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .header .user-info:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
 }
 
 body.dark-theme .header .user-info:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
 }
 
 .header .user-avatar-wrapper {
@@ -630,22 +593,22 @@ body.dark-theme .header .user-info:hover {
 }
 
 .header .user-avatar {
-  width: 36px !important;
-  height: 36px !important;
-  min-width: 36px !important;
-  min-height: 36px !important;
-  max-width: 36px !important;
-  max-height: 36px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   background: linear-gradient(135deg, var(--header-primary) 0%, var(--header-secondary) 60%, var(--header-accent) 100%) !important;
   color: white !important;
-  border-radius: 12px !important;
+  border-radius: 10px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-weight: 700 !important;
-  font-size: 14px !important;
+  font-size: 13px !important;
   text-transform: uppercase !important;
-  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   position: relative !important;
   z-index: 2 !important;
   transition: var(--header-transition) !important;
@@ -656,12 +619,12 @@ body.dark-theme .header .user-info:hover {
 
 .header .avatar-glow {
   position: absolute !important;
-  top: -4px !important;
-  left: -4px !important;
-  right: -4px !important;
-  bottom: -4px !important;
+  top: -3px !important;
+  left: -3px !important;
+  right: -3px !important;
+  bottom: -3px !important;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)) !important;
-  border-radius: 16px !important;
+  border-radius: 13px !important;
   opacity: 0 !important;
   transition: var(--header-transition) !important;
   animation: avatarGlow 3s ease-in-out infinite !important;
@@ -678,16 +641,16 @@ body.dark-theme .header .user-info:hover {
   position: absolute !important;
   bottom: -1px !important;
   right: -1px !important;
-  width: 12px !important;
-  height: 12px !important;
-  min-width: 12px !important;
-  min-height: 12px !important;
-  max-width: 12px !important;
-  max-height: 12px !important;
+  width: 10px !important;
+  height: 10px !important;
+  min-width: 10px !important;
+  min-height: 10px !important;
+  max-width: 10px !important;
+  max-height: 10px !important;
   background: var(--header-success) !important;
-  border: 2px solid white !important;
+  border: 2px solid rgba(255, 255, 255, 0.8) !important;
   border-radius: 50% !important;
-  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(72, 187, 120, 0.4) !important;
   animation: statusPulse 2s ease-in-out infinite !important;
   z-index: 10 !important;
   margin: 0 !important;
@@ -702,26 +665,27 @@ body.dark-theme .header .user-info:hover {
 .header .user-details {
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 3px !important;
   margin: 0 !important;
   padding: 0 !important;
 }
 
 .header .user-name {
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   color: var(--header-text-primary) !important;
   line-height: 1 !important;
   margin: 0 !important;
   padding: 0 !important;
   display: block !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
 }
 
 .header .user-status {
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
   color: var(--header-success) !important;
   font-weight: 500 !important;
   line-height: 1 !important;
@@ -730,12 +694,12 @@ body.dark-theme .header .user-info:hover {
 }
 
 .header .status-dot {
-  width: 6px !important;
-  height: 6px !important;
-  min-width: 6px !important;
-  min-height: 6px !important;
-  max-width: 6px !important;
-  max-height: 6px !important;
+  width: 5px !important;
+  height: 5px !important;
+  min-width: 5px !important;
+  min-height: 5px !important;
+  max-width: 5px !important;
+  max-height: 5px !important;
   background: var(--header-success) !important;
   border-radius: 50% !important;
   animation: statusDot 1.5s ease-in-out infinite !important;
@@ -754,36 +718,38 @@ body.dark-theme .header .user-info:hover {
   margin: 0 !important;
   padding: 0 !important;
   display: block !important;
-  height: 48px !important;
+  height: 44px !important;
 }
 
 .header .logout-btn {
-  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
+  background: rgba(245, 101, 101, 0.1) !important;
   border-color: rgba(245, 101, 101, 0.2) !important;
   color: var(--header-danger) !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
 }
 
 body.dark-theme .header .logout-btn {
-  background: linear-gradient(135deg, rgba(245, 101, 101, 0.12) 0%, rgba(229, 62, 62, 0.08) 100%) !important;
-  border-color: rgba(245, 101, 101, 0.18) !important;
+  background: rgba(245, 101, 101, 0.08) !important;
+  border-color: rgba(245, 101, 101, 0.15) !important;
 }
 
 .header .logout-effect {
-  background: linear-gradient(135deg, rgba(245, 101, 101, 0.15) 0%, rgba(229, 62, 62, 0.12) 100%) !important;
+  background: rgba(245, 101, 101, 0.15) !important;
 }
 
 .header .logout-btn:hover {
+  background: rgba(245, 101, 101, 0.15) !important;
   border-color: rgba(245, 101, 101, 0.3) !important;
-  box-shadow: 0 8px 25px rgba(245, 101, 101, 0.2) !important;
+  box-shadow: 0 5px 15px rgba(245, 101, 101, 0.2) !important;
   text-decoration: none !important;
 }
 
 body.dark-theme .header .logout-btn:hover {
+  background: rgba(245, 101, 101, 0.12) !important;
   border-color: rgba(245, 101, 101, 0.25) !important;
-  box-shadow: 0 8px 25px rgba(245, 101, 101, 0.25) !important;
+  box-shadow: 0 5px 15px rgba(245, 101, 101, 0.25) !important;
 }
 
 .header .logout-btn .btn-text {
@@ -821,7 +787,7 @@ body.dark-theme .header .logout-btn:hover {
   }
 
   .header .logo-text {
-    font-size: 22px !important;
+    font-size: 20px !important;
   }
 
   .header .user-details {

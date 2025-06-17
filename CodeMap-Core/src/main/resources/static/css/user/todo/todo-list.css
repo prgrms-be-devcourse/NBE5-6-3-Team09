@@ -1,0 +1,773 @@
+/* ✅ 전체 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+/* ✅ 라이트 테마 (기본) */
+body.light-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+}
+
+/* ✅ 다크 테마 */
+body.dark-theme {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f7fafc;
+}
+
+/* 배경 애니메이션 - 단순화 */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+  background: white;
+}
+
+body.dark-theme .floating-shape {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.floating-shape:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  top: 60%;
+  right: 10%;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  animation-delay: 2s;
+}
+
+.floating-shape:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  width: 60px;
+  height: 60px;
+  transform: rotate(45deg);
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* ✅ 헤더 고정 */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+body.dark-theme header {
+  background: rgba(30, 30, 46, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* ✅ 사이드바 고정 */
+aside {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 250px;
+  height: calc(100vh - 70px);
+  z-index: 900;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+body.dark-theme aside {
+  background: rgba(30, 30, 46, 0.95);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+/* ✅ 메인 콘텐츠 영역 */
+main {
+  margin-top: 70px;
+  margin-left: 250px;
+  min-height: calc(100vh - 70px);
+  padding: 30px;
+  position: relative;
+  background: transparent;
+}
+
+/* ✅ 컨테이너 */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  position: relative;
+}
+
+/* ✅ 웰컴 섹션 - 일관된 디자인 */
+.welcome-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+  transition: all 0.3s ease;
+}
+
+body.dark-theme .welcome-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .welcome-title {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.welcome-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .welcome-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 콘텐츠 섹션 - 단순화 */
+.content-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+body.dark-theme .content-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.content-section:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .content-section:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 1rem;
+}
+
+body.dark-theme .section-header {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.dark-theme .section-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+body.dark-theme .add-btn {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
+}
+
+.add-btn:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+body.dark-theme .add-btn:hover {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
+}
+
+/* ✅ 투두 테이블 래퍼 */
+.todo-table-wrapper {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+body.dark-theme .todo-table-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.todo-table-container {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .todo-table-container {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.todo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.todo-table thead {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .todo-table thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.todo-table th {
+  padding: 20px 24px;
+  text-align: left;
+  font-weight: 700;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+body.dark-theme .todo-table th {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+
+.todo-table th:first-child { width: 25%; }
+.todo-table th:nth-child(2) { width: 35%; }
+.todo-table th:nth-child(3) { width: 25%; }
+.todo-table th:last-child { width: 15%; }
+
+.todo-row {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .todo-row {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.todo-row:not(.completed):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+body.dark-theme .todo-row:not(.completed):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.todo-row.completed {
+  background-color: rgba(255, 255, 255, 0.05);
+  opacity: 0.6;
+}
+
+body.dark-theme .todo-row.completed {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.todo-row.completed td {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-theme .todo-row.completed td {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.todo-table td {
+  padding: 20px 24px;
+  vertical-align: top;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .todo-table td {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.menu-cell {
+  position: relative;
+  padding: 20px 24px;
+  vertical-align: top;
+}
+
+.todo-title {
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.dark-theme .todo-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.todo-description {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+body.dark-theme .todo-description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.todo-time {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.time-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.time-label {
+  background: rgba(102, 126, 234, 0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 11px;
+  min-width: 32px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .time-label {
+  background: rgba(76, 99, 210, 0.4);
+}
+
+.time-value {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+body.dark-theme .time-value {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 완료 배지 */
+.completed-badge {
+  background: rgba(16, 185, 129, 0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .completed-badge {
+  background: rgba(16, 185, 129, 0.4);
+}
+
+/* 메뉴 버튼 */
+.menu-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: white;
+  backdrop-filter: blur(5px);
+}
+
+body.dark-theme .menu-button {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+body.dark-theme .menu-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.menu-box {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+body.dark-theme .menu-box {
+  background: rgba(30, 30, 46, 0.95);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.menu-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+}
+
+body.dark-theme .menu-item {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-theme .menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.edit {
+  color: #10b981;
+}
+
+body.dark-theme .menu-item.edit {
+  color: #34d399;
+}
+
+.menu-item.delete {
+  color: #dc2626;
+}
+
+body.dark-theme .menu-item.delete {
+  color: #f87171;
+}
+
+/* 빈 상태 */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-theme .empty-state {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.empty-state-text {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: white;
+}
+
+body.dark-theme .empty-state-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.empty-state-subtext {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-theme .empty-state-subtext {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 모달 컨테이너 */
+#modalContainer {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 20px 64px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+body.dark-theme #modalContainer {
+  background: rgba(30, 30, 46, 0.95);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 64px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-top: 70px;
+    margin-left: 0;
+    width: 100vw;
+    padding: 1rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-section {
+    padding: 2rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .content-section {
+    padding: 1.5rem;
+  }
+
+  .todo-table-wrapper {
+    padding: 1rem;
+  }
+
+  .todo-table th:nth-child(3),
+  .todo-table td:nth-child(3) {
+    display: none;
+  }
+
+  .todo-table th:first-child { width: 35%; }
+  .todo-table th:nth-child(2) { width: 50%; }
+  .todo-table th:last-child { width: 15%; }
+
+  .todo-table th,
+  .todo-table td {
+    padding: 15px 12px;
+  }
+
+  #modalContainer {
+    top: 10%;
+    left: 5%;
+    right: 5%;
+    transform: none;
+    width: auto;
+    max-width: none;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+
+  .welcome-section {
+    padding: 1.5rem;
+  }
+
+  .content-section {
+    padding: 1.2rem;
+  }
+
+  .todo-table-wrapper {
+    padding: 0.8rem;
+  }
+
+  .todo-table th,
+  .todo-table td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .add-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+
+  .menu-button {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  #modalContainer {
+    padding: 15px;
+  }
+}
