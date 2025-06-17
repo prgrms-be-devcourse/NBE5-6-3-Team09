@@ -9,10 +9,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- admin@example.com : 1234
 INSERT INTO users (email, password, nickname, role, is_active, notification_enabled, alert_stretch_enabled, created_at, updated_at)
 VALUES
-    ('frontend@example.com', '{noop}1234', 'Front', 'ROLE_USER', true, true, false, NOW() - INTERVAL 7 DAY, NOW()),
-    ('backend@example.com', '{noop}1234', 'Back', 'ROLE_USER', true, true, true, NOW() - INTERVAL 5 DAY, NOW()),
-    ('fullstack@example.com', '{noop}1234', 'Full', 'ROLE_USER', true, false, false, NOW() - INTERVAL 10 DAY, NOW()),
-    ('admin@example.com', '{noop}1234', 'Admin', 'ROLE_ADMIN', true, true, true, NOW() - INTERVAL 30 DAY, NOW());
+    ('frontend@example.com', '{noop}1234', 'Front', 'ROLE_USER', true, true, false, '2025-06-09 10:00:00', '2025-06-16 08:30:00'),
+    ('backend@example.com', '{noop}1234', 'Back', 'ROLE_USER', true, true, true, '2025-06-11 14:00:00', '2025-06-16 08:30:00'),
+    ('fullstack@example.com', '{noop}1234', 'Full', 'ROLE_USER', true, false, false, '2025-06-06 09:00:00', '2025-06-16 08:30:00'),
+    ('admin@example.com', '{noop}1234', 'Admin', 'ROLE_ADMIN', true, true, true, '2025-05-17 16:00:00', '2025-06-16 08:30:00');
 
 -- 2. 면접 질문 데이터 생성 (다른 테이블에서 참조할 수 있으므로 먼저 생성)
 INSERT INTO interview_questions (question_text, answer_text, category, difficulty, keywords)
@@ -79,195 +79,206 @@ VALUES ('퀵 정렬(Quick Sort)의 시간복잡도와 작동 원리를 설명해
 -- 3. 스트레치 콘텐츠 데이터 생성
 INSERT INTO stretch_contents (title, description, media_type, media_url, created_at, updated_at)
 VALUES
-    ('목과 어깨 스트레칭', '장시간 코딩으로 인한 목과 어깨 긴장 완화를 위한 스트레칭', 'VIDEO', 'https://example.com/neck-shoulder-stretch.mp4', NOW() - INTERVAL 5 DAY, NOW()),
-    ('손목 및 팔 스트레칭', '마우스와 키보드 사용으로 인한 손목 통증 예방 스트레칭', 'VIDEO', 'https://example.com/wrist-arm-stretch.mp4', NOW() - INTERVAL 4 DAY, NOW()),
-    ('등과 허리 스트레칭', '장시간 앉아있기로 인한 등과 허리 피로 해소 스트레칭', 'IMAGE', 'https://example.com/back-stretch.jpg', NOW() - INTERVAL 3 DAY, NOW()),
-    ('눈 운동', '모니터 응시로 인한 눈의 피로 완화를 위한 안구 운동', 'VIDEO', 'https://example.com/eye-exercise.mp4', NOW() - INTERVAL 2 DAY, NOW()),
-    ('전신 스트레칭', '전체적인 몸의 긴장 완화를 위한 종합 스트레칭', 'VIDEO', 'https://example.com/full-body-stretch.mp4', NOW() - INTERVAL 1 DAY, NOW());
+    ('목과 어깨 스트레칭', '장시간 코딩으로 인한 목과 어깨 긴장 완화를 위한 스트레칭', 'VIDEO', 'https://example.com/neck-shoulder-stretch.mp4', '2025-06-11 10:00:00', '2025-06-16 08:00:00'),
+    ('손목 및 팔 스트레칭', '마우스와 키보드 사용으로 인한 손목 통증 예방 스트레칭', 'VIDEO', 'https://example.com/wrist-arm-stretch.mp4', '2025-06-12 11:00:00', '2025-06-16 08:00:00'),
+    ('등과 허리 스트레칭', '장시간 앉아있기로 인한 등과 허리 피로 해소 스트레칭', 'IMAGE', 'https://example.com/back-stretch.jpg', '2025-06-13 14:00:00', '2025-06-16 08:00:00'),
+    ('눈 운동', '모니터 응시로 인한 눈의 피로 완화를 위한 안구 운동', 'VIDEO', 'https://example.com/eye-exercise.mp4', '2025-06-14 16:00:00', '2025-06-16 08:00:00'),
+    ('전신 스트레칭', '전체적인 몸의 긴장 완화를 위한 종합 스트레칭', 'VIDEO', 'https://example.com/full-body-stretch.mp4', '2025-06-15 09:00:00', '2025-06-16 08:00:00');
 
--- 4. 데일리 루틴 데이터 생성
+-- 4. 데일리 루틴 데이터 생성 (6월 16일 하루 안에 모든 활동, 카테고리 형식 수정)
 -- 사용자 1: 프론트엔드 취준생 (2개 완료, 1개 진행중, 1개 쉬어가기)
 INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, actual_focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (1, '알고리즘', 'JavaScript 알고리즘 문제 풀기', '프로그래머스 Level 2 문제 3개 풀기', 'COMPLETED', 60, 60, 10, NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 1 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (1, 'HTML/CSS', '반응형 웹 디자인 학습', 'Media Query 활용 실습', 'COMPLETED', 45, 50, 5, NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (1, 'React', 'React Hooks 연습', 'useState, useEffect 활용한 미니 프로젝트', 'ACTIVE', 90, 30, 15, NOW() - INTERVAL 30 MINUTE, NULL, false, NOW(), NOW()),
-    (1, 'JavaScript', 'ES6+ 문법 학습', 'Arrow Function, Destructuring 학습', 'PASS', 60, 0, 10, NULL, NULL, false, NOW() - INTERVAL 3 DAY, NOW());
+    (1, '코딩테스트 준비 - 알고리즘', 'JavaScript 알고리즘 문제 풀기', '프로그래머스 Level 2 문제 3개 풀기', 'COMPLETED', 60, 60, 10, '2025-06-16 09:00:00', '2025-06-16 10:00:00', false, '2025-06-16 08:30:00', '2025-06-16 10:00:00'),
+    (1, '면접준비 - 프론트엔드', '반응형 웹 디자인 학습', 'Media Query 활용 실습', 'COMPLETED', 45, 50, 5, '2025-06-16 10:30:00', '2025-06-16 11:25:00', false, '2025-06-16 08:30:00', '2025-06-16 11:25:00'),
+    (1, '면접준비 - 프론트엔드', 'React Hooks 연습', 'useState, useEffect 활용한 미니 프로젝트', 'ACTIVE', 90, 30, 15, '2025-06-16 14:00:00', NULL, false, '2025-06-16 08:30:00', '2025-06-16 14:00:00'),
+    (1, '면접준비 - 프론트엔드', 'ES6+ 문법 학습', 'Arrow Function, Destructuring 학습', 'PASS', 60, 0, 10, NULL, NULL, false, '2025-06-16 08:30:00', '2025-06-16 12:00:00');
 
 -- 사용자 2: 백엔드 취준생 (3개 완료, 2개 진행중)
 INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, actual_focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (2, 'Java', 'Java 스트림 API 학습', '람다와 스트림 실습', 'COMPLETED', 70, 75, 10, NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 2 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (2, 'Spring', 'Spring Security 구현', '인증/인가 기능 구현 연습', 'COMPLETED', 120, 140, 20, NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 4 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (2, 'DB', 'MySQL 인덱스 최적화', '쿼리 성능 개선 실습', 'COMPLETED', 60, 65, 5, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
-    (2, 'JPA', 'JPA 연관관계 매핑 학습', 'OneToMany, ManyToMany 실습', 'ACTIVE', 90, 25, 15, NOW() - INTERVAL 30 MINUTE, NULL, false, NOW(), NOW()),
-    (2, '알고리즘', '그래프 알고리즘 구현', 'DFS/BFS 구현 연습', 'ACTIVE', 120, 0, 20, NULL, NULL, false, NOW(), NOW());
+    (2, '면접준비 - 프레임워크', 'Java 스트림 API 학습', '람다와 스트림 실습', 'COMPLETED', 70, 75, 10, '2025-06-16 09:00:00', '2025-06-16 10:15:00', false, '2025-06-16 08:30:00', '2025-06-16 10:15:00'),
+    (2, '면접준비 - 프레임워크', 'Spring Security 구현', '인증/인가 기능 구현 연습', 'COMPLETED', 120, 140, 20, '2025-06-16 10:30:00', '2025-06-16 12:50:00', false, '2025-06-16 08:30:00', '2025-06-16 12:50:00'),
+    (2, '면접준비 - 데이터베이스', 'MySQL 인덱스 최적화', '쿼리 성능 개선 실습', 'COMPLETED', 60, 65, 5, '2025-06-16 13:30:00', '2025-06-16 14:35:00', false, '2025-06-16 08:30:00', '2025-06-16 14:35:00'),
+    (2, '면접준비 - 프레임워크', 'JPA 연관관계 매핑 학습', 'OneToMany, ManyToMany 실습', 'ACTIVE', 90, 25, 15, '2025-06-16 15:00:00', NULL, false, '2025-06-16 08:30:00', '2025-06-16 15:00:00'),
+    (2, '코딩테스트 준비 - 그래프', '그래프 알고리즘 구현', 'DFS/BFS 구현 연습', 'ACTIVE', 120, 0, 20, NULL, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00');
 
 -- 사용자 3: 풀스택 개발자 (4개 완료, 1개 진행중, 1개 쉬어가기)
 INSERT INTO daily_routines (user_id, category, title, description, status, focus_time, actual_focus_time, break_time, started_at, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (3, 'Node.js', 'Express 서버 구현', 'REST API 개발 실습', 'COMPLETED', 90, 90, 15, NOW() - INTERVAL 4 HOUR, NOW() - INTERVAL 2.5 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (3, 'React', '리액트 컴포넌트 설계', '재사용 가능한 컴포넌트 개발', 'COMPLETED', 75, 80, 10, NOW() - INTERVAL 7 HOUR, NOW() - INTERVAL 6 HOUR, false, NOW() - INTERVAL 2 DAY, NOW()),
-    (3, 'TypeScript', 'TypeScript 타입 정의', '제네릭 활용 실습', 'COMPLETED', 60, 60, 5, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 23 HOUR, false, NOW() - INTERVAL 3 DAY, NOW()),
-    (3, 'Docker', '도커 컨테이너 배포', '멀티 컨테이너 애플리케이션 배포', 'COMPLETED', 120, 140, 20, NOW() - INTERVAL 2.5 DAY, NOW() - INTERVAL 2.3 DAY, false, NOW() - INTERVAL 4 DAY, NOW()),
-    (3, 'CS', '네트워크 기초 학습', 'TCP/IP 프로토콜 공부', 'ACTIVE', 90, 15, 15, NOW() - INTERVAL 1 HOUR, NULL, false, NOW(), NOW()),
-    (3, 'DB', 'NoSQL 학습', 'MongoDB 기본 CRUD 연습', 'PASS', 60, 0, 10, NULL, NULL, false, NOW() - INTERVAL 2 DAY, NOW());
+    (3, '면접준비 - 백엔드', 'Express 서버 구현', 'REST API 개발 실습', 'COMPLETED', 90, 90, 15, '2025-06-16 09:00:00', '2025-06-16 10:30:00', false, '2025-06-16 08:30:00', '2025-06-16 10:30:00'),
+    (3, '면접준비 - 프론트엔드', '리액트 컴포넌트 설계', '재사용 가능한 컴포넌트 개발', 'COMPLETED', 75, 80, 10, '2025-06-16 11:00:00', '2025-06-16 12:20:00', false, '2025-06-16 08:30:00', '2025-06-16 12:20:00'),
+    (3, '면접준비 - 프론트엔드', 'TypeScript 타입 정의', '제네릭 활용 실습', 'COMPLETED', 60, 60, 5, '2025-06-16 13:00:00', '2025-06-16 14:00:00', false, '2025-06-16 08:30:00', '2025-06-16 14:00:00'),
+    (3, '면접준비 - 인프라', '도커 컨테이너 배포', '멀티 컨테이너 애플리케이션 배포', 'COMPLETED', 120, 140, 20, '2025-06-16 14:30:00', '2025-06-16 16:50:00', false, '2025-06-16 08:30:00', '2025-06-16 16:50:00'),
+    (3, '면접준비 - 네트워크', '네트워크 기초 학습', 'TCP/IP 프로토콜 공부', 'ACTIVE', 90, 15, 15, '2025-06-16 17:30:00', NULL, false, '2025-06-16 08:30:00', '2025-06-16 17:30:00'),
+    (3, '면접준비 - 데이터베이스', 'NoSQL 학습', 'MongoDB 기본 CRUD 연습', 'PASS', 60, 0, 10, NULL, NULL, false, '2025-06-16 08:30:00', '2025-06-16 12:30:00');
 
--- 5. 포모도로 세션 데이터 생성
--- 사용자 1의 포모도로 세션
+-- 5. 포모도로 세션 데이터 생성 (6월 16일 하루 안에서 루틴과 연결)
+-- 사용자 1의 포모도로 세션 (루틴 ID 1, 2, 3)
 INSERT INTO pomodoro_sessions (routine_id, duration_minutes, started_at, ended_at)
 VALUES
-    (1, 25, NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 2 HOUR + INTERVAL 25 MINUTE),
-    (1, 25, NOW() - INTERVAL 1 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 1 HOUR - INTERVAL 5 MINUTE),
-    (1, 10, NOW() - INTERVAL 1 HOUR, NOW() - INTERVAL 1 HOUR + INTERVAL 10 MINUTE),
-    (2, 25, NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 5 HOUR + INTERVAL 25 MINUTE),
-    (2, 25, NOW() - INTERVAL 4 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 4 HOUR - INTERVAL 5 MINUTE),
-    (3, 25, NOW() - INTERVAL 30 MINUTE, NULL);
+    -- 루틴 1 (코딩테스트 준비 - 알고리즘) - COMPLETED
+    (1, 25, '2025-06-16 09:00:00', '2025-06-16 09:25:00'),
+    (1, 25, '2025-06-16 09:35:00', '2025-06-16 10:00:00'),
+    -- 루틴 2 (면접준비 - 프론트엔드) - COMPLETED
+    (2, 25, '2025-06-16 10:30:00', '2025-06-16 10:55:00'),
+    (2, 25, '2025-06-16 11:00:00', '2025-06-16 11:25:00'),
+    -- 루틴 3 (면접준비 - 프론트엔드) - ACTIVE (진행중)
+    (3, 25, '2025-06-16 14:00:00', '2025-06-16 14:25:00'),
+    (3, 5, '2025-06-16 14:30:00', NULL);
 
--- 사용자 2의 포모도로 세션
+-- 사용자 2의 포모도로 세션 (루틴 ID 5, 6, 7, 8)
 INSERT INTO pomodoro_sessions (routine_id, duration_minutes, started_at, ended_at)
 VALUES
-    (5, 25, NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 3 HOUR + INTERVAL 25 MINUTE),
-    (5, 25, NOW() - INTERVAL 2 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 2 HOUR - INTERVAL 5 MINUTE),
-    (5, 20, NOW() - INTERVAL 2 HOUR, NOW() - INTERVAL 2 HOUR + INTERVAL 20 MINUTE),
-    (6, 25, NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 6 HOUR + INTERVAL 25 MINUTE),
-    (6, 25, NOW() - INTERVAL 5 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 5 HOUR - INTERVAL 5 MINUTE),
-    (6, 25, NOW() - INTERVAL 5 HOUR, NOW() - INTERVAL 5 HOUR + INTERVAL 25 MINUTE),
-    (6, 25, NOW() - INTERVAL 4 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 4 HOUR - INTERVAL 5 MINUTE),
-    (6, 20, NOW() - INTERVAL 4 HOUR, NOW() - INTERVAL 4 HOUR + INTERVAL 20 MINUTE),
-    (7, 25, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 1 DAY + INTERVAL 25 MINUTE),
-    (7, 25, NOW() - INTERVAL 1 DAY + INTERVAL 30 MINUTE, NOW() - INTERVAL 1 DAY + INTERVAL 55 MINUTE),
-    (7, 15, NOW() - INTERVAL 23 HOUR, NOW() - INTERVAL 23 HOUR + INTERVAL 15 MINUTE),
-    (8, 25, NOW() - INTERVAL 30 MINUTE, NULL);
+    -- 루틴 5 (면접준비 - 프레임워크) - COMPLETED
+    (5, 25, '2025-06-16 09:00:00', '2025-06-16 09:25:00'),
+    (5, 25, '2025-06-16 09:35:00', '2025-06-16 10:00:00'),
+    (5, 25, '2025-06-16 10:05:00', '2025-06-16 10:15:00'),
+    -- 루틴 6 (면접준비 - 프레임워크) - COMPLETED
+    (6, 25, '2025-06-16 10:30:00', '2025-06-16 10:55:00'),
+    (6, 25, '2025-06-16 11:05:00', '2025-06-16 11:30:00'),
+    (6, 25, '2025-06-16 11:40:00', '2025-06-16 12:05:00'),
+    (6, 25, '2025-06-16 12:15:00', '2025-06-16 12:40:00'),
+    (6, 25, '2025-06-16 12:45:00', '2025-06-16 12:50:00'),
+    -- 루틴 7 (면접준비 - 데이터베이스) - COMPLETED
+    (7, 25, '2025-06-16 13:30:00', '2025-06-16 13:55:00'),
+    (7, 25, '2025-06-16 14:05:00', '2025-06-16 14:30:00'),
+    (7, 10, '2025-06-16 14:30:00', '2025-06-16 14:35:00'),
+    -- 루틴 8 (면접준비 - 프레임워크) - ACTIVE (진행중)
+    (8, 25, '2025-06-16 15:00:00', NULL);
 
--- 사용자 3의 포모도로 세션
+-- 사용자 3의 포모도로 세션 (루틴 ID 10, 11, 12, 13, 14)
 INSERT INTO pomodoro_sessions (routine_id, duration_minutes, started_at, ended_at)
 VALUES
-    (10, 25, NOW() - INTERVAL 4 HOUR, NOW() - INTERVAL 4 HOUR + INTERVAL 25 MINUTE),
-    (10, 25, NOW() - INTERVAL 3 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 3 HOUR - INTERVAL 5 MINUTE),
-    (10, 25, NOW() - INTERVAL 3 HOUR, NOW() - INTERVAL 3 HOUR + INTERVAL 25 MINUTE),
-    (10, 15, NOW() - INTERVAL 2 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 2 HOUR - INTERVAL 15 MINUTE),
-    (11, 25, NOW() - INTERVAL 7 HOUR, NOW() - INTERVAL 7 HOUR + INTERVAL 25 MINUTE),
-    (11, 25, NOW() - INTERVAL 6 HOUR - INTERVAL 30 MINUTE, NOW() - INTERVAL 6 HOUR - INTERVAL 5 MINUTE),
-    (11, 30, NOW() - INTERVAL 6 HOUR, NOW() - INTERVAL 6 HOUR + INTERVAL 30 MINUTE),
-    (12, 25, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 1 DAY + INTERVAL 25 MINUTE),
-    (12, 25, NOW() - INTERVAL 1 DAY + INTERVAL 30 MINUTE, NOW() - INTERVAL 1 DAY + INTERVAL 55 MINUTE),
-    (12, 10, NOW() - INTERVAL 23 HOUR, NOW() - INTERVAL 23 HOUR + INTERVAL 10 MINUTE),
-    (13, 25, NOW() - INTERVAL 2.5 DAY, NOW() - INTERVAL 2.5 DAY + INTERVAL 25 MINUTE),
-    (13, 25, NOW() - INTERVAL 2.5 DAY + INTERVAL 30 MINUTE, NOW() - INTERVAL 2.5 DAY + INTERVAL 55 MINUTE),
-    (13, 25, NOW() - INTERVAL 2.4 DAY, NOW() - INTERVAL 2.4 DAY + INTERVAL 25 MINUTE),
-    (13, 25, NOW() - INTERVAL 2.4 DAY + INTERVAL 30 MINUTE, NOW() - INTERVAL 2.4 DAY + INTERVAL 55 MINUTE),
-    (13, 40, NOW() - INTERVAL 2.3 DAY, NOW() - INTERVAL 2.3 DAY + INTERVAL 40 MINUTE),
-    (14, 15, NOW() - INTERVAL 1 HOUR, NULL);
+    -- 루틴 10 (면접준비 - 백엔드) - COMPLETED
+    (10, 25, '2025-06-16 09:00:00', '2025-06-16 09:25:00'),
+    (10, 25, '2025-06-16 09:35:00', '2025-06-16 10:00:00'),
+    (10, 25, '2025-06-16 10:05:00', '2025-06-16 10:30:00'),
+    -- 루틴 11 (면접준비 - 프론트엔드) - COMPLETED
+    (11, 25, '2025-06-16 11:00:00', '2025-06-16 11:25:00'),
+    (11, 25, '2025-06-16 11:35:00', '2025-06-16 12:00:00'),
+    (11, 20, '2025-06-16 12:00:00', '2025-06-16 12:20:00'),
+    -- 루틴 12 (면접준비 - 프론트엔드) - COMPLETED
+    (12, 25, '2025-06-16 13:00:00', '2025-06-16 13:25:00'),
+    (12, 25, '2025-06-16 13:35:00', '2025-06-16 14:00:00'),
+    -- 루틴 13 (면접준비 - 인프라) - COMPLETED
+    (13, 25, '2025-06-16 14:30:00', '2025-06-16 14:55:00'),
+    (13, 25, '2025-06-16 15:05:00', '2025-06-16 15:30:00'),
+    (13, 25, '2025-06-16 15:40:00', '2025-06-16 16:05:00'),
+    (13, 25, '2025-06-16 16:15:00', '2025-06-16 16:40:00'),
+    (13, 10, '2025-06-16 16:40:00', '2025-06-16 16:50:00'),
+    -- 루틴 14 (면접준비 - 네트워크) - ACTIVE (진행중)
+    (14, 15, '2025-06-16 17:30:00', NULL);
 
--- 6. Todo 항목 데이터 생성
+-- 6. Todo 항목 데이터 생성 (6월 16일 기준)
 -- 사용자 1의 Todo 항목
 INSERT INTO todos (user_id, title, description, start_time, is_completed, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (1, '이력서 작성', '프론트엔드 개발자 포지션에 맞게 이력서 업데이트', NOW() - INTERVAL 2 DAY + INTERVAL 10 HOUR, true, NOW() - INTERVAL 2 DAY + INTERVAL 12 HOUR, false, NOW() - INTERVAL 3 DAY, NOW() - INTERVAL 2 DAY),
-    (1, 'React 포트폴리오 개선', '프로젝트에 Redux 추가하고 README 업데이트', NOW() - INTERVAL 1 DAY + INTERVAL 14 HOUR, true, NOW() - INTERVAL 1 DAY + INTERVAL 16 HOUR, false, NOW() - INTERVAL 2 DAY, NOW() - INTERVAL 1 DAY),
-    (1, 'JavaScript 코딩 테스트 연습', '프로그래머스 Level 2 문제 5개 풀기', NOW() + INTERVAL 2 HOUR, false, NULL, false, NOW() - INTERVAL 1 DAY, NOW() - INTERVAL 1 DAY),
-    (1, 'CSS 프레임워크 비교 분석', 'Tailwind, Bootstrap, Material UI 장단점 정리', NOW() + INTERVAL 1 DAY + INTERVAL 10 HOUR, false, NULL, false, NOW(), NOW());
+    (1, '이력서 작성', '프론트엔드 개발자 포지션에 맞게 이력서 업데이트', '2025-06-14 10:00:00', true, '2025-06-14 12:00:00', false, '2025-06-13 09:00:00', '2025-06-14 12:00:00'),
+    (1, 'React 포트폴리오 개선', '프로젝트에 Redux 추가하고 README 업데이트', '2025-06-15 14:00:00', true, '2025-06-15 16:00:00', false, '2025-06-14 10:00:00', '2025-06-15 16:00:00'),
+    (1, 'JavaScript 코딩 테스트 연습', '프로그래머스 Level 2 문제 5개 풀기', '2025-06-16 18:00:00', false, NULL, false, '2025-06-15 11:00:00', '2025-06-15 11:00:00'),
+    (1, 'CSS 프레임워크 비교 분석', 'Tailwind, Bootstrap, Material UI 장단점 정리', '2025-06-17 10:00:00', false, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00');
 
 -- 사용자 2의 Todo 항목
 INSERT INTO todos (user_id, title, description, start_time, is_completed, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (2, 'Spring 프로젝트 리팩토링', '컨트롤러 계층 개선 및 서비스 로직 분리', NOW() - INTERVAL 3 DAY + INTERVAL 9 HOUR, true, NOW() - INTERVAL 3 DAY + INTERVAL 11 HOUR, false, NOW() - INTERVAL 4 DAY, NOW() - INTERVAL 3 DAY),
-    (2, 'SQL 성능 최적화', '인덱스 추가 및 쿼리 개선', NOW() - INTERVAL 1 DAY + INTERVAL 13 HOUR, true, NOW() - INTERVAL 1 DAY + INTERVAL 15 HOUR, false, NOW() - INTERVAL 2 DAY, NOW() - INTERVAL 1 DAY),
-    (2, 'JPA 연관관계 매핑 실습', 'OneToMany, ManyToMany 관계 구현 연습', NOW() - INTERVAL 5 HOUR, true, NOW() - INTERVAL 3 HOUR, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (2, '코딩 테스트 준비', '백준 알고리즘 문제 5개 풀기', NOW() + INTERVAL 3 HOUR, false, NULL, false, NOW(), NOW()),
-    (2, '자기소개서 작성', '백엔드 개발자 포지션 지원용 자기소개서 작성', NOW() + INTERVAL 1 DAY + INTERVAL 9 HOUR, false, NULL, false, NOW(), NOW());
+    (2, 'Spring 프로젝트 리팩토링', '컨트롤러 계층 개선 및 서비스 로직 분리', '2025-06-13 09:00:00', true, '2025-06-13 11:00:00', false, '2025-06-12 14:00:00', '2025-06-13 11:00:00'),
+    (2, 'SQL 성능 최적화', '인덱스 추가 및 쿼리 개선', '2025-06-15 13:00:00', true, '2025-06-15 15:00:00', false, '2025-06-14 16:00:00', '2025-06-15 15:00:00'),
+    (2, 'JPA 연관관계 매핑 실습', 'OneToMany, ManyToMany 관계 구현 연습', '2025-06-16 11:00:00', true, '2025-06-16 13:00:00', false, '2025-06-15 09:00:00', '2025-06-16 13:00:00'),
+    (2, '코딩 테스트 준비', '백준 알고리즘 문제 5개 풀기', '2025-06-16 19:00:00', false, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00'),
+    (2, '자기소개서 작성', '백엔드 개발자 포지션 지원용 자기소개서 작성', '2025-06-17 09:00:00', false, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00');
 
 -- 사용자 3의 Todo 항목
 INSERT INTO todos (user_id, title, description, start_time, is_completed, completed_at, is_deleted, created_at, updated_at)
 VALUES
-    (3, 'MERN 스택 프로젝트 시작', '풀스택 프로젝트 기본 구조 세팅', NOW() - INTERVAL 4 DAY + INTERVAL 10 HOUR, true, NOW() - INTERVAL 4 DAY + INTERVAL 12 HOUR, false, NOW() - INTERVAL 5 DAY, NOW() - INTERVAL 4 DAY),
-    (3, 'AWS 배포 환경 구축', 'EC2, RDS 설정 및 CI/CD 파이프라인 구축', NOW() - INTERVAL 2 DAY + INTERVAL 14 HOUR, true, NOW() - INTERVAL 2 DAY + INTERVAL 16 HOUR, false, NOW() - INTERVAL 3 DAY, NOW() - INTERVAL 2 DAY),
-    (3, 'TypeScript 리팩토링', '기존 JS 프로젝트 TypeScript로 변환', NOW() - INTERVAL 1 DAY + INTERVAL 9 HOUR, true, NOW() - INTERVAL 1 DAY + INTERVAL 11 HOUR, false, NOW() - INTERVAL 2 DAY, NOW() - INTERVAL 1 DAY),
-    (3, '기술 면접 준비', '네트워크/OS/DB 주요 개념 복습', NOW() + INTERVAL 2 HOUR, false, NULL, false, NOW() - INTERVAL 1 DAY, NOW()),
-    (3, '포트폴리오 웹사이트 개선', '반응형 디자인 적용 및 프로젝트 추가', NOW() + INTERVAL 1 DAY + INTERVAL 13 HOUR, false, NULL, false, NOW(), NOW()),
-    (3, '오픈 소스 기여하기', '관심 있는 GitHub 프로젝트에 PR 생성', NOW() + INTERVAL 2 DAY + INTERVAL 10 HOUR, false, NULL, false, NOW(), NOW());
+    (3, 'MERN 스택 프로젝트 시작', '풀스택 프로젝트 기본 구조 세팅', '2025-06-12 10:00:00', true, '2025-06-12 12:00:00', false, '2025-06-11 15:00:00', '2025-06-12 12:00:00'),
+    (3, 'AWS 배포 환경 구축', 'EC2, RDS 설정 및 CI/CD 파이프라인 구축', '2025-06-14 14:00:00', true, '2025-06-14 16:00:00', false, '2025-06-13 11:00:00', '2025-06-14 16:00:00'),
+    (3, 'TypeScript 리팩토링', '기존 JS 프로젝트 TypeScript로 변환', '2025-06-15 09:00:00', true, '2025-06-15 11:00:00', false, '2025-06-14 10:00:00', '2025-06-15 11:00:00'),
+    (3, '기술 면접 준비', '네트워크/OS/DB 주요 개념 복습', '2025-06-16 20:00:00', false, NULL, false, '2025-06-15 14:00:00', '2025-06-16 08:30:00'),
+    (3, '포트폴리오 웹사이트 개선', '반응형 디자인 적용 및 프로젝트 추가', '2025-06-17 13:00:00', false, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00'),
+    (3, '오픈 소스 기여하기', '관심 있는 GitHub 프로젝트에 PR 생성', '2025-06-18 10:00:00', false, NULL, false, '2025-06-16 08:30:00', '2025-06-16 08:30:00');
 
--- 7. 사용자 답변 데이터 생성
+-- 7. 사용자 답변 데이터 생성 (6월 16일 기준)
 INSERT INTO user_answers (user_id, question_id, answer_text, answered_at)
 VALUES
-    (1, 1, '퀵 정렬은 피벗을 기준으로 배열을 분할하고 재귀적으로 정렬하는 알고리즘입니다. 평균 O(n log n), 최악의 경우 O(n²)의 시간복잡도를 가집니다.', NOW() - INTERVAL 3 DAY),
-    (1, 6, '스택은 LIFO(후입선출) 구조로 push/pop 연산을 지원하고, 큐는 FIFO(선입선출) 구조로 enqueue/dequeue 연산을 지원합니다.', NOW() - INTERVAL 2 DAY),
-    (2, 11, '정규화는 데이터의 중복을 최소화하고 무결성을 보장하기 위한 과정입니다. 1NF, 2NF, 3NF 등의 단계가 있습니다.', NOW() - INTERVAL 1 DAY),
-    (2, 12, 'ACID는 원자성(Atomicity), 일관성(Consistency), 고립성(Isolation), 지속성(Durability)을 의미하며 트랜잭션의 안전성을 보장합니다.', NOW() - INTERVAL 6 HOUR),
-    (3, 2, 'DFS는 스택이나 재귀를 사용하여 깊이를 우선으로 탐색하고, BFS는 큐를 사용하여 너비를 우선으로 탐색합니다.', NOW() - INTERVAL 4 HOUR);
+    (1, 1, '퀵 정렬은 피벗을 기준으로 배열을 분할하고 재귀적으로 정렬하는 알고리즘입니다. 평균 O(n log n), 최악의 경우 O(n²)의 시간복잡도를 가집니다.', '2025-06-13 15:30:00'),
+    (1, 6, '스택은 LIFO(후입선출) 구조로 push/pop 연산을 지원하고, 큐는 FIFO(선입선출) 구조로 enqueue/dequeue 연산을 지원합니다.', '2025-06-14 16:20:00'),
+    (2, 11, '정규화는 데이터의 중복을 최소화하고 무결성을 보장하기 위한 과정입니다. 1NF, 2NF, 3NF 등의 단계가 있습니다.', '2025-06-15 10:45:00'),
+    (2, 12, 'ACID는 원자성(Atomicity), 일관성(Consistency), 고립성(Isolation), 지속성(Durability)을 의미하며 트랜잭션의 안전성을 보장합니다.', '2025-06-16 10:30:00'),
+    (3, 2, 'DFS는 스택이나 재귀를 사용하여 깊이를 우선으로 탐색하고, BFS는 큐를 사용하여 너비를 우선으로 탐색합니다.', '2025-06-16 12:20:00');
 
 -- 8. 채용 공고 데이터 생성
 INSERT INTO job_posting (user_id, title, site, url, due_date, last_checked_date, is_target, is_deleted)
 VALUES
-    (1, '카카오 프론트엔드 개발자', '카카오 채용', 'https://careers.kakao.com/jobs/P-12345', NOW() + INTERVAL 10 DAY, NOW() - INTERVAL 1 DAY, true, false),
-    (1, '네이버 웹 개발자', '네이버 채용', 'https://recruit.navercorp.com/naver/job/detail/developer', NOW() + INTERVAL 15 DAY, NOW() - INTERVAL 2 DAY, false, false),
-    (1, '토스 프론트엔드 엔지니어', '토스 채용', 'https://toss.im/career/job-detail/4567', NOW() + INTERVAL 7 DAY, NOW(), true, false),
-    (2, '우아한형제들 백엔드 개발자', '우아한형제들', 'https://woowabros.com/recruit/backend-developer', NOW() + INTERVAL 12 DAY, NOW() - INTERVAL 1 DAY, true, false),
-    (2, '쿠팡 서버 개발자', '쿠팡', 'https://www.coupang.jobs/kr/jobs/back-end-developer', NOW() + INTERVAL 20 DAY, NOW() - INTERVAL 3 DAY, false, false),
-    (2, 'NHN 백엔드 엔지니어', 'NHN', 'https://recruit.nhn.com/kor/job/backend', NOW() + INTERVAL 8 DAY, NOW(), true, false),
-    (3, '라인 풀스택 개발자', '라인 채용', 'https://careers.linecorp.com/ko/jobs/1234567890', NOW() + INTERVAL 18 DAY, NOW() - INTERVAL 1 DAY, true, false),
-    (3, '당근마켓 개발자', '당근마켓', 'https://team.daangn.com/jobs/4567890123', NOW() + INTERVAL 25 DAY, NOW() - INTERVAL 4 DAY, false, false);
+    (1, '카카오 프론트엔드 개발자', '카카오 채용', 'https://careers.kakao.com/jobs/P-12345', '2025-06-26 23:59:59', '2025-06-15 14:30:00', true, false),
+    (1, '네이버 웹 개발자', '네이버 채용', 'https://recruit.navercorp.com/naver/job/detail/developer', '2025-07-01 23:59:59', '2025-06-14 16:20:00', false, false),
+    (1, '토스 프론트엔드 엔지니어', '토스 채용', 'https://toss.im/career/job-detail/4567', '2025-06-23 23:59:59', '2025-06-16 09:00:00', true, false),
+    (2, '우아한형제들 백엔드 개발자', '우아한형제들', 'https://woowabros.com/recruit/backend-developer', '2025-06-28 23:59:59', '2025-06-15 11:15:00', true, false),
+    (2, '쿠팡 서버 개발자', '쿠팡', 'https://www.coupang.jobs/kr/jobs/back-end-developer', '2025-07-06 23:59:59', '2025-06-13 10:30:00', false, false),
+    (2, 'NHN 백엔드 엔지니어', 'NHN', 'https://recruit.nhn.com/kor/job/backend', '2025-06-24 23:59:59', '2025-06-16 08:45:00', true, false),
+    (3, '라인 풀스택 개발자', '라인 채용', 'https://careers.linecorp.com/ko/jobs/1234567890', '2025-07-04 23:59:59', '2025-06-15 13:20:00', true, false),
+    (3, '당근마켓 개발자', '당근마켓', 'https://team.daangn.com/jobs/4567890123', '2025-07-11 23:59:59', '2025-06-12 15:45:00', false, false);
 
 -- 9. 사용자 통계 데이터 생성
 INSERT INTO user_stats (user_id, total_focus_minutes, daily_completion_rate, data_collected_at)
 VALUES
-    (1, 950, '{"2025-06-10": 80, "2025-06-11": 75, "2025-06-12": 90, "2025-06-13": 85, "2025-06-14": 70, "2025-06-15": 60}', NOW()),
-    (2, 1420, '{"2025-06-10": 95, "2025-06-11": 90, "2025-06-12": 85, "2025-06-13": 92, "2025-06-14": 88, "2025-06-15": 75}', NOW()),
-    (3, 1850, '{"2025-06-10": 85, "2025-06-11": 92, "2025-06-12": 88, "2025-06-13": 90, "2025-06-14": 95, "2025-06-15": 80}', NOW());
+    (1, 950, '{"2025-06-10": 80, "2025-06-11": 75, "2025-06-12": 90, "2025-06-13": 85, "2025-06-14": 70, "2025-06-15": 60, "2025-06-16": 50}', '2025-06-16 23:00:00'),
+    (2, 1420, '{"2025-06-10": 95, "2025-06-11": 90, "2025-06-12": 85, "2025-06-13": 92, "2025-06-14": 88, "2025-06-15": 75, "2025-06-16": 60}', '2025-06-16 23:00:00'),
+    (3, 1850, '{"2025-06-10": 85, "2025-06-11": 92, "2025-06-12": 88, "2025-06-13": 90, "2025-06-14": 95, "2025-06-15": 80, "2025-06-16": 80}', '2025-06-16 23:00:00');
 
 -- 10. 사용자 로그인 로그 데이터 생성
 INSERT INTO user_login_logs (user_id, login_time, ip_address)
 VALUES
-    (1, NOW() - INTERVAL 30 MINUTE, '192.168.1.100'),
-    (1, NOW() - INTERVAL 1 DAY, '192.168.1.100'),
-    (1, NOW() - INTERVAL 2 DAY, '10.0.0.50'),
-    (2, NOW() - INTERVAL 1 HOUR, '172.16.0.25'),
-    (2, NOW() - INTERVAL 1 DAY, '172.16.0.25'),
-    (2, NOW() - INTERVAL 3 DAY, '192.168.0.10'),
-    (3, NOW() - INTERVAL 2 HOUR, '203.249.12.34'),
-    (3, NOW() - INTERVAL 6 HOUR, '203.249.12.34'),
-    (3, NOW() - INTERVAL 1 DAY, '121.78.45.67'),
-    (4, NOW() - INTERVAL 5 DAY, '10.1.1.1');
+    (1, '2025-06-16 08:00:00', '192.168.1.100'),
+    (1, '2025-06-15 09:30:00', '192.168.1.100'),
+    (1, '2025-06-14 10:15:00', '10.0.0.50'),
+    (2, '2025-06-16 07:45:00', '172.16.0.25'),
+    (2, '2025-06-15 08:20:00', '172.16.0.25'),
+    (2, '2025-06-13 09:00:00', '192.168.0.10'),
+    (3, '2025-06-16 08:15:00', '203.249.12.34'),
+    (3, '2025-06-16 14:30:00', '203.249.12.34'),
+    (3, '2025-06-15 11:45:00', '121.78.45.67'),
+    (4, '2025-05-22 16:30:00', '10.1.1.1');
 
--- 11. 코딩 테스트 리뷰 데이터 생성
+-- 11. 코딩 테스트 리뷰 데이터 생성 (6월 16일로 고정)
 INSERT INTO coding_test_reviews (routine_id, problem_title, problem_description, my_solution, correct_solution, problem_type, is_deleted, created_at, updated_at)
 VALUES
     (1, '두 정수 사이의 합', '두 정수 a, b가 주어졌을 때 a와 b 사이에 속한 모든 정수의 합을 리턴하는 함수 solution을 완성하세요.',
      'function solution(a, b) {\n    let sum = 0;\n    for(let i = Math.min(a,b); i <= Math.max(a,b); i++) {\n        sum += i;\n    }\n    return sum;\n}',
      'function solution(a, b) {\n    return (Math.abs(a-b)+1) * (a+b) / 2;\n}',
-     '수학', false, NOW() - INTERVAL 1 DAY, NOW()),
+     '수학', false, '2025-06-16 10:00:00', '2025-06-16 10:00:00'),
 
-    (5, '최대공약수와 최소공배수', '두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수 solution을 완성해 보세요.',
+    (9, '최대공약수와 최소공배수', '두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수 solution을 완성해 보세요.',
      'function solution(n, m) {\n    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);\n    const g = gcd(n, m);\n    return [g, n * m / g];\n}',
      'function solution(n, m) {\n    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);\n    const g = gcd(n, m);\n    return [g, n * m / g];\n}',
-     '수학', false, NOW() - INTERVAL 2 DAY, NOW()),
+     '수학', false, '2025-06-16 08:30:00', '2025-06-16 08:30:00');
 
-    (10, '타겟 넘버', 'n개의 음이 아닌 정수들이 있습니다. 이 정수들을 순서를 바꾸지 않고 적절히 더하거나 빼서 타겟 넘버를 만들려고 합니다.',
-     'function solution(numbers, target) {\n    let count = 0;\n    function dfs(index, sum) {\n        if(index === numbers.length) {\n            if(sum === target) count++;\n            return;\n        }\n        dfs(index + 1, sum + numbers[index]);\n        dfs(index + 1, sum - numbers[index]);\n    }\n    dfs(0, 0);\n    return count;\n}',
-     'function solution(numbers, target) {\n    let count = 0;\n    function dfs(index, sum) {\n        if(index === numbers.length) {\n            if(sum === target) count++;\n            return;\n        }\n        dfs(index + 1, sum + numbers[index]);\n        dfs(index + 1, sum - numbers[index]);\n    }\n    dfs(0, 0);\n    return count;\n}',
-     'DFS', false, NOW() - INTERVAL 1 DAY, NOW());
-
--- 12. 면접 리뷰 데이터 생성
+-- 12. 면접 리뷰 데이터 생성 (6월 16일로 고정)
 INSERT INTO interview_reviews (routine_id, tech_category, study_content, learned_concepts, difficult_parts, next_study_plan, is_deleted, created_at, updated_at)
 VALUES
-    (2, 'JavaScript', 'ES6+ 문법 중심으로 Arrow Function과 Destructuring 학습',
-     '화살표 함수의 this 바인딩, 배열/객체 구조분해할당, 템플릿 리터럴',
-     '화살표 함수에서 this가 상위 스코프를 참조하는 부분이 헷갈렸음',
-     '클래스 문법과 모듈 시스템(import/export) 학습 예정',
-     false, NOW() - INTERVAL 2 DAY, NOW()),
+    (2, '프론트엔드', 'CSS Media Query를 활용한 반응형 웹 디자인 학습',
+     '미디어 쿼리 문법, 브레이크포인트 설정, 플렉스 레이아웃 반응형 적용',
+     '다양한 디바이스 크기에 대한 최적화 기준점 설정이 어려웠음',
+     'CSS Grid와 Flexbox를 조합한 고급 레이아웃 기법 학습 예정',
+     false, '2025-06-16 11:25:00', '2025-06-16 11:25:00'),
 
-    (6, 'Spring Security', 'Spring Security를 이용한 인증/인가 구현 방법 학습',
-     'JWT 토큰 기반 인증, Role 기반 권한 관리, Security Filter Chain',
-     'JWT 토큰 갱신 로직과 예외 처리 부분이 복잡했음',
-     'OAuth 2.0과 소셜 로그인 구현 방법 학습',
-     false, NOW() - INTERVAL 1 DAY, NOW()),
+    (5, '프레임워크', 'Java 8의 스트림 API와 람다 표현식 활용 방법 학습',
+     '스트림 체이닝, 중간 연산과 최종 연산 구분, 람다 표현식 문법',
+     '복잡한 데이터 변환에서 스트림과 일반 반복문의 성능 차이 이해',
+     '병렬 스트림과 CompletableFuture를 활용한 비동기 처리 학습',
+     false, '2025-06-16 10:15:00', '2025-06-16 10:15:00'),
 
-    (11, 'React', '재사용 가능한 컴포넌트 설계 방법론 학습',
-     'Custom Hook 작성법, 컴포넌트 합성, Props 인터페이스 설계',
-     'Props drilling 문제와 Context API 활용 시점 판단',
-     'Redux Toolkit 도입하여 전역 상태 관리 개선',
-     false, NOW() - INTERVAL 2 DAY, NOW());
+    (6, '프레임워크', 'Spring Security를 이용한 JWT 기반 인증/인가 시스템 구현',
+     'JWT 토큰 구조, Security Filter Chain, 커스텀 필터 구현',
+     'Refresh Token 관리와 토큰 갱신 로직의 보안 취약점 처리',
+     'OAuth 2.0과 소셜 로그인 통합, Spring Security 테스트 작성',
+     false, '2025-06-16 12:50:00', '2025-06-16 12:50:00'),
+
+    (11, '프론트엔드', 'React 함수형 컴포넌트와 커스텀 훅 설계 패턴 학습',
+     'useCallback과 useMemo 최적화, 커스텀 훅 분리, 컴포넌트 합성',
+     'Props drilling 문제와 Context API vs 상태 관리 라이브러리 선택 기준',
+     'Redux Toolkit과 RTK Query를 활용한 전역 상태 및 서버 상태 관리',
+     false, '2025-06-16 12:20:00', '2025-06-16 12:20:00');
 
 -- 외래키 제약조건 체크 재활성화
 SET FOREIGN_KEY_CHECKS = 1;
