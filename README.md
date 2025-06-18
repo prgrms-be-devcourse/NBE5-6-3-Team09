@@ -170,7 +170,3 @@ public void checkTodosStartingSoon() {
 
 
 ---
-
-**CodeMap으로 체계적인 개발자 취업 준비를 시작하세요! 🚀**
-
-[⭐ Star](https://github.com/prgrms-be-devcourse/NBE5-6-3-Team09) | [🐛 Issue](https://github.com/prgrms-be-devcourse/NBE5-6-3-Team09/issues) | [📖 Wiki](https://github.com/prgrms-be-devcourse/NBE5-6-3-Team09/wiki)
