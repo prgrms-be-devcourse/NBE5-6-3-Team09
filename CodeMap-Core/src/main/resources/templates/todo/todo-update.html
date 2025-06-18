@@ -1,88 +1,88 @@
-<!-- 투두 수정 -->
-<div id="todoModal">
-  <h2>투두 수정하기</h2>
-  <form th:action="@{'/todos/' + ${todo.id}}" method="post">
-    <input type="hidden" name="_method" value="patch"/>
-    <input type="hidden" name="selectedDate" th:value="${selectedDate}" />
+<!--&lt;!&ndash; 투두 수정 &ndash;&gt;-->
+<!--<div id="todoModal">-->
+<!--  <h2>투두 수정하기</h2>-->
+<!--  <form th:action="@{'/todos/' + ${todo.id}}" method="post">-->
+<!--    <input type="hidden" name="_method" value="patch"/>-->
+<!--    <input type="hidden" name="selectedDate" th:value="${selectedDate}" />-->
 
-    <input type="text" name="title" th:value="${todo.title}" placeholder="투두 제목" required />
-    <textarea name="description" placeholder="투두 내용" required th:text="${todo.description}"></textarea>
+<!--    <input type="text" name="title" th:value="${todo.title}" placeholder="투두 제목" required />-->
+<!--    <textarea name="description" placeholder="투두 내용" required th:text="${todo.description}"></textarea>-->
 
-    <label for="startTime" class="input-label">🕒 시작 시간</label>
-    <input type="time" id="startTime" name="startTime"
-           th:value="${#temporals.format(todo.startTime.toLocalTime(), 'HH:mm')}" required />
+<!--    <label for="startTime" class="input-label">🕒 시작 시간</label>-->
+<!--    <input type="time" id="startTime" name="startTime"-->
+<!--           th:value="${#temporals.format(todo.startTime.toLocalTime(), 'HH:mm')}" required />-->
 
-    <label for="completedAt" class="input-label">📅 마감 날짜</label>
-    <input type="date" id="completedAt" name="completedAt"
-           th:value="${#temporals.format(todo.completedAt.toLocalDate(), 'yyyy-MM-dd')}" required />
+<!--    <label for="completedAt" class="input-label">📅 마감 날짜</label>-->
+<!--    <input type="date" id="completedAt" name="completedAt"-->
+<!--           th:value="${#temporals.format(todo.completedAt.toLocalDate(), 'yyyy-MM-dd')}" required />-->
 
-    <button type="submit" class="submit-button">수정</button>
-    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>
-  </form>
-</div>
+<!--    <button type="submit" class="submit-button">수정</button>-->
+<!--    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>-->
+<!--  </form>-->
+<!--</div>-->
 
-<style>
-  #todoModal {
-    display: block;
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    z-index: 2000;
-    width: 400px;
-  }
+<!--<style>-->
+<!--  #todoModal {-->
+<!--    display: block;-->
+<!--    position: fixed;-->
+<!--    top: 20%;-->
+<!--    left: 50%;-->
+<!--    transform: translateX(-50%);-->
+<!--    background: #ffffff;-->
+<!--    padding: 30px;-->
+<!--    border-radius: 16px;-->
+<!--    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);-->
+<!--    z-index: 2000;-->
+<!--    width: 400px;-->
+<!--  }-->
 
-  #todoModal h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    font-weight: 700;
-    color: #1f2937;
-  }
+<!--  #todoModal h2 {-->
+<!--    margin-bottom: 20px;-->
+<!--    font-size: 22px;-->
+<!--    font-weight: 700;-->
+<!--    color: #1f2937;-->
+<!--  }-->
 
-  #todoModal input,
-  #todoModal textarea,
-  #todoModal button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    font-family: "Pretendard", sans-serif;
-    font-size: 15px;
-  }
+<!--  #todoModal input,-->
+<!--  #todoModal textarea,-->
+<!--  #todoModal button {-->
+<!--    width: 100%;-->
+<!--    padding: 12px;-->
+<!--    margin-bottom: 14px;-->
+<!--    border: 1px solid #d1d5db;-->
+<!--    border-radius: 10px;-->
+<!--    font-family: "Pretendard", sans-serif;-->
+<!--    font-size: 15px;-->
+<!--  }-->
 
-  .input-label {
-    display: block;
-    margin: 6px 0 4px 2px;
-    font-size: 14px;
-    color: #374151;
-  }
+<!--  .input-label {-->
+<!--    display: block;-->
+<!--    margin: 6px 0 4px 2px;-->
+<!--    font-size: 14px;-->
+<!--    color: #374151;-->
+<!--  }-->
 
-  .submit-button {
-    background-color: #dbeafe;
-    color: #1e3a8a;
-    border: none;
-    font-size: 16px;
-    font-weight: 500;
-  }
+<!--  .submit-button {-->
+<!--    background-color: #dbeafe;-->
+<!--    color: #1e3a8a;-->
+<!--    border: none;-->
+<!--    font-size: 16px;-->
+<!--    font-weight: 500;-->
+<!--  }-->
 
-  .submit-button:hover {
-    background-color: #bfdbfe;
-  }
+<!--  .submit-button:hover {-->
+<!--    background-color: #bfdbfe;-->
+<!--  }-->
 
-  .cancel-button {
-    background-color: #f3f4f6;
-    color: #1f2937;
-    border: none;
-    font-size: 16px;
-    font-weight: 500;
-  }
+<!--  .cancel-button {-->
+<!--    background-color: #f3f4f6;-->
+<!--    color: #1f2937;-->
+<!--    border: none;-->
+<!--    font-size: 16px;-->
+<!--    font-weight: 500;-->
+<!--  }-->
 
-  .cancel-button:hover {
-    background-color: #e5e7eb;
-  }
-</style>
+<!--  .cancel-button:hover {-->
+<!--    background-color: #e5e7eb;-->
+<!--  }-->
+<!--</style>-->
