@@ -47,7 +47,7 @@
 
 ### Frontend
 
-- **Template**: Thymeleaf + Bootstrap
+- **Template**: Thymeleaf
 - **JavaScript**: Chart.js, FullCalendar, jQuery
 - **Real-time**: Server-Sent Events (SSE)
 
@@ -156,7 +156,7 @@ public void checkTodosStartingSoon() {
 ## 🎨 사용자 경험
 
 - **반응형 디자인**: 모바일/태블릿 지원
-- **직관적 UI**: Bootstrap 기반 일관된 디자인
+- **직관적 UI**: 커스텀 CSS 기반 일관된 디자인
 - **실시간 피드백**: 즉각적인 상태 업데이트
 - **Progressive Enhancement**: 기본 기능 우선, 고급 기능 점진적 추가
 
