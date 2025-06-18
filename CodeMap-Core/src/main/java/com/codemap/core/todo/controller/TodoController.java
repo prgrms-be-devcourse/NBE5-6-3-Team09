@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -125,6 +126,28 @@ public class TodoController {
         model.addAttribute("todo", todo);
         model.addAttribute("selectedDate", date);
         return "todo/todo-update";
+    }
+
+    // 메서드 추가
+    /** ✅ 투두 수정을 위한 JSON 데이터 조회 API */
+    @GetMapping("/{id}/edit/json")
+    @ResponseBody
+    public ResponseEntity<TodoResponse> getTodoForEdit(@PathVariable Long id,
+        HttpSession session,
+        @RequestParam("date") String date) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            Todo todo = todoService.findByIdAndUser(id, userId);
+            TodoResponse response = TodoResponse.of(todo);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // ✅ 6. 투두 수정
