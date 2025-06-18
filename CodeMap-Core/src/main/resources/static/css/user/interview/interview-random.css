@@ -142,33 +142,16 @@ main {
   position: relative;
 }
 
-/* ✅ 페이지 타이틀 */
-.page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 2rem;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding-bottom: 1rem;
-}
-
-body.dark-theme .page-title {
-  color: rgba(255, 255, 255, 0.95);
-  border-bottom-color: rgba(255, 255, 255, 0.15);
-}
-
-/* ✅ 답변 컨테이너 */
-.answer-container {
-  position: relative;
-  margin-bottom: 2rem;
+/* ✅ 질문 컨테이너 */
+.question-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  margin-bottom: 2rem;
 }
 
-/* ✅ 네비게이션 화살표 - 면접 질문 답변과 동일 */
+/* ✅ 네비게이션 화살표 */
 .nav-arrow {
   position: absolute;
   top: 50%;
@@ -243,11 +226,7 @@ body.dark-theme .nav-arrow::after {
   text-decoration: none;
 }
 
-.nav-arrow:empty {
-  display: none;
-}
-
-/* ✅ 콘텐츠 박스 - 면접 질문 답변과 동일한 스타일 */
+/* ✅ 콘텐츠 박스 - 면접 질문 선택과 동일한 스타일 */
 .content-box {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -258,7 +237,7 @@ body.dark-theme .nav-arrow::after {
   cursor: pointer;
   animation: fadeInUp 0.8s ease-out both;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  max-width: 1000px;
+  max-width: 900px;
   width: 100%;
   margin: 0 auto;
 }
@@ -282,10 +261,10 @@ body.dark-theme .content-box:hover {
 
 /* ✅ 질문 헤더 */
 .question-header {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -297,87 +276,77 @@ body.dark-theme .question-header {
   border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
-/* ✅ 성공 메시지 */
-.success-message {
-  background: rgba(72, 187, 120, 0.2);
-  color: #38a169;
-  border: 1px solid rgba(72, 187, 120, 0.3);
-  padding: 1.5rem;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-  backdrop-filter: blur(5px);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-body.dark-theme .success-message {
-  background: rgba(72, 187, 120, 0.15);
-  border-color: rgba(72, 187, 120, 0.25);
-  color: #48bb78;
-}
-
-/* ✅ 경고 메시지 */
-.warning-message {
-  background: rgba(220, 53, 69, 0.2);
-  color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.3);
-  padding: 1.5rem;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 2rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-  backdrop-filter: blur(5px);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-body.dark-theme .warning-message {
-  background: rgba(220, 53, 69, 0.15);
-  border-color: rgba(220, 53, 69, 0.25);
-}
-
-/* ✅ 질문 박스 및 답변 박스 */
-.question-box, .answer-box {
+/* ✅ 질문 텍스트 */
+.question-text {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
   font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  word-break: keep-all;
   line-height: 1.6;
+  margin-bottom: 2rem;
+  word-break: keep-all;
   color: white;
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-body.dark-theme .question-box,
-body.dark-theme .answer-box {
+body.dark-theme .question-text {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* ✅ 질문 라벨 */
-.question-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+/* ✅ 텍스트 영역 */
+textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  resize: vertical;
+  height: 200px;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-family: 'Pretendard', sans-serif;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-body.dark-theme .question-label {
-  color: rgba(255, 255, 255, 0.8);
+body.dark-theme textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
 }
 
-/* ✅ 피드백 확인 버튼 - 캘린더와 동일한 스타일 */
-.btn-view-result {
+textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-theme textarea:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+body.dark-theme textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ✅ 제출 버튼 - 캘린더와 동일한 스타일 */
+.submit-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
@@ -393,32 +362,30 @@ body.dark-theme .question-label {
   display: block;
   margin: 2rem auto 0;
   font-family: 'Pretendard', sans-serif;
-  text-align: center;
-  width: fit-content;
 }
 
-body.dark-theme .btn-view-result {
+body.dark-theme .submit-button {
   background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
   box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
 }
 
-.btn-view-result:hover {
+.submit-button:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
   text-decoration: none;
 }
 
-body.dark-theme .btn-view-result:hover {
+body.dark-theme .submit-button:hover {
   background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
   box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
 }
 
-.btn-view-result:active {
+.submit-button:active {
   transform: translateY(-1px);
 }
 
-/* ✅ 페이지네이션 도트 - 면접 질문 답변과 동일 */
+/* ✅ 페이지네이션 도트 */
 .pagination-dots {
   margin-top: 2rem;
   text-align: center;
@@ -493,10 +460,20 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
 }
 
 /* ✅ 반응형 디자인 */
+@media (max-width: 1200px) {
+  .nav-arrow.left {
+    left: -60px;
+  }
+
+  .nav-arrow.right {
+    right: -60px;
+  }
+}
+
 @media (max-width: 1000px) {
   .content-box {
     margin: 0 20px;
-    max-width: 900px;
+    max-width: 800px;
     padding: 2rem;
   }
 
@@ -551,20 +528,21 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
     height: 10px;
   }
 
-  .page-title {
+  .question-header {
     font-size: 1.3rem;
   }
 
-  .question-header {
-    font-size: 1.1rem;
-  }
-
-  .question-box, .answer-box {
+  .question-text {
     padding: 1.2rem;
     font-size: 1rem;
   }
 
-  .btn-view-result {
+  textarea {
+    height: 150px;
+    padding: 1rem;
+  }
+
+  .submit-button {
     padding: 1rem 2rem;
     font-size: 1rem;
   }
@@ -575,21 +553,17 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
     padding: 1.2rem;
   }
 
-  .page-title {
+  .question-header {
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
   }
 
-  .question-header {
-    font-size: 1rem;
-  }
-
-  .question-box, .answer-box {
+  .question-text {
     padding: 1rem;
     font-size: 0.95rem;
   }
 
-  .btn-view-result {
+  .submit-button {
     padding: 0.8rem 1.5rem;
     font-size: 0.9rem;
   }

@@ -3,384 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>투두 리스트 조회</title>
+  <meta name="_csrf" th:content="${_csrf?.token}" />
+  <meta name="_csrf_header" th:content="${_csrf?.headerName}" />
+  <title>투두 리스트</title>
 
   <!-- ✅ 공통 스타일 -->
   <link rel="stylesheet" th:href="@{/css/fragment/header.css}"/>
   <link rel="stylesheet" th:href="@{/css/fragment/sidenav.css}"/>
   <link rel="stylesheet" th:href="@{/css/fragment/chatbot.css}"/>
 
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: "Pretendard", sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background-color: white;
-    }
-
-    aside {
-      position: fixed;
-      top: 116px;
-      left: 0;
-      width: 250px;
-      height: calc(100vh - 116px);
-      z-index: 900;
-      background-color: white;
-    }
-
-    main {
-      margin-left: 280px;
-      margin-top: 100px;
-      padding: 30px;
-      min-height: calc(100vh - 100px);
-      background-color: #f8f9fa;
-    }
-
-    .todo-wrapper {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 1000px;
-      margin: 0 auto;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e5e7eb;
-    }
-
-    .selected-date-banner {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 16px 24px;
-      border-radius: 16px;
-      font-size: 16px;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .todo-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-    }
-
-    .todo-header h2 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1f2937;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .add-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .add-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-    }
-
-    .todo-table-container {
-      border-radius: 16px;
-      overflow: visible;
-      border: 1px solid #e5e7eb;
-      background: white;
-      position: relative;
-
-    }
-
-    .todo-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      border-radius: 16px;
-    }
-
-    .todo-table thead {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    }
-
-    .todo-table th {
-      padding: 20px 24px;
-      text-align: left;
-      font-weight: 700;
-      color: #374151;
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid #e5e7eb;
-    }
-
-    .todo-table th:first-child { width: 25%; }
-    .todo-table th:nth-child(2) { width: 35%; }
-    .todo-table th:nth-child(3) { width: 25%; }
-    .todo-table th:last-child { width: 15%; }
-
-    .todo-row {
-      transition: all 0.2s ease;
-      position: static;
-    }
-
-    .todo-row:not(.completed):hover {
-      background-color: #f8fafc;
-      transform: translateX(4px);
-    }
-
-    .todo-row.completed {
-      background-color: #f9fafb;
-      opacity: 0.6;
-    }
-
-    .todo-row.completed td {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
-    .todo-table td {
-      padding: 20px 24px;
-      border-bottom: 1px solid #f3f4f6;
-      vertical-align: top;
-    }
-
-    .menu-cell {
-      position: relative;
-      padding: 20px 24px;
-      border-bottom: 1px solid #f3f4f6;
-      vertical-align: top;
-    }
-
-    .todo-title {
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 4px;
-    }
-
-    .todo-description {
-      color: #6b7280;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    .todo-time {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .time-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .time-label {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 11px;
-      min-width: 32px;
-      text-align: center;
-    }
-
-    .time-value {
-      color: #374151;
-      font-weight: 500;
-    }
-
-    .menu-button {
-      background: #f3f4f6;
-      border: none;
-      border-radius: 8px;
-      width: 36px;
-      height: 36px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .menu-button:hover {
-      background: #e5e7eb;
-      transform: scale(1.05);
-    }
-
-    .menu-box {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-      padding: 8px;
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 120px;
-      white-space: nowrap;
-      margin-top: 4px;
-    }
-
-    .menu-item {
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .menu-item:hover {
-      background: #f3f4f6;
-    }
-
-    .menu-item.edit {
-      color: #059669;
-    }
-
-    .menu-item.delete {
-      color: #dc2626;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #6b7280;
-    }
-
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty-state-text {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .empty-state-subtext {
-      font-size: 14px;
-      color: #9ca3af;
-    }
-
-    #modalContainer {
-      display: none;
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 64px rgba(0, 0, 0, 0.15);
-      z-index: 2000;
-      border: 1px solid #e5e7eb;
-    }
-
-    /* 완료된 할일 스타일링 */
-    .completed-badge {
-      background: #dcfce7;
-      color: #166534;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-left: 8px;
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 768px) {
-      .todo-table th:nth-child(3),
-      .todo-table td:nth-child(3) {
-        display: none;
-      }
-
-      .todo-table th:first-child { width: 35%; }
-      .todo-table th:nth-child(2) { width: 50%; }
-      .todo-table th:last-child { width: 15%; }
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/user/todo/todo-list.css}"/>
 </head>
-
 <body>
-<header th:replace="fragments/header/header :: header"></header>
-<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
+<div class="background-animation">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<!--알림 -->
 <th:block th:replace="fragments/common/alert-script :: alert-script"></th:block>
-<div th:replace="fragments/common/dropdown-script :: dropdown-script"></div>
 
+<!-- 헤더 -->
+<header th:replace="fragments/header/header :: header"></header>
 
-<div id="modalContainer"></div>
+<!-- 사이드바 -->
+<aside th:replace="fragments/sidenav/user/user-sidenav :: sidebar"></aside>
 
+<!-- 메인 컨텐츠 -->
 <main>
   <div class="todo-wrapper">
-    <div class="selected-date-banner">
-      📅 선택한 날짜: <span th:text="${selectedDate}"></span>
-    </div>
-
     <div class="todo-header">
-      <h2>
-        <span>📝</span>
-        오늘의 할 일을 확인해보세요
-      </h2>
-      <button class="add-btn" id="addTodoBtn" th:attr="data-date=${selectedDate}">
-        + 새 할일 추가
-      </button>
+      <h2>📝 투두 리스트</h2>
+
+      <!-- 날짜 네비게이션 -->
+      <div class="date-navigation">
+        <button class="nav-btn" id="prevDayBtn">◀ 이전</button>
+        <button class="nav-btn today-btn" id="todayBtn">오늘</button>
+        <button class="nav-btn" id="nextDayBtn">다음 ▶</button>
+      </div>
     </div>
 
-    <div class="todo-table-container" th:if="${#lists.size(todos) > 0}">
-      <table class="todo-table">
-        <thead>
-        <tr>
-          <th>📋 제목</th>
-          <th>📝 내용</th>
-          <th>⏰ 시간</th>
-          <th>⚙️ 관리</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="todo : ${todos}"
-            class="todo-row"
-            th:classappend="${todo.completed} ? 'completed'">
-          <td>
-            <div class="todo-title">
-              <span th:text="${todo.title}">제목</span>
-              <span th:if="${todo.completed}" class="completed-badge">완료</span>
+    <div class="date-filter">
+      <form id="dateFilterForm" action="/todos" method="get">
+        <label for="dateFilter">날짜 선택 : </label>
+        <input type="date" id="dateFilter" name="date"
+               th:value="${selectedDate}"
+               onchange="this.form.submit()">
+      </form>
+    </div>
+
+    <!-- 투두 리스트 섹션 -->
+    <div class="all-todos-section">
+      <div class="section-header">
+        <h3>📋 오늘의 할 일 목록</h3>
+        <div class="header-buttons">
+          <button class="calendar-btn" onclick="goToCalendar()">📅 캘린더</button>
+          <button class="add-todo-btn" id="addTodoBtn" th:attr="data-date=${selectedDate}">+ 새 할일 추가</button>
+        </div>
+      </div>
+
+      <!-- 투두가 있는 경우 -->
+      <div th:if="${#lists.size(todos) > 0}" class="todo-list-container">
+        <div th:each="todo : ${todos}"
+             class="todo-item"
+             th:classappend="${todo.completed} ? 'completed'">
+          <div class="todo-left">
+            <div class="todo-info">
+              <span class="todo-title" th:text="${todo.title}">투두 제목</span>
+              <span class="todo-description" th:text="${todo.description}">투두 설명</span>
             </div>
-          </td>
-          <td>
-            <div class="todo-description" th:text="${todo.description}">내용</div>
-          </td>
-          <td>
-            <div class="todo-time">
+            <div class="todo-time-info">
               <div class="time-item">
                 <span class="time-label">시작</span>
                 <span class="time-value" th:text="${#temporals.format(todo.startTime, 'HH:mm')}">10:00</span>
@@ -390,103 +83,130 @@
                 <span class="time-value" th:text="${#temporals.format(todo.completedAt, 'MM-dd')}">06-17</span>
               </div>
             </div>
-          </td>
-          <td class="menu-cell">
-            <button class="menu-button">⋯
+          </div>
+          <div class="todo-right">
+            <div class="todo-badges">
+              <span th:if="${todo.completed}" class="completed-badge">완료</span>
+            </div>
+            <div style="position: relative;">
+              <button class="menu-button">⋯</button>
               <div class="menu-box">
-                <div class="menu-item edit" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-                  ✏️ 수정
-                </div>
-                <div class="menu-item delete" th:attr="data-id=${todo.id}, data-date=${selectedDate}">
-                  🗑️ 삭제
-                </div>
+                <div class="menu-item edit" th:attr="data-id=${todo.id}, data-date=${selectedDate}">✏️ 수정</div>
+                <div class="menu-item delete" th:attr="data-id=${todo.id}, data-date=${selectedDate}">🗑️ 삭제</div>
               </div>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- 빈 상태 표시 -->
-    <div th:if="${#lists.size(todos) == 0}" class="empty-state">
-      <div class="empty-state-icon">📝</div>
-      <div class="empty-state-text">아직 등록된 할 일이 없습니다</div>
-      <div class="empty-state-subtext">새로운 할 일을 추가해보세요!</div>
+      <!-- 빈 상태 표시 -->
+      <div th:if="${#lists.size(todos) == 0}" class="empty-state">
+        <p>등록된 할 일이 없습니다.</p>
+        <p>새로운 할 일을 추가해 보세요!</p>
+      </div>
     </div>
   </div>
 </main>
 
+<!-- 모달 배경 -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+<!-- 투두 추가/수정 모달 -->
+<div id="todoModal">
+  <h3>투두 추가</h3>
+  <form id="todoForm" th:action="@{/todos}" method="post">
+    <input type="hidden" id="todoId" name="id" />
+    <input type="hidden" name="selectedDate" th:value="${selectedDate}" />
+    <input type="text" name="title" placeholder="투두 제목" required />
+    <textarea name="description" placeholder="투두 내용" required></textarea>
+
+    <label for="startTime" class="input-label">🕒 시작 시간</label>
+    <input type="time" id="startTime" name="startTime" required />
+
+    <label for="completedAt" class="input-label">📅 마감 날짜</label>
+    <input type="date" id="completedAt" name="completedAt" required />
+
+    <div class="button-group">
+      <button type="button" class="cancel" onclick="closeTodoModal()">취소</button>
+      <button type="submit" class="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 투두 삭제 확인 모달 -->
+<div id="deleteModal">
+  <h3>투두 삭제</h3>
+  <div class="modal-message">정말로 삭제하시겠습니까?</div>
+  <div class="button-group">
+    <button type="button" class="cancel" onclick="closeDeleteModal()">취소</button>
+    <button type="button" id="confirmDeleteBtn" class="delete">삭제</button>
+  </div>
+</div>
+
+<!-- 📱 챗봇 -->
+<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const todoButton = Array.from(document.querySelectorAll('.nav-link-button'))
-    .find(el => el.textContent.includes('투두 리스트'));
-    if (todoButton) todoButton.classList.add('active');
+  document.addEventListener('DOMContentLoaded', function() {
+    // ✅ 수정된 메뉴 버튼 이벤트 설정
+    const menuButtons = document.querySelectorAll('.menu-button');
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menuBox = this.nextElementSibling;
 
-    document.getElementById('addTodoBtn').addEventListener('click', function () {
-      const date = this.getAttribute('data-date');
-      openAddModal(date);
-    });
-
-    window.openAddModal = function (date) {
-      fetch(`/todos/new?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-      });
-    };
-
-    window.openEditModal = function (id, date) {
-      fetch(`/todos/${id}/edit?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-      });
-    };
-
-    window.openDeleteModal = function (id, date) {
-      fetch(`/todos/${id}/confirm-delete?date=${date}`)
-      .then(res => res.text())
-      .then(html => {
-        const container = document.getElementById('modalContainer');
-        container.innerHTML = html;
-        container.style.display = 'block';
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-          fetch(`/todos/${id}?date=${date}`, { method: "DELETE" }).then(res => {
-            if (res.ok) window.location.href = `/todos?date=${date}`;
-            else alert("삭제 실패");
-          });
+        // 다른 열린 메뉴 닫기
+        document.querySelectorAll('.menu-box').forEach(box => {
+          if (box !== menuBox) {
+            box.classList.remove('show');
+            // 애니메이션 후 display none
+            setTimeout(() => {
+              if (!box.classList.contains('show')) {
+                box.style.display = 'none';
+              }
+            }, 200);
+          }
         });
-      });
-    };
 
-    window.closeModal = function () {
-      const container = document.getElementById('modalContainer');
-      container.style.display = 'none';
-      container.innerHTML = '';
-    };
-
-    // 메뉴 버튼 이벤트
-    document.querySelectorAll('.menu-button').forEach(button => {
-      button.addEventListener('click', function (event) {
-        document.querySelectorAll('.menu-box').forEach(box => box.style.display = 'none');
-        const menuBox = this.querySelector('.menu-box');
-        if (menuBox) {
-          menuBox.style.display = 'flex';
-          event.stopPropagation();
-
-          document.addEventListener('click', function handler(e) {
-            if (!menuBox.contains(e.target) && e.target !== button) {
+        // 현재 메뉴 토글
+        if (menuBox.classList.contains('show')) {
+          // 메뉴 닫기
+          menuBox.classList.remove('show');
+          setTimeout(() => {
+            if (!menuBox.classList.contains('show')) {
               menuBox.style.display = 'none';
-              document.removeEventListener('click', handler);
             }
+          }, 200);
+        } else {
+          // 메뉴 열기
+          menuBox.style.display = 'block';
+          // 다음 프레임에서 show 클래스 추가 (애니메이션을 위해)
+          requestAnimationFrame(() => {
+            menuBox.classList.add('show');
           });
         }
       });
+    });
+
+    // 문서 클릭 시 열린 메뉴 닫기
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.menu-box').forEach(box => {
+        box.classList.remove('show');
+        setTimeout(() => {
+          if (!box.classList.contains('show')) {
+            box.style.display = 'none';
+          }
+        }, 200);
+      });
+    });
+
+    // 날짜 네비게이션 설정
+    setupDateNavigation();
+
+    // 투두 추가 버튼 이벤트
+    document.getElementById('addTodoBtn').addEventListener('click', function () {
+      const date = this.getAttribute('data-date');
+      openAddModal(date);
     });
 
     // 수정 버튼 이벤트
@@ -503,8 +223,202 @@
       });
     });
   });
+
+  function goToCalendar() {
+    window.location.href = '/todos/calender';
+  }
+
+  // 모달 배경 요소
+  const modalBackdrop = document.getElementById('modalBackdrop');
+
+  // 날짜 네비게이션 버튼 이벤트
+  function setupDateNavigation() {
+    const currentDate = new Date(document.getElementById('dateFilter').value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    // 오늘 버튼 표시/숨김
+    const todayBtn = document.getElementById('todayBtn');
+    if (currentDate.getTime() === today.getTime()) {
+      todayBtn.style.display = 'none';
+    } else {
+      todayBtn.style.display = 'inline-flex';
+    }
+
+    // 이전 날짜 버튼
+    document.getElementById('prevDayBtn').addEventListener('click', function() {
+      const prevDate = new Date(currentDate);
+      prevDate.setDate(prevDate.getDate() - 1);
+      navigateToDate(prevDate);
+    });
+
+    // 다음 날짜 버튼
+    document.getElementById('nextDayBtn').addEventListener('click', function() {
+      const nextDate = new Date(currentDate);
+      nextDate.setDate(nextDate.getDate() + 1);
+      navigateToDate(nextDate);
+    });
+
+    // 오늘 버튼
+    document.getElementById('todayBtn').addEventListener('click', function() {
+      navigateToDate(new Date());
+    });
+  }
+
+  function navigateToDate(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    window.location.href = `/todos?date=${dateString}`;
+  }
+
+  function openAddModal(date) {
+    // 폼 초기화
+    document.getElementById('todoForm').reset();
+    document.getElementById('todoId').value = '';
+    document.querySelector('#todoModal h3').textContent = '투두 추가';
+    document.querySelector('input[name="selectedDate"]').value = date;
+
+    // 폼 액션 초기화
+    const form = document.getElementById('todoForm');
+    form.action = '/todos';
+
+    // hidden input 제거
+    const methodInput = form.querySelector('input[name="_method"]');
+    if (methodInput) {
+      methodInput.remove();
+    }
+
+    document.getElementById('todoModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
+  }
+
+  function openEditModal(id, date) {
+    // 새로운 JSON API 엔드포인트 사용
+    fetch(`/todos/${id}/edit/json?date=${date}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // 모달 제목 변경
+      document.querySelector('#todoModal h3').textContent = '투두 수정';
+
+      // 폼 데이터 채우기
+      document.getElementById('todoId').value = data.id;
+      document.querySelector('input[name="title"]').value = data.title || '';
+      document.querySelector('textarea[name="description"]').value = data.description || '';
+
+      // 시간 데이터 포맷 변환
+      if (data.startTime) {
+        const startTime = new Date(data.startTime);
+        document.querySelector('input[name="startTime"]').value =
+            startTime.getHours().toString().padStart(2, '0') + ':' +
+            startTime.getMinutes().toString().padStart(2, '0');
+      }
+
+      if (data.completedAt) {
+        const completedAt = new Date(data.completedAt);
+        document.querySelector('input[name="completedAt"]').value =
+            completedAt.getFullYear() + '-' +
+            (completedAt.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            completedAt.getDate().toString().padStart(2, '0');
+      }
+
+      document.querySelector('input[name="selectedDate"]').value = date;
+
+      // 폼 액션 및 메서드 변경
+      const form = document.getElementById('todoForm');
+      form.action = `/todos/${id}`;
+
+      // 기존 method input 제거
+      const existingMethodInput = form.querySelector('input[name="_method"]');
+      if (existingMethodInput) {
+        existingMethodInput.remove();
+      }
+
+      // CSRF 토큰 추가
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      let csrfInput = form.querySelector('input[name="_csrf"]');
+      if (!csrfInput) {
+        csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+      } else {
+        csrfInput.value = csrfToken;
+      }
+
+      // hidden input 추가
+      let methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'PATCH';
+      form.appendChild(methodInput);
+
+      // 모달 표시
+      document.getElementById('todoModal').style.display = 'block';
+      modalBackdrop.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('투두 정보를 불러오는 데 실패했습니다. 에러: ' + error.message);
+    });
+  }
+
+  function openDeleteModal(id, date) {
+    document.getElementById('deleteModal').style.display = 'block';
+    modalBackdrop.style.display = 'block';
+
+    document.getElementById('confirmDeleteBtn').onclick = function() {
+      // CSRF 토큰 가져오기
+      const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+      fetch(`/todos/${id}?date=${date}`, {
+        method: "DELETE",
+        headers: {
+          [csrfHeader]: csrfToken
+        }
+      }).then(res => {
+        if (res.ok) {
+          window.location.href = `/todos?date=${date}`;
+        } else {
+          alert("삭제 실패");
+        }
+      }).catch(error => {
+        console.error('Error:', error);
+        alert('삭제 중 오류가 발생했습니다.');
+      });
+    };
+  }
+
+  function closeTodoModal() {
+    document.getElementById('todoModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  }
+
+  function closeModal() {
+    closeTodoModal();
+    closeDeleteModal();
+  }
+
+  // 모달 배경 클릭 시 모달 닫기
+  modalBackdrop.addEventListener('click', function() {
+    closeModal();
+  });
 </script>
 
-<th:block th:replace="fragments/common/chatbot-modal :: chatbot"></th:block>
 </body>
 </html>

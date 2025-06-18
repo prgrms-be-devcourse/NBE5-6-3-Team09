@@ -130,33 +130,20 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   background: transparent;
 }
 
-/* ✅ 설정 컨테이너 */
-.settings-container {
+.main-container {
+  max-width: 900px;
   width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
+  margin: 0 auto;
+  position: relative;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ✅ 각 설정 폼 카드 - 메인과 동일한 스타일 */
-.settings-card {
+/* ✅ 콘텐츠 박스 - 환경 설정과 동일한 스타일 */
+.content-box {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -165,151 +152,86 @@ main {
   transition: all 0.3s ease;
   cursor: pointer;
   animation: fadeInUp 0.8s ease-out both;
-}
-
-body.dark-theme .settings-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.settings-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-body.dark-theme .settings-card:hover {
-  background: rgba(255, 255, 255, 0.1);
+body.dark-theme .content-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* 각 카드에 지연 애니메이션 적용 */
-.settings-card:nth-child(1) { animation-delay: 0.1s; }
-.settings-card:nth-child(2) { animation-delay: 0.3s; }
-.settings-card:nth-child(3) { animation-delay: 0.5s; }
+.content-box:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
 
-/* ✅ 카드 제목 */
-.settings-card h2 {
-  font-size: 1.4rem;
+body.dark-theme .content-box:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+}
+
+/* ✅ 페이지 제목 */
+.page-title {
+  font-size: 1.8rem;
   font-weight: 700;
   color: white;
   margin-bottom: 2rem;
+  text-align: center;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 1rem;
 }
 
-body.dark-theme .settings-card h2 {
+body.dark-theme .page-title {
   color: rgba(255, 255, 255, 0.95);
   border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 
-/* ✅ 폼 그룹 스타일 */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group:last-child {
-  margin-bottom: 0;
-}
-
-/* ✅ 라벨 스타일 */
-.settings-card label {
-  display: block;
-  margin-bottom: 0.8rem;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 600;
-  font-size: 1rem;
+/* ✅ 카테고리 옵션 */
+.category-option {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-body.dark-theme .settings-card label {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-/* ✅ 체크박스 라벨 */
-.checkbox-label {
-  display: flex !important;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 1.2rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.5rem;
-}
-
-body.dark-theme .checkbox-label {
+body.dark-theme .category-option {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.checkbox-label:hover {
+.category-option:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-body.dark-theme .checkbox-label:hover {
+body.dark-theme .category-option:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* ✅ 입력 필드 스타일 */
-.settings-card input[type="text"],
-.settings-card input[type="password"] {
-  width: 100%;
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  font-size: 1rem;
-  color: white;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  font-family: 'Pretendard', sans-serif;
-}
-
-body.dark-theme .settings-card input[type="text"],
-body.dark-theme .settings-card input[type="password"] {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.settings-card input[type="text"]::placeholder,
-.settings-card input[type="password"]::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-body.dark-theme .settings-card input[type="text"]::placeholder,
-body.dark-theme .settings-card input[type="password"]::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.settings-card input[type="text"]:focus,
-.settings-card input[type="password"]:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-
-body.dark-theme .settings-card input[type="text"]:focus,
-body.dark-theme .settings-card input[type="password"]:focus {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.4);
+.category-option span {
+  font-weight: 600;
+  flex: 1;
 }
 
 /* ✅ 체크박스 스타일 */
-.settings-card input[type="checkbox"] {
+.category-option input[type="checkbox"] {
   width: 24px;
   height: 24px;
   appearance: none;
@@ -322,17 +244,17 @@ body.dark-theme .settings-card input[type="password"]:focus {
   backdrop-filter: blur(5px);
 }
 
-body.dark-theme .settings-card input[type="checkbox"] {
+body.dark-theme .category-option input[type="checkbox"] {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.settings-card input[type="checkbox"]:checked {
+.category-option input[type="checkbox"]:checked {
   background: #28a745;
   border-color: #28a745;
 }
 
-.settings-card input[type="checkbox"]:checked::after {
+.category-option input[type="checkbox"]:checked::after {
   content: '✓';
   position: absolute;
   top: 50%;
@@ -343,154 +265,153 @@ body.dark-theme .settings-card input[type="checkbox"] {
   font-size: 14px;
 }
 
-.settings-card input[type="checkbox"]:hover {
+.category-option input[type="checkbox"]:hover {
   border-color: #28a745;
   background: rgba(40, 167, 69, 0.1);
 }
 
-/* ✅ 버튼 스타일 - 캘린더 투두 관리 버튼과 동일한 디자인 */
-.submit-btn {
+/* ✅ 제출 버튼 - 캘린더와 동일한 스타일 */
+.submit-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  padding: 1.2rem 2.5rem;
+  padding: 1.2rem 3rem;
   border-radius: 50px;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
+  display: block;
+  margin: 2rem auto 0;
   font-family: 'Pretendard', sans-serif;
-  margin-top: 1rem;
-  min-width: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
 }
 
-body.dark-theme .submit-btn {
+body.dark-theme .submit-button {
   background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
   box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
 }
 
-.submit-btn:hover:not(:disabled) {
+.submit-button:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
   text-decoration: none;
 }
 
-body.dark-theme .submit-btn:hover:not(:disabled) {
+body.dark-theme .submit-button:hover {
   background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
   box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
 }
 
-.submit-btn:active:not(:disabled) {
+.submit-button:active {
   transform: translateY(-1px);
 }
 
-/* 버튼 로딩 상태 */
-.submit-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-  transform: none !important;
-}
-
-.submit-btn.loading {
-  pointer-events: none;
-}
-
-.btn-loader {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-/* ✅ 토스트 알림 스타일 */
-#toast-container {
+/* ✅ 모달 스타일 - 일관성 */
+.modal-overlay {
   position: fixed;
-  top: 100px;
-  right: 20px;
-  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 400px;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
 }
 
-.toast {
+.modal-box {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  transform: translateX(420px);
-  opacity: 0;
-  transition: all 0.3s ease;
-  min-width: 280px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: fadeIn 0.4s ease-out;
+  max-width: 500px;
+  width: 90%;
+  margin: 1rem;
 }
 
-body.dark-theme .toast {
+body.dark-theme .modal-box {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.toast::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  transition: background 0.3s ease;
-}
-
-.toast-success::before {
-  background: #28a745;
-}
-
-.toast-error::before {
-  background: #dc3545;
-}
-
-.toast-info::before {
-  background: #17a2b8;
-}
-
-.toast.show {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.toast-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.modal-message {
+  font-size: 1.5rem;
+  font-weight: 600;
   color: white;
+  margin-bottom: 2rem;
+  line-height: 1.4;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-body.dark-theme .toast-content {
+body.dark-theme .modal-message {
   color: rgba(255, 255, 255, 0.95);
 }
 
-.toast-icon {
-  font-size: 1.2rem;
-  flex-shrink: 0;
+.modal-confirm-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
 }
 
-.toast-message {
-  font-weight: 500;
-  font-size: 0.95rem;
-  line-height: 1.4;
+body.dark-theme .modal-confirm-button {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 4px 15px rgba(76, 99, 210, 0.4);
+}
+
+.modal-confirm-button:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  text-decoration: none;
+}
+
+body.dark-theme .modal-confirm-button:hover {
+  background: linear-gradient(135deg, #4c63d2 0%, #5a4fcf 100%);
+  box-shadow: 0 8px 25px rgba(76, 99, 210, 0.5);
+}
+
+/* ✅ 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* ✅ 스크롤바 스타일링 - 메인과 동일 */
@@ -544,50 +465,58 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
     padding: 1rem;
   }
 
-  .settings-container {
-    max-width: 100%;
-  }
-
-  .settings-card {
+  .content-box {
     padding: 2rem;
   }
 
-  #toast-container {
-    right: 10px;
-    left: 10px;
-    max-width: none;
+  .page-title {
+    font-size: 1.5rem;
   }
 
-  .toast {
-    transform: translateY(-100px);
-    min-width: auto;
+  .category-option {
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
   }
 
-  .toast.show {
-    transform: translateY(0);
+  .submit-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  .modal-box {
+    padding: 2rem;
+  }
+
+  .modal-message {
+    font-size: 1.3rem;
   }
 }
 
 @media (max-width: 480px) {
-  .settings-card {
+  .content-box {
     padding: 1.5rem;
   }
 
-  .settings-card h2 {
+  .page-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-option {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .submit-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .modal-box {
+    padding: 1.5rem;
+  }
+
+  .modal-message {
     font-size: 1.2rem;
-  }
-
-  .submit-btn {
-    padding: 1rem 2rem;
-    font-size: 0.9rem;
-    min-width: 120px;
-  }
-
-  .toast-content {
-    font-size: 0.9rem;
-  }
-
-  .toast-icon {
-    font-size: 1.1rem;
   }
 }
