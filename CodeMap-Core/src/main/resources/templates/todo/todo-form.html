@@ -1,72 +1,72 @@
-<div id="todoModal">
-  <h2>투두 추가하기</h2>
-  <form th:action="@{/todos}" method="post">
-    <input type="hidden" name="selectedDate" th:value="${selectedDate}" />
+<!--<div id="todoModal">-->
+<!--  <h2>투두 추가하기</h2>-->
+<!--  <form th:action="@{/todos}" method="post">-->
+<!--    <input type="hidden" name="selectedDate" th:value="${selectedDate}" />-->
 
-    <input type="text" name="title" placeholder="투두 제목" required />
-    <textarea name="description" placeholder="투두 내용" required></textarea>
+<!--    <input type="text" name="title" placeholder="투두 제목" required />-->
+<!--    <textarea name="description" placeholder="투두 내용" required></textarea>-->
 
-    <label for="startTime" class="input-label">🕒 시작 시간</label>
-    <input type="time" id="startTime" name="startTime" required />
+<!--    <label for="startTime" class="input-label">🕒 시작 시간</label>-->
+<!--    <input type="time" id="startTime" name="startTime" required />-->
 
-    <label for="completedAt" class="input-label">📅 마감 날짜</label>
-    <input type="date" id="completedAt" name="completedAt" required />
+<!--    <label for="completedAt" class="input-label">📅 마감 날짜</label>-->
+<!--    <input type="date" id="completedAt" name="completedAt" required />-->
 
-    <button type="submit" class="submit-button">추가</button>
-    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>
-  </form>
-</div>
+<!--    <button type="submit" class="submit-button">추가</button>-->
+<!--    <button type="button" class="cancel-button" onclick="closeModal()">취소</button>-->
+<!--  </form>-->
+<!--</div>-->
 
-<style>
-  #todoModal {
-    display: block;
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f4f4fb;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    z-index: 2000;
-    width: 400px;
-  }
+<!--<style>-->
+<!--  #todoModal {-->
+<!--    display: block;-->
+<!--    position: fixed;-->
+<!--    top: 20%;-->
+<!--    left: 50%;-->
+<!--    transform: translateX(-50%);-->
+<!--    background: #f4f4fb;-->
+<!--    padding: 30px;-->
+<!--    border-radius: 16px;-->
+<!--    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);-->
+<!--    z-index: 2000;-->
+<!--    width: 400px;-->
+<!--  }-->
 
-  #todoModal h2 {
-    margin-bottom: 20px;
-    font-size: 20px;
-    color: #1b2c50;
-  }
+<!--  #todoModal h2 {-->
+<!--    margin-bottom: 20px;-->
+<!--    font-size: 20px;-->
+<!--    color: #1b2c50;-->
+<!--  }-->
 
-  #todoModal input,
-  #todoModal textarea,
-  #todoModal button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 14px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-family: "Pretendard", sans-serif;
-  }
+<!--  #todoModal input,-->
+<!--  #todoModal textarea,-->
+<!--  #todoModal button {-->
+<!--    width: 100%;-->
+<!--    padding: 12px;-->
+<!--    margin-bottom: 14px;-->
+<!--    border: 1px solid #ccc;-->
+<!--    border-radius: 8px;-->
+<!--    font-family: "Pretendard", sans-serif;-->
+<!--  }-->
 
-  .input-label {
-    display: block;
-    margin: 6px 0 4px 2px;
-    font-size: 14px;
-    color: #333;
-  }
+<!--  .input-label {-->
+<!--    display: block;-->
+<!--    margin: 6px 0 4px 2px;-->
+<!--    font-size: 14px;-->
+<!--    color: #333;-->
+<!--  }-->
 
-  .submit-button {
-    background-color: #4e6df2;
-    color: white;
-    border: none;
-    font-size: 16px;
-  }
+<!--  .submit-button {-->
+<!--    background-color: #4e6df2;-->
+<!--    color: white;-->
+<!--    border: none;-->
+<!--    font-size: 16px;-->
+<!--  }-->
 
-  .cancel-button {
-    background-color: #d3d6db;
-    color: #333;
-    border: none;
-    font-size: 16px;
-  }
-</style>
+<!--  .cancel-button {-->
+<!--    background-color: #d3d6db;-->
+<!--    color: #333;-->
+<!--    border: none;-->
+<!--    font-size: 16px;-->
+<!--  }-->
+<!--</style>-->
